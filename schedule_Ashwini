@@ -1,0 +1,3 @@
+ * Create map using d3 or leavelett
+ * Plot spatial data on locations of patients, pharmacies, and doctors
+ * Explore different encoding for the data
