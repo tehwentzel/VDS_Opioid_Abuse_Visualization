@@ -1,2 +1,5 @@
- * Stuff Here 
+ * Clean and extract relevant information to show relationships
+ * Find proper visual endcodings to show kinds of relationships between doctors, pharmacies and patients
+ * Create a prototype for the selections
+ * Explore other encodings best suited for the data
  * Node graph plots
