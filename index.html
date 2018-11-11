@@ -1,57 +1,87 @@
 <!DOCTYPE html>
-<html>
+<!-- <html> -->
 <head>
     <meta charset=utf-8>
 
     <title>Identifying the best drug dealers and cool people to be friend with</title>
 
+    <!-- <script src="https://d3js.org/d3.v5.js"></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
+    <script src="https://d3js.org/d3-queue.v3.min.js"></script>
+    <!-- <script src="https://d3js.org/d3.v4.min.js"></script> -->
+    <!-- <script src="_/slider.js"></script> -->
+    <script src='https://api.mapbox.com/mapbox.js/v2.2.3/mapbox.js'></script>
+    <link href='_/base.css' rel='stylesheet' />
+    <link href='https://api.mapbox.com/mapbox.js/v2.2.3/mapbox.css' rel='stylesheet' />
+    <!-- <link rel="stylesheet" href="_/slider.css" href=""> -->
+
     <!-- CSS Libraries -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
     <!-- CSS Source -->
-    <link rel="stylesheet" href="./styles/main.css" />
+    <!-- <link rel="stylesheet" href="./styles/main.css" /> -->
 
     <!-- JS Libraries -->
-    <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <!-- <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script> -->
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script> -->
     <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.2.6/d3.min.js"></script>
-
+<!--     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.2.6/d3.min.js"></script>
+    <script src='https://api.mapbox.com/mapbox.js/v2.2.3/mapbox.js'></script>
+    <link href='_/base.css' rel='stylesheet' />
+    <link href='https://api.mapbox.com/mapbox.js/v2.2.3/mapbox.css' rel='stylesheet' />
+ -->
     <!-- JS Source -->
-    <!--script src="./scripts/map.js"></script-->
+    <!-- <script src="./scripts/mapapp.js"></script> -->
 
 
 </head>
 
 <body>
 
-    <div class="container-fluid">
-		<div class="row" id="maps">
-            <div class="col-md-12" id="map">
-                <svg width=100% id="map" >
-                    <circle cx="50" cy="50" r="40" stroke="green" stroke-width="4" fill="yellow" />
+     <div class="container-fluid">
+    <div class="row">
+            <div class="col-md-6" id="map">
+                <svg width=100% id="map">
+                    
+
                   </svg>
             </div>
-			<div width=100% id="paths">
-                <svg class="col-md-12" id="paths">
-                    <circle cx="50" cy="50" r="40" stroke="green" stroke-width="4" fill="yellow" />
-                  </svg>
+          <!--   <div class="col-md-6" id="paths">
+                      <svg width=100% id="paths">
+                          
+                        </svg>
+            </div> -->
+
+              <div class="col-md-6" id="paths">
+                      <!-- <p>Originally, the term "carriage return" referred to a mechanism or lever on a typewriter. For machines where the type element was fixed and the paper held in a moving carriage, this lever was operated after typing a line of text to cause the carriage to return to the far right so the type element would be aligned to the left side of the paper. The lever would also usually feed the paper to advance to the next line.
+
+Many electric typewriters such as IBM Electric or Underwood Electric made carriage return to be another key on the keyboard instead of a lever. The key was usually labeled "carriage return", "return", or "power return". With typewriters like the Selectric, where the type element moved when typing and the paper was held stationary, the key returned the type element to the far left and the term "carrier return" was sometimes used for this function.
+
+To improve the keyboard for non-English-speakers, the symbol ↵ (U+21B5, HTML entity &crarr;) was introduced to communicate the combined carriage return and line feed action.</p> -->
+            <svg width=100% id="paths">
+                          
+                        </svg>
             </div>
-        </div>
+
+          </div>
+    </div>
 		<div class="row">
             <div class="col-md-12" id="network">
                 <svg width=100% id="network" >
-                    <circle cx="50" cy="50" r="40" stroke="green" stroke-width="4" fill="yellow" />
+                    
                   </svg>
             </div>
         </div>
         <div class="row">
             <div class="col-md-12" id="gantt-chart">
                 <svg width=100%  id="gantt-chart" >
-                    <circle cx="50" cy="50" r="40" stroke="green" stroke-width="4" fill="yellow" />
+                    
                   </svg>
             </div>
         </div>
     </div>
+
+  
     <script>
     d3.queue()
     .defer(d3.csv,"data/455_pharmacies.csv")
@@ -63,12 +93,16 @@
     function start_here(error, PHARMACY_LOC, DOCTOR_LOC, PATIENT_LOC,PRESCRIPTION_LOC) {
         
         if (error) return console.log(error);
-        console.log(DOCTOR_LOC)
+        // console.log(DOCTOR_LOC)
 
         }
 
     
     </script>
-
+    <script src='scripts/mapapp.js'></script>
+    <script src='scripts/mapapp_pharm.js'></script>
+   <!--  <script>
+    mapdraw();
+    </script> -->
 </body>
-</html>
+<!-- </html> -->
