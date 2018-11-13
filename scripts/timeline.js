@@ -18,6 +18,11 @@ class TimeLine {
 			this.start_date = new Date(start_date_filter);
 		} else{ this.start_date = null }
 		this.drugName = null;
+		
+		this.div = d3.select("#gantt-chart")
+			.append('div')
+			.attr('class','tooltip')
+			.style('opacity', 0);
 		this.svg = d3.select("#gantt-chart")
 			.append('svg')
 			.attr('width','90%')
@@ -36,23 +41,15 @@ class TimeLine {
 				d.rxcount = +d.rxcount;
 				d.days_supply = +d.days_supply;
 			});
-		//this.data = this.allData;
-		//console.log(this.data);
-		
+
 		this.runFilters();
-		// this.end_date = d3.max(this.data, 
-			// function(d){return d.final_date;});	
-		// if( d3.timeDay.count( this.start_date, this.end_date ) > this.maxDays ){
-			// this.end_date = new Date(this.filldate).addDays( this.maxDays );
-		// }
-		//this.drawSvg();
-		//this.drawRects();
+		this.setupDrugFilter();
 	}
 	
 	runFilters(){
 		if( this.drugName != null ){
 			this.data = this.allData.filter(d => 
-				this.drugName.localeCompare( d.nonproprietaryname.split(" ")[0], {sensitivity: 'base'} ) == 1
+				this.drugName == d.nonproprietaryname.split(" ")[0]
 				);
 		} else { this.data = this.allData; }
 		
@@ -68,11 +65,16 @@ class TimeLine {
 		}
 		console.log(this.end_date);
 		console.log(this.data);
-		this.data = this.data.filter(d => d.filldate < this.end_date);
+		this.data = this.data.filter(d => d.filldate <= this.end_date)
+			.filter(d => d.final_date > this.start_date);
 		this.data.forEach(function(d){
 			d.cutoff_date = d.final_date;
 			if(d.final_date > this.end_date){
 				d.cutoff_date = this.end_date;
+			}
+			d.begin_date = d.filldate;
+			if(this.start_date > d.begin_date){
+				d.begin_date = this.start_date;
 			}
 		}, this);
 		this.drawSvg();
@@ -85,7 +87,7 @@ class TimeLine {
 			.domain( [this.start_date, this.end_date] )
 			.range( [0, .9*this.width] );
 		this.data.forEach(function(d){
-			d.startPos = this.xAxis(d.filldate) + .051*this.width;
+			d.startPos = this.xAxis(d.begin_date) + .051*this.width;
 			d.endPos = this.xAxis(d.cutoff_date) + .051*this.width;
 		}, this);
 		//console.log(this.data)
@@ -151,13 +153,110 @@ class TimeLine {
 			.attr('height', 30)
 			.attr('width', visitWidth)
 			.attr('fill', 'red');
-		d3.selectAll('.visit').on("mouseover", function(){
+		var div = this.div
+		d3.selectAll('.visit').on("mouseover", function(d){
 			d3.select(this).select('.fillperiod')
-				.attr('style', 'stroke-width:2;stroke:blue;stroke-opacity:1')
+				.attr('style', 'stroke-width:2;stroke:blue;stroke-opacity:1');
+			div.transition().duration(100).style('opacity',.9);
+			div.html( "Drug: " + d.nonproprietaryname.split(' ')[0] + '<br/>'
+				+ "rx Count: " + d.rxcount + '<br/>'
+				+ "physician ID: " + d.physiciannpi + "<br/>"
+				+ "Fill Date: " + d.filldate.toDateString() + '<br/>'
+				+ "Script Duration: " + d.days_supply + " days" +'<br/>')
+				.style('left', d3.event.clientX + 'px')
+				.style('top', 2.3*stepSize + 'px');
+			
+			d3.selectAll('.visit').on("mousemove", function(){
+				div.style('left', d3.event.clientX + 'px')
+					.style('top', 2.3*stepSize + 'px');
+			});
 		}).on("mouseout", function(){
 			d3.select(this).select('.fillperiod')
-				.attr('style', 'stroke-width:2;stroke:blue;stroke-opacity:0')
+				.attr('style', 'stroke-width:2;stroke:blue;stroke-opacity:0');
+			div.transition().duration(200)
+				.style('opacity', 0);
 		});
+	}
+	
+	setupDrugFilter(target = '#gantt-filters'){
+		var filters = this.getDrugNames();
+		d3.selectAll('.drugFilter').remove();
+		var selectionBox = d3.selectAll(target).append('select')
+			.attr('class','drugFilter');
+		selectionBox.selectAll('option')
+			.data(filters)
+			.enter()
+			.append('option')
+			.attr('value', function(d){ return d;})
+			.html( function(d){return d;});
+		var self = this;
+		selectionBox.on('change', function(d){
+			var drugNameSelection = d3.select(this).node().value;
+			self.setDrug(drugNameSelection);
+		});
+	}
+	
+	setupTimeFilter(target = '#gantt-filters'){
+		var height = d3.select('#gantt-chart').node().clientHeight;
+		var minDate = d3.min(this.allData, 
+			function(d){return d.filldate;});
+		var maxDate = d3.max(this.allData,
+			function(d){return d.final_date;});
+			d3.selectAll(target).selectAll('.slider').remove()
+		var box = d3.selectAll(target);
+		var width = .9*box.node().clientWidth;
+		console.log(width);
+		var slideAxis = d3.scaleTime()
+			.domain( [minDate, maxDate] )
+			.range( [0, .95*width ] );
+		d3.selectAll('.timeSelection').remove();
+		var sliderSvg = box.append('svg')
+			.attr('class', 'timeSelection')
+			.attr('width', width)
+			.attr('height', height + "px");
+		sliderSvg.append("g")
+			.attr("class", "sliderAxis")
+			.attr("transform", "translate(" + 0 + "," + .5*height + " )")
+			.call( d3.axisBottom(slideAxis));
+			
+		var timeLine = d3.timeDay.range( minDate, maxDate );
+		console.log(timeLine);
+		var sectionWidth = width/(timeLine.length+1);
+		console.log(width);
+		self = this;
+		var selectionRectangles = sliderSvg.selectAll('rect')
+			.data(timeLine)
+			.enter()
+			.append('rect')
+			.attr('class','selectionRectangles')
+			.attr('height', .1*height)
+			.attr('width', sectionWidth)
+			.attr('y', .399*height)
+			.attr('x', function(d) {return slideAxis(d)})
+			.style('fill','blue')
+			.style('fill-opacity', function(d){
+				if(self.start_date_filter < d && self.end_date > d){
+					return .8;
+				}
+				else{ return .2; }
+			})
+			.on('click',function(d){
+				self.setStartDate(d);
+				selectionRectangles.style('fill-opacity', function(d){
+					if(self.start_date_filter <= d && self.end_date > d){
+						return .8;
+					}
+					else{ return .2; }
+				})
+			});
+	}
+	
+	getDrugNames(){
+		var nameSet = new Set(['All']);
+		this.data.forEach(function(d){
+			nameSet.add(d.nonproprietaryname.split(' ')[0]);
+		},nameSet);
+		return Array.from(nameSet);
 	}
 	
 	setColor(colorString){
@@ -168,11 +267,20 @@ class TimeLine {
 	
 	setDrug(drugName, start_date = null){
 		this.drugName = drugName;
+		if(drugName == 'All'){
+			this.drugName = null;
+		}
 		this.runFilters();
 	}
 	
 	setMaxDays(maxDays){
 		this.maxDays = maxDays;
+		this.runFilters();
+	}
+	
+	setEndDate(endDate){
+		endDate = new Date(endDate);
+		this.maxDays = d3.timeDay.count(this.start_date, endDate);
 		this.runFilters();
 	}
 	
