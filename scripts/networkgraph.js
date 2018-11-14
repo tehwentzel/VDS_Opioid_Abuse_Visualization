@@ -123,11 +123,11 @@ node
      .attr("r", 10)
      .style("fill", function(d){
          if(d.group=="patient") 
-            return "green";
+            return "#FF6600";
         if(d.group=="pharmacy")
-            return "blue";
+            return "#1ECAEC";
         else{
-            return "red";
+            return "#FFFF33";
         }})
      .style("stroke", "#424242")
      .style("stroke-width", "1px")
