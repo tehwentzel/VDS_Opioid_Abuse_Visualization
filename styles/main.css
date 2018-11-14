@@ -5,6 +5,10 @@ body { margin: 0; }
 /* SVG styling */
 svg {
     font-family: helvetica, sans-serif;
+    
+}
+.svg-container{
+    width: 100%;
 }
 
 path, line {
