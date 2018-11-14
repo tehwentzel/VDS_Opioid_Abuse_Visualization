@@ -30,8 +30,8 @@ if(net.select("#mygraphsvg")!=null){
 net.selectAll("#mygraphsvg").remove();
 }
 var svg = d3.select("#network").append("svg")
-.attr("width",1500)
-.attr("height",600)
+.attr("width",100%)
+.attr("height",30%)
 .attr("id","mygraphsvg")
 .classed("svg-container",true)
 width = +svg.attr("width"),
@@ -49,7 +49,7 @@ var simulation = d3.forceSimulation()
 //       .radius(d => 40)
 //       .iterations(2)
 //     )
-.force("center", d3.forceCenter(width / 2, height / 2));
+.force("center", d3.forceCenter(width / 2, height / 1.5));
 
 
 var graph = {
@@ -99,7 +99,20 @@ var node = svg.append("g")
         .call(d3.drag()
           .on("start", dragstarted)
           .on("drag", dragged)
-          .on("end", dragended));
+          .on("end", dragended))
+        .on("mouseover", function(d) {		
+            div.transition()		
+                .duration(200)		
+                .style("opacity", .9);		
+            div	.html(d.group + "<br/>"  + d.id)	
+                .style("left", (d3.event.pageX) + "px")		
+                .style("top", (d3.event.pageY - 28) + "px");	
+            })					
+        .on("mouseout", function(d) {		
+            div.transition()		
+                .duration(500)		
+                .style("opacity", 0);	
+        });
 
 var label = svg.append("g")
   .attr("class", "labels")
