@@ -8,9 +8,9 @@
     <!-- CSS Libraries -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
     <!-- CSS Source -->
- 
+ <link rel="stylesheet" href="./styles/main.css" />
     <link href='https://api.mapbox.com/mapbox.js/v2.2.3/mapbox.css' rel='stylesheet' />
-	<link rel="stylesheet" href="./styles/main.css" />
+	
 
     <!-- JS Libraries -->
     <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
@@ -72,6 +72,10 @@
 		//n=new NetworkGraph(selected_id,NODE_GRAPH);
 		struct=createStruct(selected_id,NODE_GRAPH);
         tryS(struct);
+		console.log(patients);
+		patients.on('click', function(d){
+			timeline.setID(d.pat_id);
+		});
 		//drawMap(PHARMACY_LOC,'paths');
     }
     </script>
