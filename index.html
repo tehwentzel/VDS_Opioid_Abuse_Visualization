@@ -29,7 +29,7 @@
 <body>
 
     <div class="container-fluid">
-		<div class="row" id="maps" width='90%'>
+		<div class="row" id="maps">
             <div class="col-md-6" id="map">
                 <svg width=100% id="map" height="400px">
                  </svg>
@@ -41,17 +41,15 @@
         </div>
 
         <div class="row" id="gantt-items">
-            <div class="col-md-12" id="gantt-chart">
+		<div class="col-md-6" id="network">
             </div>
+				<div class="col-md-6" id="gantt-chart">
+				</div>
+				<div class="col-md-6" id="gantt-filters" height='200px'>
+				</div>
+			
         </div>
-		<div class="row" >
-			<div class="col-md-12" id="gantt-filters" height='200px'>
-			</div>
-		</div>
-		<div class="row">
-            <div class="col-md-12" id="network">
-            </div>
-        </div>
+
     </div>
     <script>
     d3.queue()
