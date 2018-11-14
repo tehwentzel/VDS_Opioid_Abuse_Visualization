@@ -43,7 +43,7 @@ class TimeLine {
 				d.rxcount = +d.rxcount;
 				d.days_supply = +d.days_supply;
 			});
-
+		this.setDrug('All');
 		this.runFilters();
 		this.setupDrugFilter();
 		this.setupTimeFilter();
@@ -130,7 +130,7 @@ class TimeLine {
 			.attr('height', function(d){return stepSize*d.count;})
 			.attr('width', barWidth)
 			.attr('fill', this.baseColor)
-			.attr('fill-opacity', .2);
+			.attr('fill-opacity', .9);
 		var visitWidth = .5*barWidth;
 		if(barWidth > 10){
 			visitWidth = 5;

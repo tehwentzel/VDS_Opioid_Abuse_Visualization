@@ -75,6 +75,8 @@
 		console.log(patients);
 		patients.on('click', function(d){
 			timeline.setID(d.pat_id);
+			struct=createStruct(d.pat_id,NODE_GRAPH);
+			tryS(struct);
 		});
 		//drawMap(PHARMACY_LOC,'paths');
     }
