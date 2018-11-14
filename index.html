@@ -11,13 +11,14 @@
     <link rel="stylesheet" href="./styles/main.css" />
 
     <!-- JS Libraries -->
+   
     <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
     <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.2.6/d3.min.js"></script>
-
+   
     <!-- JS Source -->
-    <!--script src="./scripts/map.js"></script-->
+    <script src="./scripts/networkgraph.js"></script>
 
 
 </head>
@@ -39,9 +40,7 @@
         </div>
 		<div class="row">
             <div class="col-md-12" id="network">
-                <svg width=100% id="network" >
-                    <circle cx="50" cy="50" r="40" stroke="green" stroke-width="4" fill="yellow" />
-                  </svg>
+                
             </div>
         </div>
         <div class="row">
@@ -58,14 +57,21 @@
     .defer(d3.csv,"data/500_doctors.csv")
     .defer(d3.csv,"data/5000_patients.csv")
     .defer(d3.csv,"data/27073_prescriptions.csv")
+    .defer(d3.csv,"data/node_graph.csv")
     .await(start_here);
+    selected_id=2098621
 
-    function start_here(error, PHARMACY_LOC, DOCTOR_LOC, PATIENT_LOC,PRESCRIPTION_LOC) {
-        
-        if (error) return console.log(error);
-        console.log(DOCTOR_LOC)
+    
 
-        }
+    function start_here(error, PHARMACY_LOC, DOCTOR_LOC, PATIENT_LOC,PRESCRIPTION,NODE_GRAPH) 
+    {
+        if (error) return console.log(error); 
+        //n=new NetworkGraph(selected_id,NODE_GRAPH);
+        struct=createStruct(selected_id,NODE_GRAPH)
+        tryS(struct)
+    }
+
+    
 
     
     </script>
