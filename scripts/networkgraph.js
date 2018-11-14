@@ -25,10 +25,14 @@ function createStruct(selected_id,NODE_GRAPH)
         
     }
 function tryS(struct){
-
+    var net=d3.select("#network")
+if(net.select("#mygraphsvg")!=null){
+net.selectAll("#mygraphsvg").remove();
+}
 var svg = d3.select("#network").append("svg")
 .attr("width",1500)
 .attr("height",600)
+.attr("id","mygraphsvg")
 .classed("svg-container",true)
 width = +svg.attr("width"),
 height = +svg.attr("height");
