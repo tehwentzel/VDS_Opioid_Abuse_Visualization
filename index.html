@@ -8,43 +8,39 @@
     <!-- CSS Libraries -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
     <!-- CSS Source -->
-    <link rel="stylesheet" href="./styles/main.css" />
+ 
+    <link href='https://api.mapbox.com/mapbox.js/v2.2.3/mapbox.css' rel='stylesheet' />
+	<link rel="stylesheet" href="./styles/main.css" />
 
     <!-- JS Libraries -->
     <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
     <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.2.6/d3.min.js"></script>
+	<script src='https://api.mapbox.com/mapbox.js/v2.2.3/mapbox.js'></script>
 
     <!-- JS Source -->
 	<script src="./scripts/timeline.js"></script>
-
+	<script src="./scripts/networkgraph.js"></script>
+	<script src='scripts/mapapp.js'></script>
 
 </head>
 
 <body>
 
     <div class="container-fluid">
-		<div class="row" id="maps">
-            <div class="col-md-12" id="map">
-                <svg width=100% id="map" >
-                    <circle cx="50" cy="50" r="40" stroke="green" stroke-width="4" fill="yellow" />
-                  </svg>
+		<div class="row" id="maps" width='90%'>
+            <div class="col-md-6" id="map">
+                <svg width=100% id="map" height="400px">
+                 </svg>
             </div>
 			<div width=100% id="paths">
-                <svg class="col-md-12" id="paths">
-                    <circle cx="50" cy="50" r="40" stroke="green" stroke-width="4" fill="yellow" />
-                  </svg>
+                <svg class="col-md-6" id="paths" height="400px">
+                 </svg>
             </div>
         </div>
-		<div class="row">
-            <div class="col-md-12" id="network">
-                <svg width=100% id="network" >
-                    <circle cx="50" cy="50" r="40" stroke="green" stroke-width="4" fill="yellow" />
-                  </svg>
-            </div>
-        </div>
-        <div class="row">
+
+        <div class="row" id="gantt-items">
             <div class="col-md-12" id="gantt-chart">
             </div>
         </div>
@@ -52,6 +48,10 @@
 			<div class="col-md-12" id="gantt-filters" height='200px'>
 			</div>
 		</div>
+		<div class="row">
+            <div class="col-md-12" id="network">
+            </div>
+        </div>
     </div>
     <script>
     d3.queue()
@@ -59,13 +59,20 @@
     .defer(d3.csv,"https://gist.githubusercontent.com/tehwentzel/24bf8357ad86a3db70510480b020d7d3/raw/4468783d3445b83b4350ac1c1327a0b592c8cfdf/500_doctors.csv")
     .defer(d3.csv,"https://gist.githubusercontent.com/tehwentzel/24bf8357ad86a3db70510480b020d7d3/raw/4468783d3445b83b4350ac1c1327a0b592c8cfdf/5000_patients.csv")
     .defer(d3.csv,"https://gist.githubusercontent.com/tehwentzel/24bf8357ad86a3db70510480b020d7d3/raw/4468783d3445b83b4350ac1c1327a0b592c8cfdf/27073_prescriptions.csv")
+	.defer(d3.csv,"https://gist.githubusercontent.com/tehwentzel/97f25306ab8b97485cbaa579ece36ed9/raw/96c495e0a60f23defa5aa22fc83df890727979b5/node_graph.csv")
     .await(start_here);
-    function start_here(error, PHARMACY_LOC, DOCTOR_LOC, PATIENT_LOC,PRESCRIPTION_LOC) {
+	selected_id = 2098621;
+    function start_here(error, PHARMACY_LOC, DOCTOR_LOC, PATIENT_LOC,PRESCRIPTION_LOC,NODE_GRAPH) {
         
         if (error) return console.log(error);
-        console.log(PRESCRIPTION_LOC);
-		timeline = new TimeLine(2121437, PRESCRIPTION_LOC);
-
+        // console.log(PRESCRIPTION_LOC);
+		patients = drawMap(PATIENT_LOC,'map');
+		pharms = drawMap(PHARMACY_LOC,'paths');
+		timeline = new TimeLine(selected_id, PRESCRIPTION_LOC);
+		//n=new NetworkGraph(selected_id,NODE_GRAPH);
+		struct=createStruct(selected_id,NODE_GRAPH);
+        tryS(struct);
+		//drawMap(PHARMACY_LOC,'paths');
     }
     </script>
 

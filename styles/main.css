@@ -1,17 +1,33 @@
-body { margin: 0; }
-
-#scene { width: 90%; height: 90%}
+body { 
+	margin: 0;
+	top: 0;
+	right: 0; 
+	bottom: 0; 
+	left:0; 
+	width:100%, 
+	height:100%;
+	background-color: rgb(150,150,150);
+  /*width:100%;*/
+  /*height:300%;*/
+}
+}
 
 /* SVG styling */
-/*svg {
+svg {
     font-family: helvetica, sans-serif;
 }
 
 flex-container {
-	display: flex;
+	display: inline-flex;
 	flex-direction: row;
-	justify-content: center;
+	justify-content: space-around;
 }
+
+select{
+	display: inline-block;
+	margin: 0 auto;
+}
+
 div.tooltip {
   color: white;
   position: relative;
@@ -24,4 +40,198 @@ div.tooltip {
   border: 2px solid black;
   pointer-events: none;
 }
-*/
+
+
+.circle {
+    /*visibility: hidden;*/
+    /*stroke: black;*/
+    /*stroke-width:2;*/
+    stroke:black;
+    fill:#b10026;
+    pointer-events: all;
+    cursor: pointer;
+  }
+  .circle.active {
+    /*visibility: visible;*/
+    /*fill:white;*/
+    fill:#fc8d59;
+    opacity:1.0;
+  }
+
+  .circle2 {
+    /*visibility: hidden;*/
+    /*stroke: black;*/
+    /*stroke-width:2;*/
+    /*fill:#b10026;*/
+    stroke:red;
+    fill:#b10026;
+    pointer-events: all;
+    cursor: pointer;
+  }
+  .circle2.active {
+    /*visibility: visible;*/
+    fill:#fc8d59;
+    opacity:1.0;
+  }
+
+.p{
+  position: absolute;
+  bottom:15px;
+  left:10px;
+}
+
+/*   .infoDiv {
+    position: absolute;
+    top: 20%;
+    color: white;
+    border: 1px solid darkgray;
+    border-radius: 4px;
+    background: black;
+    opacity: 0.9;
+    padding: 10px;
+    width: 240px;
+    height: 320px;
+    float:right;
+    border-radius: 25px
+  }*/
+  .infoDiv .table {
+    width: 200px;
+  }
+  .infoDiv .dead {
+    color: #b10026;
+    font-size: 20px;
+  }
+  .infoDiv .injured {
+    color: #fd8d3c;
+  }
+
+  .infoDiv .ageGroup {
+    /*color: #66FFFF;*/
+    color:#fc8d59;
+    font-size: 20px;
+  }
+  .infoDiv .data {
+    text-align: right;
+  }
+
+    .titleDiv {
+    position: absolute;
+    top: 0px;
+    left: 250px;
+    margin: auto;
+    width: 700px;
+    font-family: Lato;
+    color: white;
+    background: black;
+    border: 1px solid white;
+    float:center;
+    border-radius: 25px
+  }
+  .titleDiv h1 {
+    text-align: center;
+    font-weight: normal;
+    margin-bottom: 0px;
+  }
+  .titleDiv h4 {
+    text-align: center;
+    font-weight: normal;
+    margin-top: 5px;
+  }
+
+  .ticks {
+      font-size: 10px;
+    }
+
+    .track,
+    .track-inset,
+    .track-overlay {
+      stroke-linecap: round;
+    }
+
+    .track {
+      stroke: #000;
+      stroke-opacity: 0.3;
+      stroke-width: 10px;
+    }
+
+    .track-inset {
+      stroke: #dcdcdc;
+      stroke-width: 8px;
+    }
+
+    .track-overlay {
+      pointer-events: stroke;
+      stroke-width: 50px;
+      stroke: transparent;
+      cursor: crosshair;
+    }
+
+    .handle {
+      fill: #fff;
+      stroke: #000;
+      stroke-opacity: 0.5;
+      stroke-width: 1.25px;
+    }
+
+
+ div.info { 
+    position: relative;     
+    /*text-align: center;     */
+    width: 100%;          
+    height: 100px;         
+    /*padding: 2px;       */
+    font: 12px sans-serif;    
+    background: black; 
+    border: 1px solid white;    
+    border-radius: 8px;     
+    pointer-events: none;  
+    color:white;   
+}
+
+.bar {
+  fill: steelblue;
+}
+
+.bar:hover {
+  fill: brown;
+}
+
+.female{
+  color: pink;
+}
+
+.table{
+  /*position:absolute;*/
+  right:15px;
+  border: 1px solid white;
+  background-color: black;
+  color: white;
+  font-size: 16px;
+  border-collapse: separate; 
+  float:right;
+  border-radius:5px;
+  /*border-spacing: 50;*/
+  
+}
+
+a {
+    text-decoration: none;
+}
+
+a:link, a:visited {
+    color: white;
+}
+a:hover {
+    color: red;
+}
+
+#size2{
+  width: 1000px;
+  color: Grey;
+}
+
+#h4{
+  color : Grey;
+  font-family: Georgia;
+  font-size : 150px;
+}
