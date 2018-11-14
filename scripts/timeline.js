@@ -130,7 +130,7 @@ class TimeLine {
 			.attr('height', function(d){return stepSize*d.count;})
 			.attr('width', barWidth)
 			.attr('fill', this.baseColor)
-			.attr('fill-opacity', .5);
+			.attr('fill-opacity', .2);
 		var visitWidth = .5*barWidth;
 		if(barWidth > 10){
 			visitWidth = 5;

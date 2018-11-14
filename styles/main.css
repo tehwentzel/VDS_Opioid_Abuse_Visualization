@@ -47,7 +47,7 @@ circle {
     /*stroke: black;*/
     /*stroke-width:2;*/
     stroke:black;
-    fill:#b10026;
+   /* fill:#b10026;*/
     pointer-events: all;
     cursor: pointer;
   }
@@ -62,9 +62,9 @@ circle {
     /*visibility: hidden;*/
     /*stroke: black;*/
     /*stroke-width:2;*/
-    /*fill:#b10026;*/
+    /*fill:#b10026;
     stroke:red;
-    fill:#b10026;
+    fill:#b10026;*/
     pointer-events: all;
     cursor: pointer;
   }

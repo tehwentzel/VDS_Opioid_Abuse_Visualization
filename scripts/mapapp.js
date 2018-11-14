@@ -1,4 +1,4 @@
-var drawMap = function(data,target){ 
+var drawMap = function(data,target,color = 'red'){ 
 	L.mapbox.accessToken = 'pk.eyJ1IjoiYW5haWszIiwiYSI6ImNqbWNkNTZ0bDBlM2Izb3M0MWQzNHZtYzEifQ.fLozOxjrg08I3StfKz0AhA'
     var map = L.mapbox.map(target, 'mapbox.dark', {maxZoom: 18, minZoom: 0})
     .setView([41.77, -87.62], 10);
@@ -37,7 +37,7 @@ var drawMap = function(data,target){
 		.attr('cy', function(d){ return project(findlatlng(d.x,d.y)).y})
 		.attr('r','4')
 		.attr('stroke', '2px white')
-		.attr('fill', 'red')
+		.attr('fill',  color)
 		.attr('opacity', 1);
 	dots.call(formatDots);
 
