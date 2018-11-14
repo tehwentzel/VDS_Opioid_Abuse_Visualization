@@ -7,7 +7,11 @@ svg {
     font-family: helvetica, sans-serif;
 }
 
-
+flex-container {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+}
 div.tooltip {
   color: white;
   position: relative;

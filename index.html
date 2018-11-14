@@ -45,11 +45,13 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-8" id="gantt-chart">
+            <div class="col-md-12" id="gantt-chart">
             </div>
-			<div class="col-md-4" id="gantt-filters">
-			</div>
         </div>
+		<div class="row" >
+			<div class="col-md-12" id="gantt-filters" height='200px'>
+			</div>
+		</div>
     </div>
     <script>
     d3.queue()
@@ -64,14 +66,15 @@
         if (error) return console.log(error);
         console.log(PRESCRIPTION_LOC);
 		timeline = new TimeLine(2121437, PRESCRIPTION_LOC);
+		//timeline.setupTimeFilter();
 		//timeline.setColor("#e6550d");
 		////timeline.setDrug("HYDRoCODONE");
-		timeline.setStartDate('02/02/2014');
+		//timeline.setStartDate('02/02/2014');
 		//timeline.setEndDate('9/02/2014');
 		timeline.setupDrugFilter();
 		console.log(timeline.getDrugNames());
 		timeline.setID(2112697);
-		timeline.setupTimeFilter();
+		//timeline.setupTimeFilter();
 		//timeline.setupDrugFilter();
 		//console.log(timeline);
     }
