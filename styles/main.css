@@ -3,7 +3,7 @@ body { margin: 0; }
 #scene { width: 90%; height: 90%}
 
 /* SVG styling */
-svg {
+/*svg {
     font-family: helvetica, sans-serif;
 }
 
@@ -24,3 +24,4 @@ div.tooltip {
   border: 2px solid black;
   pointer-events: none;
 }
+*/

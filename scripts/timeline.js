@@ -257,17 +257,21 @@ class TimeLine {
 				}
 				else{ return .2; }
 			})
-
+		var circleRadius = .8*rectHeightScale*height;
+		if( circleRadius < 15 ){
+			circleRadius = 15;
+		} else if (circleRadius > 25){
+			circleRadius = 25;
+		}
 		var pressed = [0, 0];
-		var slideRectangles = sliderSvg.selectAll('rect.dragRectangles')
+		var slideRectangles = sliderSvg.selectAll('circle.dragRectangles')
 			.data([self.start_date, self.end_date]);
 		slideRectangles.enter().merge(slideRectangles)
-			.append('rect')
+			.append('circle')
 			.attr('class','dragRectangles')
-			.attr('height', rectHeightScale*height)
-			.attr('width', .5*sectionWidth)
-			.attr('y', (yPosition - rectHeightScale)*height)
-			.attr('x', function(d) {return slideAxis(d)- .15*sectionWidth + xOffset;})
+			.attr('r', circleRadius)
+			.attr('cy', yPosition*height - .5*circleRadius)
+			.attr('cx', function(d) {return slideAxis(d)- .15*sectionWidth + xOffset;})
 			.style('fill', 'darkblue')
 			.on('mousedown',function(g,i) {
 				var handle = d3.select(this);
@@ -286,12 +290,12 @@ class TimeLine {
 					if( pressed[0] == 1 && d < self.start_date.addDays(self.maxDays) ){
 						self.setStartDate(d);
 						handle.transition().duration(100)
-							.attr('x', slideAxis(d.addDays(i)) - .15*sectionWidth + xOffset);
+							.attr('cx', slideAxis(d.addDays(i)) - .15*sectionWidth + xOffset);
 						update();
 					} else if(pressed[1] == 1 && d.addDays(1) > self.start_date) {
 						self.setEndDate(d.addDays(1));
 						handle.transition().duration(100)
-							.attr('x', slideAxis(d.addDays(1)) - .15*sectionWidth + xOffset);
+							.attr('cx', slideAxis(d.addDays(1)) - .15*sectionWidth + xOffset);
 						update();
 					}
 					

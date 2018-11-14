@@ -60,25 +60,13 @@
     .defer(d3.csv,"https://gist.githubusercontent.com/tehwentzel/24bf8357ad86a3db70510480b020d7d3/raw/4468783d3445b83b4350ac1c1327a0b592c8cfdf/5000_patients.csv")
     .defer(d3.csv,"https://gist.githubusercontent.com/tehwentzel/24bf8357ad86a3db70510480b020d7d3/raw/4468783d3445b83b4350ac1c1327a0b592c8cfdf/27073_prescriptions.csv")
     .await(start_here);
-
     function start_here(error, PHARMACY_LOC, DOCTOR_LOC, PATIENT_LOC,PRESCRIPTION_LOC) {
         
         if (error) return console.log(error);
         console.log(PRESCRIPTION_LOC);
 		timeline = new TimeLine(2121437, PRESCRIPTION_LOC);
-		//timeline.setupTimeFilter();
-		//timeline.setColor("#e6550d");
-		////timeline.setDrug("HYDRoCODONE");
-		//timeline.setStartDate('02/02/2014');
-		//timeline.setEndDate('9/02/2014');
-		timeline.setupDrugFilter();
-		console.log(timeline.getDrugNames());
-		timeline.setID(2112697);
-		//timeline.setupTimeFilter();
-		//timeline.setupDrugFilter();
-		//console.log(timeline);
-    }
 
+    }
     </script>
 
 </body>
