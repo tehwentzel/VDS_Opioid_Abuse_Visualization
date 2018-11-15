@@ -71,14 +71,14 @@ var drawMap = function(data,target){
 
 		if(target=="map"){
 
-			var cy = ((d.overflow_idx - 1)*100)* 12;
+			var cy = 100 - ((d.overflow_idx - 1)*100)* 5;
             // console.log("cy ", cy);
-             return "rgb(" + cy + ",0,0)" ;
+             return "hsl(0, 100%," + cy + "%)" ;
         }
         else{
-        	var cz = (d.patient_count/6)*25;
-        	// console.log("cz ", cz);
-             return "rgb(0,0," + cz + ")" ;
+        	var cz = 100 - (d.patient_count)/6;
+        	console.log("cz ", cz);
+             return "hsl(242,100%," + cz + "%)" ;
         }
 
 
@@ -106,7 +106,13 @@ var drawMap = function(data,target){
                 .style("top", (d3.event.pageY) + "px");
                 //  .style("left","50px")     
                 // .style("top","50px");
-            });
+            })
+		.on("mouseout", function(d){
+                      d3.select(this).classed('active', false)
+                      hoverdiv.transition()      
+                .duration(500)      
+                .style("opacity", 0);   
+                  });
 //           
 	}
 
