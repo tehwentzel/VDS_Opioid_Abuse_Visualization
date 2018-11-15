@@ -50,8 +50,8 @@ var drawMap = function(data,target){
 		.attr('cy', function(d){ return project(findlatlng(d.x,d.y)).y})
 		.attr('r','4')
 		.attr('stroke', '2px white')
-		.attr('fill', 'red')
-		.attr('opacity', 1);
+		.attr("fill", function (d) {  return getcolor(d);})
+		.attr('opacity', 0.8);
 	dots.call(formatDots);
 
 	function tooltip(d){
@@ -65,6 +65,24 @@ var drawMap = function(data,target){
 				return stringvalue;
 			}
 	}
+
+
+	function getcolor(d){
+
+		if(target=="map"){
+
+			var cy = ((d.overflow_idx - 1)*100)* 12;
+            // console.log("cy ", cy);
+             return "rgb(" + cy + ",0,0)" ;
+        }
+        else{
+        	var cz = (d.patient_count/6)*25;
+        	// console.log("cz ", cz);
+             return "rgb(0,0," + cz + ")" ;
+        }
+
+
+     }
 
 	function render(){
 		var bounds = map.getBounds();
