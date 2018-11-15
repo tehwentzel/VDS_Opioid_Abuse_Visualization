@@ -30,8 +30,8 @@ if(net.select("#mygraphsvg")!=null){
 net.selectAll("#mygraphsvg").remove();
 }
 var svg = d3.select("#network").append("svg")
-.attr("width",100%)
-.attr("height",30%)
+.attr("width",1500)
+.attr("height",600)
 .attr("id","mygraphsvg")
 .classed("svg-container",true)
 width = +svg.attr("width"),
@@ -82,13 +82,20 @@ graph.links.forEach(function(d){
 //     d.source = d.source_id;    
 //     d.target = d.target_id;
 });           
+var div = d3.select("body").append("div")	
+    .attr("class", "tooltip")				
+    .style("opacity", 0);
 
 var link = svg.append("g")
             .style("stroke", "#aaa")
             .selectAll("line")
             .data(graph.links)
             .enter().append("line");
-
+var tooltip = d3.select("body").append("div")
+            .attr("class", "tooltip")
+            .style('opacity', 0)
+            .style('position', 'absolute')
+            .style('padding', '0 10px');
 var node = svg.append("g")
         .attr("class", "nodes")
         .selectAll("circle")
@@ -102,7 +109,7 @@ var node = svg.append("g")
           .on("end", dragended))
         .on("mouseover", function(d) {		
             div.transition()		
-                .duration(200)		
+                .duration(1)		
                 .style("opacity", .9);		
             div	.html(d.group + "<br/>"  + d.id)	
                 .style("left", (d3.event.pageX) + "px")		
@@ -114,13 +121,13 @@ var node = svg.append("g")
                 .style("opacity", 0);	
         });
 
-var label = svg.append("g")
+/*var label = svg.append("g")
   .attr("class", "labels")
   .selectAll("text")
   .data(graph.nodes)
   .enter().append("text")
     .attr("class", "label")
-    .text(function(d) { return d.id; });
+    .text(function(d) { return d.id; });*/
 
 simulation
   .nodes(graph.nodes)
@@ -151,10 +158,10 @@ node
      .attr("cx", function (d) { return d.x+5; })
      .attr("cy", function(d) { return d.y-3; });
 
-label
+/*label
         .attr("x", function(d) { return d.x; })
         .attr("y", function (d) { return d.y; })
-        .style("font-size", "10px").style("fill", "#333");
+        .style("font-size", "10px").style("fill", "#333");*/
 }
 }
 
