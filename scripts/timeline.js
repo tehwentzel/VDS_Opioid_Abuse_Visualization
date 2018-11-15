@@ -12,7 +12,7 @@ var fillGaps = g => g.attr('shape-rendering', 'crispEdges');
 class TimeLine {
 	constructor(pat_id, prescriptions, start_date_filter = null){
 		this.prescriptions = prescriptions
-		this.height = 90;
+		this.height = 120;
 		this.baseColor = '#2ca25f';
 		this.maxDays = 365;
 		this.start_date_filter = start_date_filter;
@@ -21,7 +21,7 @@ class TimeLine {
 		} else{ this.start_date = null }
 		this.drugName = null;
 		
-		this.div = d3.select("#gantt-chart")
+		this.div = d3.select("#gantt-items")
 			.append('div')
 			.attr('class','tooltip')
 			.style('opacity', 0);
@@ -169,12 +169,12 @@ class TimeLine {
 				+ "physician ID: " + d.physiciannpi + "<br/>"
 				+ "Fill Date: " + d.filldate.toDateString() + '<br/>'
 				+ "Script Duration: " + d.days_supply + " days" +'<br/>')
-				.style('left', d3.event.clientX + 'px')
-				.style('top', 2.3*stepSize + 'px');
+				.style('left', d3.event.pageX + 10 + 'px')
+				.style('top', d3.event.pageY - 1.5*stepSize + 'px');
 			
 			d3.selectAll('.visit').on("mousemove", function(){
-				div.style('left', d3.event.clientX + 'px')
-					.style('top', 2.3*stepSize + 'px');
+				div.style('left', d3.event.pageX + 10 + 'px')
+					.style('top', d3.event.pageY - 1.5*stepSize + 'px');
 			});
 		}).on("mouseout", function(){
 			d3.select(this).select('.fillperiod')
@@ -213,7 +213,7 @@ class TimeLine {
 	
 	setupTimeFilter(target = '#gantt-filters'){
 		var height = 80;
-		var yPosition = .5;
+		var yPosition = .8;
 		var rectHeightScale = .25;
 		var tempData;
 		if( this.drugName != null ){

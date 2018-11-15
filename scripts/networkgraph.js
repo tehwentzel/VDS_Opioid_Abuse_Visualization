@@ -30,7 +30,7 @@ net.selectAll("#mygraphsvg").remove();
 }
 var svg = d3.select("#network").append("svg")
 .attr("width",400)
-.attr("height",300)
+.attr("height",200)
 .attr("id","mygraphsvg")
 .classed("svg-container",true)
 width = +svg.attr("width"),
@@ -81,6 +81,11 @@ graph.links.forEach(function(d){
 //     d.source = d.source_id;    
 //     d.target = d.target_id;
 });           
+
+var div = d3.select("body").append("div")	
+    .attr("class", "tooltippatient")				
+    .style("opacity", 0);
+
 
 var link = svg.append("g")
             .style("stroke", "#aaa")
