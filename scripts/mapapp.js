@@ -24,7 +24,7 @@ var drawMap = function(data,target){
 
     var g = svgPatient.append("g").attr("class", "leaflet-zoom-hide");
 
-	console.log("data: ", data);
+	//console.log("data: ", data);
 
 	// var hoverdiv;
 	// if(target="maps"){
@@ -57,11 +57,11 @@ var drawMap = function(data,target){
 	function tooltip(d){
 		var stringvalue;
 		if(target=="map"){
-			 stringvalue = "OverFlow Index:" + d.overflow_idx;
+			 stringvalue = "Patient ID:&nbsp" + d.pat_id + "</br>" + "OverFlow Index:" + d.overflow_idx;
 			 return stringvalue;
 		}
 			else{
-				stringvalue = "Patient Count:" + d.patient_count;
+				stringvalue = "Pharmacy ID:&nbsp" + d.pharmacynpi + "</br>" + "Patient Count:" + d.patient_count;
 				return stringvalue;
 			}
 	}
@@ -77,7 +77,7 @@ var drawMap = function(data,target){
         }
         else{
         	var cz = 100 - (d.patient_count)/6;
-        	console.log("cz ", cz);
+        	//console.log("cz ", cz);
              return "hsl(242,100%," + cz + "%)" ;
         }
 

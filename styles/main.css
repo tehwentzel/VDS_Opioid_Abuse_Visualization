@@ -43,7 +43,7 @@ div.tooltip {
 div.tooltippatient { 
     position: absolute;     
     text-align: center;     
-    width: 120px;          
+    width: 150px;          
     height: 40px;         
     /*padding: 2px;       */
     font: 12px sans-serif;    
