@@ -29,6 +29,14 @@
 <body>
 
     <div class="container-fluid">
+		<div class="row">
+			<div class='col-md-6'>
+				<h3>Patient Locations</h3>
+			</div>
+			<div class='col-md-6'>
+				<h3>Pharmacy Locations (Placeholder)</h3>
+			</div>
+		</div>
 		<div class="row" id="maps">
             <div class="col-md-6" id="map">
                 <svg width=100% id="map" height="400px">
@@ -39,16 +47,22 @@
                  </svg>
             </div>
         </div>
-
+		<div class="row">
+			<div class='col-md-6'>
+				<h4>Patient-Doctor/Pharmacy Connections</h4>
+			</div>
+			<div class='col-md-6'>
+				<h4>Patient prescriptions vs Time</h4>
+			</div>
+		</div>
         <div class="row" id="gantt-items">
-		<div class="col-md-6" id="network">
-            </div>
-				<div class="col-md-6" id="gantt-chart">
-				</div>
-				<div class="col-md-6" id="gantt-filters" height='200px'>
-				</div>
-			
-        </div>
+			<div class="col-md-6" id="network">
+			 </div>
+			<div class="col-md-6" id="gantt-chart">
+			</div>
+			<div class="col-md-6" id="gantt-filters" height='200px'>
+			</div>
+       </div>
 
     </div>
     <script>
@@ -64,8 +78,8 @@
         
         if (error) return console.log(error);
         // console.log(PRESCRIPTION_LOC);
-		patients = drawMap(PATIENT_LOC,'map','red');
-		pharms = drawMap(PHARMACY_LOC,'paths','aqua');
+		patients = drawMap(PATIENT_LOC,'map');
+		pharms = drawMap(PHARMACY_LOC,'paths');
 		timeline = new TimeLine(selected_id, PRESCRIPTION_LOC);
 		//n=new NetworkGraph(selected_id,NODE_GRAPH);
 		struct=createStruct(selected_id,NODE_GRAPH);

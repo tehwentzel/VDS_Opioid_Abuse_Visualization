@@ -67,8 +67,8 @@ class TimeLine {
 		if( d3.timeDay.count( this.start_date, this.end_date ) > this.maxDays ){
 			this.end_date = new Date(this.start_date).addDays( this.maxDays );
 		}
-		console.log(this.end_date);
-		console.log(this.data);
+		//console.log(this.end_date);
+		//console.log(this.data);
 		this.data = this.data.filter(d => d.filldate <= this.end_date)
 			.filter(d => d.final_date > this.start_date);
 		this.data.forEach(function(d){
@@ -141,7 +141,7 @@ class TimeLine {
 			.enter()
 			.append('g')
 			.attr('class','visit');
-		console.log(this.data);
+		//console.log(this.data);
 		visits.append('rect')
 			.attr('class', 'fillperiod')
 			.attr('y', function(d) {return .8*self.height - stepSize;})
@@ -151,7 +151,7 @@ class TimeLine {
 			.attr('fill', 'blue')
 			.attr('fill-opacity', 0)
 			.attr('style', 'stroke-width:2;stroke:blue;stroke-opacity:0');
-		console.log('bars');
+		//console.log('bars');
 		visits.append('rect')
 			.attr('class','fillstart')
 			.attr('y', function(d) {return .8*self.height - stepSize;})
@@ -229,7 +229,7 @@ class TimeLine {
 		var box = d3.selectAll(target);
 		var width = .9*box.node().clientWidth;
 		var xOffset = .05*width;
-		console.log(width);
+		//console.log(width);
 		var slideAxis = d3.scaleTime()
 			.domain( [minDate, maxDate] )
 			.range( [0, .9*width ] );
@@ -244,9 +244,9 @@ class TimeLine {
 			.call( d3.axisBottom(slideAxis));
 			
 		var timeLine = d3.timeDay.range( minDate, maxDate );
-		console.log(timeLine);
+		//console.log(timeLine);
 		var sectionWidth = .9*width/(timeLine.length);
-		console.log(width);
+		//console.log(width);
 		self = this;
 		var selectionRectangles = sliderSvg.selectAll('rect.selectionRectangles')
 			.data(timeLine)
