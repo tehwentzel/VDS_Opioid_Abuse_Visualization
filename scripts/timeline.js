@@ -34,6 +34,10 @@ class TimeLine {
 	}
 	
 	setID(pat_id, start_date = null) {
+		if(this.id == pat_id){
+			return;
+		}
+		d3.select('#timeline-title').html('Patient prescriptions vs Time&nbsp&nbsp&nbsp&nbsp&nbsp Patient ID: ' + pat_id);
 		this.id = pat_id;	
 		this.allData = this.prescriptions.filter( script => script.pat_id == this.id );
 		//format data
@@ -43,7 +47,9 @@ class TimeLine {
 				d.rxcount = +d.rxcount;
 				d.days_supply = +d.days_supply;
 			});
-		this.setDrug('All');
+		this.drugName = null;
+		this.maxDays = 365;
+		this.start_date_filter = null;
 		this.runFilters();
 		this.setupDrugFilter();
 		this.setupTimeFilter();
