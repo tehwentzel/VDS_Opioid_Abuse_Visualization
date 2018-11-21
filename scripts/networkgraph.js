@@ -8,7 +8,7 @@ function createStruct(selected_id,NODE_GRAPH)
         {
         if (d.pat_id==selected_id)
             {
-            if(d.pharisphy==1) 
+            if(d.pharisphy==1)
                 {
                 var hasMatchPHY=false;
                 var hasMatchPHA=false;
@@ -87,7 +87,7 @@ function tryS(struct)
         //       .radius(d => 40)
         //       .iterations(2)
         //     )
-        .force("center", d3.forceCenter(width / 4, height / 4));
+        .force("center", d3.forceCenter(width / 2, height / 1.5));
 
 
     var graph = 
