@@ -71,7 +71,7 @@
     .defer(d3.csv,"https://gist.githubusercontent.com/tehwentzel/24bf8357ad86a3db70510480b020d7d3/raw/4468783d3445b83b4350ac1c1327a0b592c8cfdf/500_doctors.csv")
     .defer(d3.csv,"https://gist.githubusercontent.com/tehwentzel/24bf8357ad86a3db70510480b020d7d3/raw/4468783d3445b83b4350ac1c1327a0b592c8cfdf/5000_patients.csv")
     .defer(d3.csv,"https://gist.githubusercontent.com/tehwentzel/24bf8357ad86a3db70510480b020d7d3/raw/4468783d3445b83b4350ac1c1327a0b592c8cfdf/27073_prescriptions.csv")
-	.defer(d3.csv,"https://github.com/tehwentzel/VDS_Opioid_Abuse_Visualization/blob/master/data/node_graph1.csv")
+	.defer(d3.csv,"https://raw.githubusercontent.com/tehwentzel/VDS_Opioid_Abuse_Visualization/master/data/node_graph1.csv?token=Ah_SvLgamzIb9eWrAaZ3MG3u4zWm7fVoks5b_vcLwA%3D%3D")
     .await(start_here);
 	selected_id = 2098621;
     function start_here(error, PHARMACY_LOC, DOCTOR_LOC, PATIENT_LOC,PRESCRIPTION_LOC,NODE_GRAPH) {
