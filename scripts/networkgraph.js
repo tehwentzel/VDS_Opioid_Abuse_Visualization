@@ -8,7 +8,7 @@ function createStruct(selected_id,NODE_GRAPH)
         {
         if (d.pat_id==selected_id)
             {
-            if(d.pharisphy==1)
+            if(d.pharisphy==1) 
                 {
                 var hasMatchPHY=false;
                 var hasMatchPHA=false;
