@@ -52,13 +52,13 @@
 				<h4>Patient-Doctor/Pharmacy Connections</h4>
 			</div>
 			<div class='col-md-6'>
-				<h4 id='timeline-title'>Patient prescriptions vs Time</h4>
+				<h4 id='timeline-title'>Prescriptions vs Time</h4>
 			</div>
 		</div>
         <div class="row" id="gantt-items">
 			<div class="col-md-6" id="network">
 			 </div>
-			<div class="col-md-6" id="gantt-chart">
+			<div class="col-md-6" id="gantt-chart" height="200px">
 			</div>
 			<div class="col-md-6" id="gantt-filters" height='200px'>
 			</div>
@@ -80,13 +80,13 @@
         // console.log(PRESCRIPTION_LOC);
 		patients = drawMap(PATIENT_LOC,'map');
 		pharms = drawMap(PHARMACY_LOC,'paths');
-		timeline = new TimeLine(selected_id, PRESCRIPTION_LOC);
+		timeline = new TimeLine(618097290, PRESCRIPTION_LOC, dtype = 'Doctor');
 		//n=new NetworkGraph(selected_id,NODE_GRAPH);
 		struct=createStruct(selected_id,NODE_GRAPH);
         tryS(struct);
 		console.log(patients);
 		patients.on('click', function(d){
-			timeline.setID(d.pat_id);
+			timeline.setID(d.pat_id,'Patient');
 			struct=createStruct(d.pat_id,NODE_GRAPH);
 			tryS(struct);
 		});

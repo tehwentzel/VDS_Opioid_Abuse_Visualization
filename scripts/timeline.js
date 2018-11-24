@@ -7,14 +7,27 @@ Date.prototype.addDays = function(days) {
     return date;
 }
 
+function treatAsUTC(date) {
+    var result = new Date(date);
+    result.setMinutes(result.getMinutes() - result.getTimezoneOffset());
+    return result;
+}
+
+function daysBetween(startDate, endDate) {
+    var millisecondsPerDay = 24 * 60 * 60 * 1000;
+    return (treatAsUTC(endDate) - treatAsUTC(startDate)) / millisecondsPerDay;
+}
+
 var fillGaps = g => g.attr('shape-rendering', 'crispEdges');
 
 class TimeLine {
-	constructor(pat_id, prescriptions, start_date_filter = null){
-		this.prescriptions = prescriptions
-		this.height = 120;
+	constructor(pat_id, prescriptions, dtype = "Patient", start_date_filter = null){
+		this.prescriptions = prescriptions;
+		this.dtype = dtype;
+		this.height = 175;
+		this.baseline = this.height - 40;
 		this.baseColor = '#2ca25f';
-		this.maxDays = 365;
+		this.maxDays = 100000;
 		this.start_date_filter = start_date_filter;
 		if(start_date_filter != null){
 			this.start_date = new Date(start_date_filter);
@@ -30,16 +43,30 @@ class TimeLine {
 			.attr('width','90%')
 			.attr('height', this.height + 'px');
 		this.width = this.svg.node().clientWidth;
-		this.setID(pat_id)
+		this.setID(pat_id, dtype);
 	}
 	
-	setID(pat_id, start_date = null) {
-		if(this.id == pat_id){
+	setID(iD, dtype= "Patient", start_date = null) {
+		if(this.id == iD && this.dtype == dtype){
 			return;
 		}
-		d3.select('#timeline-title').html('Patient prescriptions vs Time&nbsp&nbsp&nbsp&nbsp&nbsp Patient ID: ' + pat_id);
-		this.id = pat_id;	
-		this.allData = this.prescriptions.filter( script => script.pat_id == this.id );
+		this.dtype = dtype;
+		d3.select('#timeline-title')
+			.html('Prescriptions vs Time&nbsp&nbsp&nbsp&nbsp&nbsp ' +  this.dtype + ' ID: ' + iD);
+		this.id = iD;	
+		switch(this.dtype){
+			case 'Doctor':
+				this.allData = this.prescriptions.filter( script => script.physiciannpi == this.id );
+				break;
+			case 'Pharmacy':
+				this.allData = this.prescriptions.filter( script => script.pharmacynpi == this.id );
+				break;
+			default: //defaults to patient
+				this.allData = this.prescriptions.filter( script => script.pat_id == this.id );
+			
+		}
+		console.log(this.allData);
+		//this.allData = this.prescriptions.filter( script => script.pat_id == this.id );
 		//format data
 		this.allData.forEach(function(d){
 				d.filldate = new Date(d.filldate);
@@ -48,7 +75,7 @@ class TimeLine {
 				d.days_supply = +d.days_supply;
 			});
 		this.drugName = null;
-		this.maxDays = 365;
+		this.maxDays = 100000;
 		this.start_date_filter = null;
 		this.runFilters();
 		this.setupDrugFilter();
@@ -101,12 +128,6 @@ class TimeLine {
 			d.startPos = this.xAxis(d.begin_date) + .051*this.width;
 			d.endPos = this.xAxis(d.cutoff_date) + .051*this.width;
 		}, this);
-		//console.log(this.data)
-		this.svg.selectAll(".timeAxis").remove();
-		this.svg.append("g")
-			.attr("class", "timeAxis")
-			.attr("transform", "translate(" + .051*this.width + "," + .8*this.height + " )")
-			.call( d3.axisBottom(this.xAxis) );
 		//maps a map of {time: number of active prescription}
 		this.time = d3.timeDay.range(this.start_date, this.end_date);
 		this.time.forEach(function(given_day){
@@ -119,12 +140,20 @@ class TimeLine {
 				}
 			}, given_day);
 		}, this);
+		//console.log(this.data)
+		this.svg.selectAll(".timeAxis").remove();
+		this.svg.append("g")
+			.attr("class", "timeAxis")
+			.attr("transform", "translate(" + .051*this.width + "," + this.baseline + " )")
+			.call( d3.axisBottom(this.xAxis)
+				.ticks(d3.timeDay.filter(d=>d3.timeDay.count(0, d) % (Math.floor(this.time.length/7)+1) === 0))
+				.tickFormat(d3.timeFormat("%m/%d")) );
 		//console.log(this.time);
 	}
 	
 	drawRects(){
 		var self = this;
-		var stepSize = 30;
+		this.stepSize = 30;
 		var nodes = this.svg.selectAll("rect.timeRectangle")
 			.data(this.time, function(d) {return d;});
 		var barWidth =  .9*this.width/this.time.length;
@@ -132,15 +161,12 @@ class TimeLine {
 		nodes.enter().append('rect').merge(nodes)
 			.attr('class','timeRectangle')
 			.attr('x', function(d){return d.xPos;})
-			.attr('y', function(d){ return .8*self.height - stepSize*d.count; } )
-			.attr('height', function(d){return stepSize*d.count;})
+			.attr('y', function(d){ return self.baseline - self.stepSize*d.count; } )
+			.attr('height', function(d){return self.stepSize*d.count;})
 			.attr('width', barWidth)
 			.attr('fill', this.baseColor)
 			.attr('fill-opacity', .9);
-		var visitWidth = .5*barWidth;
-		if(barWidth > 10){
-			visitWidth = 5;
-		}
+		
 		this.svg.selectAll('.visit').remove();
 		var visits = this.svg.selectAll('rect.visit')
 			.data(this.data, function(d) { return d.filldate; })
@@ -148,11 +174,22 @@ class TimeLine {
 			.append('g')
 			.attr('class','visit');
 		//console.log(this.data);
+		if(this.dtype == "Patient"){
+			this.drawRedRects(visits, barWidth);
+		}
+	}
+	
+	drawRedRects(visits, barWidth){
+		var self = this;
+		var visitWidth = .5*barWidth;
+		if(barWidth > 10){
+			visitWidth = 5;
+		}
 		visits.append('rect')
 			.attr('class', 'fillperiod')
-			.attr('y', function(d) {return .8*self.height - stepSize;})
+			.attr('y', function(d) {return self.baseline - self.stepSize;})
 			.attr('x', function(d) {return d.startPos - .8*visitWidth; })
-			.attr('height', stepSize)
+			.attr('height', self.stepSize)
 			.attr('width', function(d) {return d.endPos - d.startPos; })
 			.attr('fill', 'blue')
 			.attr('fill-opacity', 0)
@@ -160,9 +197,9 @@ class TimeLine {
 		//console.log('bars');
 		visits.append('rect')
 			.attr('class','fillstart')
-			.attr('y', function(d) {return .8*self.height - stepSize;})
+			.attr('y', function(d) {return self.baseline - self.stepSize;})
 			.attr('x', function(d){ return d.startPos - .5*visitWidth; })
-			.attr('height', stepSize)
+			.attr('height', self.stepSize)
 			.attr('width', visitWidth)
 			.attr('fill', 'red');
 		var div = this.div
@@ -193,16 +230,18 @@ class TimeLine {
 	setupDrugFilter(target = '#gantt-chart'){
 		var filters = this.getDrugNames();
 		d3.selectAll('.drugFilter').remove();
-		var selectionBox = d3.selectAll(target).insert('div','svg')
+		var selectionBox = d3.selectAll(target).insert('g','svg')
 			.attr('class','drugFilter')
 			.style('position','absolute')
 			.style('left',.1*this.width + 'px')
-			.style('top', this.height + 'px');
+			.style('top', this.height - 15 + 'px')
+			.style('height','40px');
 		selectionBox.append('p')
 			.style('display','inline-block')
 			.html("Filter By Drug:&nbsp");
 		var selectionMenu = selectionBox.append('select')
-			.style('margin', '0 auto');
+			.style('margin', '0 auto')
+			.style('height','20px');
 		selectionMenu.selectAll('option')
 			.data(filters)
 			.enter()
@@ -247,7 +286,9 @@ class TimeLine {
 		sliderSvg.append("g")
 			.attr("class", "sliderAxis")
 			.attr("transform", "translate(" + xOffset + "," + yPosition*height + " )")
-			.call( d3.axisBottom(slideAxis));
+			.call( d3.axisBottom(slideAxis)
+				.ticks(d3.timeDay.filter(d=>d3.timeDay.count(0, d) % (Math.floor(daysBetween(minDate,maxDate)/7)+1) === 0))
+				.tickFormat(d3.timeFormat("%m/%d")) );
 			
 		var timeLine = d3.timeDay.range( minDate, maxDate );
 		//console.log(timeLine);
