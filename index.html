@@ -23,6 +23,7 @@
 	<script src="./scripts/timeline.js"></script>
 	<script src="./scripts/networkgraph.js"></script>
 	<script src='scripts/mapapp.js'></script>
+	<!-- <script src='scripts/mapdocapp.js'></script> -->
 
 </head>
 
@@ -38,12 +39,22 @@
 			</div>
 		</div>
 		<div class="row" id="maps">
-            <div class="col-md-6" id="map">
-                <svg width=100% id="map" height="400px">
+            <div class="col-md-6" id="patient">
+                <svg width=100% id="patsvg" height="400px"></svg>
+               
+            </div>
+			<div class="col-md-6" id="paths">
+                <svg width=100% id="pathsvg" height="400px">
                  </svg>
             </div>
-			<div width=100% id="paths">
-                <svg class="col-md-6" id="paths" height="400px">
+        </div>
+        <div class="row" id="maps2" style="display:none">
+            <div class="col-md-6" id="patient2">
+                <svg width=100% id="patsvg" height="400px"></svg>
+               
+            </div>
+			<div class="col-md-6" id="paths2">
+                <svg width=100% id="pathsvg" height="400px">
                  </svg>
             </div>
         </div>
@@ -66,7 +77,37 @@
 
     </div>
     <script>
-    d3.queue()
+    var count = 1;
+    function show2(){
+ 
+    	indi_pat = false;
+  		document.getElementById('maps').style.display ='none';
+  		document.getElementById('maps2').style.display ='block';
+  		// if(count==1){
+  		// 	change_indiLoc();
+  		// }
+  		selected_id = 196479993;
+  		change_indiLoc();
+
+	}
+
+	function show1(){
+		indi_pat = false;
+  		document.getElementById('maps2').style.display ='none';
+  		document.getElementById('maps').style.display ='block';
+  		selected_id = 2098621;
+  		change_indiLoc();
+
+	}	
+
+	selected_id = 2098621;
+
+	var indi_pat = true;
+	
+
+
+	function change_indiLoc(){
+	d3.queue()
     .defer(d3.csv,"https://gist.githubusercontent.com/tehwentzel/24bf8357ad86a3db70510480b020d7d3/raw/4468783d3445b83b4350ac1c1327a0b592c8cfdf/455_pharmacies.csv")
     .defer(d3.csv,"https://gist.githubusercontent.com/tehwentzel/24bf8357ad86a3db70510480b020d7d3/raw/4468783d3445b83b4350ac1c1327a0b592c8cfdf/500_doctors.csv")
     .defer(d3.csv,"https://gist.githubusercontent.com/tehwentzel/24bf8357ad86a3db70510480b020d7d3/raw/4468783d3445b83b4350ac1c1327a0b592c8cfdf/5000_patients.csv")
@@ -74,25 +115,56 @@
 	.defer(d3.csv,"https://raw.githubusercontent.com/tehwentzel/VDS_Opioid_Abuse_Visualization/master/data/node_graph1.csv?token=Ah_SvLgamzIb9eWrAaZ3MG3u4zWm7fVoks5b_vcLwA%3D%3D")
     .await(start_here);
 	selected_id = 2098621;
+
+	}
+
     function start_here(error, PHARMACY_LOC, DOCTOR_LOC, PATIENT_LOC,PRESCRIPTION_LOC,NODE_GRAPH) {
         
         if (error) return console.log(error);
-        // console.log(PRESCRIPTION_LOC);
-		patients = drawMap(PATIENT_LOC,'map');
-		pharms = drawMap(PHARMACY_LOC,'paths');
+        // var map;
+        // doctors = drawMap(PATIENT_LOC, PRESCRIPTION_LOC, 'map');
+        if(indi_pat == true){
+        	patients = drawMap(PATIENT_LOC, PRESCRIPTION_LOC, 'patient', indi_pat, count);
+        	// console.log("count1", count)
+        }
+        else{
+        	patients = drawMap(DOCTOR_LOC, PRESCRIPTION_LOC, 'patient2', indi_pat, count);
+        	// console.log("count2", count)
+        }
+
+         if(indi_pat == true){
+         pharms = drawMap(PHARMACY_LOC, PRESCRIPTION_LOC, 'paths', indi_pat, count);
+        	// console.log("count1", count)
+        }
+        else{
+		
+		pharms = drawMap(PHARMACY_LOC, PRESCRIPTION_LOC,'paths2', count);
+		}
+		// console.log("count3", count)
 		timeline = new TimeLine(selected_id, PRESCRIPTION_LOC);
 		//n=new NetworkGraph(selected_id,NODE_GRAPH);
 		struct=createStruct(selected_id,NODE_GRAPH);
         tryS(struct);
-		console.log(patients);
+		// console.log(patients);
 		patients.on('click', function(d){
 			timeline.setID(d.pat_id);
 			struct=createStruct(d.pat_id,NODE_GRAPH);
 			tryS(struct);
 		});
-		//drawMap(PHARMACY_LOC,'paths');
+		
     }
+
+    change_indiLoc();
+
+  
     </script>
+
+    <!-- <script src='scripts/mapapp.js'></script> -->
+
+    <div id="radio">
+        <input type="radio" name="people" id="patients" value="1"  onclick="show1()" checked>By Patients<br>
+		<input type="radio" name="people" id="doctors" value="0" onclick="show2()">By Doctors<br>
+	</div>
 
 </body>
 </html>
