@@ -171,11 +171,11 @@ var drawMap = function(data, presdata, target, indi_pat, count){
         .y(function(d) { return project(findlatlngpath(d.x,d.y)).y; });
 
 
-    // if(target=="paths"){
-    //  	var haiyanPath = svgPatient.append("path")
-    // .attr("d",pathLine(data))
-    // .attr("class","path");
-    // }
+    if(target=="paths"||target=="paths2"){
+     	var haiyanPath = svgPatient.append("path")
+    .attr("d",pathLine(data))
+    .attr("class","path");
+    }
 
     
 //           
