@@ -1,4 +1,13 @@
-var map;
+// L.mapbox.accessToken = 'pk.eyJ1IjoiYW5haWszIiwiYSI6ImNqbWNkNTZ0bDBlM2Izb3M0MWQzNHZtYzEifQ.fLozOxjrg08I3StfKz0AhA'
+//     var map = L.mapbox.map('patient', 'mapbox.dark', {maxZoom: 18, minZoom: 0})
+//     .setView([41.77, -87.62], 10);
+
+// L.mapbox.accessToken = 'pk.eyJ1IjoiYW5haWszIiwiYSI6ImNqbWNkNTZ0bDBlM2Izb3M0MWQzNHZtYzEifQ.fLozOxjrg08I3StfKz0AhA'
+//     var mappharmacy = L.mapbox.map('paths', 'mapbox.dark', {maxZoom: 18, minZoom: 0})
+//     .setView([41.77, -87.62], 10);
+
+
+
 function removesvg(target){
 	// console.log("svg", target);
 	// d3.select("svg").remove();
@@ -12,11 +21,32 @@ function removesvg(target){
 
 //     }
 // }
-var drawMap = function(data, presdata, target, indi_pat, count){ 
-
+var drawMap1 = function(data, presdata, target, indi_pat, count, map){ 
+	// var container = L.DomUtil.get(Map);
+	// console.log(container);
+	// if(container != null){
+	// container = null;
+	// }
+	// console.log(container);
+	// var hello = document.getElementById('Map');
+	// console.log(typeof(Map));
+	// Map = undefined;
+	// console.log(Map);
+	// // Map.delete();
 	L.mapbox.accessToken = 'pk.eyJ1IjoiYW5haWszIiwiYSI6ImNqbWNkNTZ0bDBlM2Izb3M0MWQzNHZtYzEifQ.fLozOxjrg08I3StfKz0AhA'
-    map = L.mapbox.map(target, 'mapbox.dark', {maxZoom: 18, minZoom: 0})
+    var map = L.mapbox.map(target, 'mapbox.dark', {maxZoom: 18, minZoom: 0})
     .setView([41.77, -87.62], 10);
+	// }
+	// console.log()
+	// var defaultCoords = [41.77, -87.62];
+
+ //        //set up our map
+ //        var map = L.map(target).setView(defaultCoords, 10);
+ //        L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+ //            {
+ //                maxZoom: 18
+ //            }).addTo(map);
+	// var map = Map;
     
 
     function project(latlng){
@@ -87,8 +117,8 @@ var drawMap = function(data, presdata, target, indi_pat, count){
 			 stringvalue = "Patient ID:&nbsp" + d.pat_id + "</br>" + "OverFlow Index:" + d.overflow_idx;
 			 return stringvalue;
 		}
-		else if(target=="patient2"){
-			 stringvalue = "Patient ID:&nbsp" + d.physiciannpi + "</br>" + "Patient Count:" + d.patient_count;
+		else if(target=="patient2" && indi_pat == true){
+			 stringvalue = "Doctor ID:&nbsp" + d.physiciannpi + "</br>" + "Patient Count:" + d.patient_count;
 			 return stringvalue;
 		}
 
@@ -113,14 +143,8 @@ var drawMap = function(data, presdata, target, indi_pat, count){
 	// console.log("aggrepharmacy", aggrepharmacy[0]);
 
 	function getcolor(d){
-
-		if(target=="patient" && indi_pat == true){
-
-			var cy = 100 - ((d.overflow_idx - 1)*100)* 5;
-            // console.log("cy ", cy);
-             return "hsl(0, 100%," + cy + "%)" ;
-        }
-        else if(target=="patient2"){
+	console.log(target);
+	if(target=="patient2"){
 
 			var cy = 100 - (d.patient_count)/4;
             // console.log("cy ", cy);

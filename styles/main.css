@@ -17,6 +17,27 @@ svg {
     font-family: helvetica, sans-serif;
 }
 
+svg .path {
+  fill: none;
+  stroke-opacity: .8;
+  stroke-dasharray: 3,2;
+  stroke: grey;
+}
+
+#radio{
+  position: absolute;
+  top: 11%;
+  left: 40%;
+  /*color: #efedf5;*/
+  width: 100px;
+  height:50px;
+  bottom: 190px;
+  color: white;
+  border: 1px solid darkgray;
+  border-radius: 4px;
+  background: black;
+}
+
 flex-container {
 	display: inline-flex;
 	flex-direction: row;
@@ -37,7 +58,8 @@ div.tooltip {
   font: 12px sans-serif;
   background: rgba(0,0,0,.8);
   border: 2px solid black;
-  pointer-events: none;
+  pointer-events: all;
+  /*cursor:crosshair;*/
 }
 
 div.tooltippatient { 
@@ -50,8 +72,10 @@ div.tooltippatient {
     background: black; 
     border: 1px solid white;    
     border-radius: 8px;     
-    pointer-events: none;  
-    color:white; }
+    pointer-events: all;  
+    color:white;
+    /*cursor:crosshair*/
+}
 
 
 .svg-container{
@@ -63,7 +87,7 @@ circle {
     /*visibility: hidden;*/
     /*stroke: black;*/
     /*stroke-width:2;*/
-    stroke:black;
+    stroke:grey;
    /* fill:#b10026;*/
     pointer-events: all;
     cursor: pointer;
