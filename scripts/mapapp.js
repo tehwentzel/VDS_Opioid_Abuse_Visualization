@@ -88,12 +88,12 @@ var drawMap = function(data, presdata, target, indi_pat, count){
 			 return stringvalue;
 		}
 		else if(target=="patient2"){
-			 stringvalue = "Patient ID:&nbsp" + d.physiciannpi + "</br>" + "Patient Count:" + d.patient_count;
+			 stringvalue = "Doctor ID:&nbsp" + d.physiciannpi + "</br>" + "Patient Count:" + d.patient_count;
 			 return stringvalue;
 		}
 
 			else{
-				stringvalue = "Doctor ID:&nbsp" + d.pharmacynpi + "</br>" + "Patient Count:" + d.patient_count;
+				stringvalue = "Pharmacy ID:&nbsp" + d.pharmacynpi + "</br>" + "Patient Count:" + d.patient_count;
 				return stringvalue;
 			}
 	}
