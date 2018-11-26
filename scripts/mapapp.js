@@ -1,4 +1,4 @@
-var map;
+// var map;
 function removesvg(target){
 	// console.log("svg", target);
 	// d3.select("svg").remove();
@@ -15,7 +15,7 @@ function removesvg(target){
 var drawMap = function(data, presdata, target, indi_pat, count){ 
 
 	L.mapbox.accessToken = 'pk.eyJ1IjoiYW5haWszIiwiYSI6ImNqbWNkNTZ0bDBlM2Izb3M0MWQzNHZtYzEifQ.fLozOxjrg08I3StfKz0AhA'
-    map = L.mapbox.map(target, 'mapbox.dark', {maxZoom: 18, minZoom: 0})
+    var map = L.mapbox.map(target, 'mapbox.dark', {maxZoom: 18, minZoom: 0})
     .setView([41.77, -87.62], 10);
     
 
@@ -165,17 +165,17 @@ var drawMap = function(data, presdata, target, indi_pat, count){
                 .style("opacity", 0);   
                   });
 
-	var pathLine = d3.svg.line()
-        .interpolate("cardinal")
-        .x(function(d) { return project(findlatlngpath(d.x,d.y)).x; })
-        .y(function(d) { return project(findlatlngpath(d.x,d.y)).y; });
+	// var pathLine = d3.svg.line()
+ //        .interpolate("cardinal")
+ //        .x(function(d) { return project(findlatlngpath(d.x,d.y)).x; })
+ //        .y(function(d) { return project(findlatlngpath(d.x,d.y)).y; });
 
 
-    if(target=="paths"||target=="paths2"){
-     	var haiyanPath = svgPatient.append("path")
-    .attr("d",pathLine(data))
-    .attr("class","path");
-    }
+    // if(target=="paths"||target=="paths2"){
+    //  	var haiyanPath = svgPatient.append("path")
+    // .attr("d",pathLine(data))
+    // .attr("class","path");
+    // }
 
     
 //           
