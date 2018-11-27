@@ -81,37 +81,6 @@
 
     </div>
     <script>
-    var count = 1;
-<<<<<<< Updated upstream
-    function show2(){
- 
-    	indi_pat = false;
-  		document.getElementById('maps').style.display ='none';
-  		document.getElementById('maps2').style.display ='block';
-  		// if(count==1){
-  		// 	change_indiLoc();
-  		// }
-  		selected_id = 196479993;
-  		change_indiLoc();
-
-	}
-
-	function show1(){
-		indi_pat = true;
-  		document.getElementById('maps2').style.display ='none';
-  		document.getElementById('maps').style.display ='block';
-  		selected_id = 2098621;
-  		change_indiLoc();
-=======
-   
-	selected_id = 2098621;//260650195;
->>>>>>> Stashed changes
-
-	var is_patient = true;
-	
-	
-	
-
 	d3.queue()
     .defer(d3.csv,"https://gist.githubusercontent.com/tehwentzel/24bf8357ad86a3db70510480b020d7d3/raw/4468783d3445b83b4350ac1c1327a0b592c8cfdf/455_pharmacies.csv")
     .defer(d3.csv,"https://gist.githubusercontent.com/tehwentzel/24bf8357ad86a3db70510480b020d7d3/raw/4468783d3445b83b4350ac1c1327a0b592c8cfdf/500_doctors.csv")
@@ -125,36 +94,19 @@
 		console.log("running");
 		var patientMap = getMap('patient');
 		var pathMap = getMap('paths');
-		
-		var show2 = function() {
-			is_patient = true;
-			//document.getElementById('maps').style.display ='none';
-			//document.getElementById('maps2').style.display ='block';
-			// if(count==1){
-			// 	change_indiLoc();
-			// }
-			//selected_id = 260650195;
-			var [addresses, paths] = change_indiLoc();
-		}
-		var show1 = function(){
-			is_patient = false;
-			//document.getElementById('maps2').style.display ='none';
-			//document.getElementById('maps').style.display ='block';
-			//selected_id = 260650195;
-			var [addresses, paths] = change_indiLoc();
-
-		}	
+		var is_patient = true;
+		var selected_id = 2098621;
 		var change_indiLoc = function(PHARMACY_LOC, DOCTOR_LOC, PATIENT_LOC,PRESCRIPTION_LOC){
 			var addresses;
 			var paths;
 			if(is_patient == true){
-				addresses = patientMap(PATIENT_LOC, PRESCRIPTION_LOC, 'patient', is_patient, count);
-				paths = pathMap(PHARMACY_LOC, PRESCRIPTION_LOC, 'paths', is_patient, count);
+				addresses = patientMap(PATIENT_LOC, PRESCRIPTION_LOC, 'patient', is_patient);
+				paths = pathMap(PHARMACY_LOC, PRESCRIPTION_LOC, 'paths', is_patient);
 				// console.log("count1", count)
 			}
 			else{
-				addresses = patientMap(DOCTOR_LOC, PRESCRIPTION_LOC, 'patient', is_patient, count);
-				paths = pathMap(PHARMACY_LOC, PRESCRIPTION_LOC,'paths', is_patient, count);
+				addresses = patientMap(DOCTOR_LOC, PRESCRIPTION_LOC, 'patient', is_patient);
+				paths = pathMap(PHARMACY_LOC, PRESCRIPTION_LOC,'paths', is_patient);
 				// console.log("count2", count)
 			}
 			return [addresses, paths];

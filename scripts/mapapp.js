@@ -1,8 +1,4 @@
-<<<<<<< Updated upstream
-// var map;
-=======
-//var map = null;
->>>>>>> Stashed changes
+
 function removesvg(target){
 	// console.log("svg", target);
 	// d3.select("svg").remove();
@@ -20,24 +16,10 @@ function removesvg(target){
 var getMap = function(target){ 
 	console.log(map);
 	L.mapbox.accessToken = 'pk.eyJ1IjoiYW5haWszIiwiYSI6ImNqbWNkNTZ0bDBlM2Izb3M0MWQzNHZtYzEifQ.fLozOxjrg08I3StfKz0AhA'
-<<<<<<< Updated upstream
     var map = L.mapbox.map(target, 'mapbox.dark', {maxZoom: 18, minZoom: 0})
-    .setView([41.77, -87.62], 10);
+		.setView([41.77, -87.62], 10);
     
-
-    function project(latlng){
-        // var array = [+latlng.lat, +latlng.lon];
-        // console.log(array);
-        // console.log(L.latLng(latlng));
-        var point = map.latLngToLayerPoint(L.latLng(latlng));
-        return point;
-    }
-=======
-	var map = L.mapbox.map(target, 'mapbox.dark', {maxZoom: 18, minZoom: 0});
-    map.setView([41.77, -87.62], 10);
->>>>>>> Stashed changes
-	
-	var drawMap = function(data, presdata, target, indi_pat, count){
+	var drawMap = function(data, presdata, target, indi_pat){
 
 		function project(latlng){
 			// var array = [+latlng.lat, +latlng.lon];
@@ -60,8 +42,6 @@ var getMap = function(target){
 				let coord = {};
 				coord["lat"] = lat;
 				coord["lng"] = lng;
-				// console.log("lat", lat);
-				// console.log("lng", lng);
 				return coord;
 		}
 
@@ -114,10 +94,10 @@ var getMap = function(target){
 				 return stringvalue;
 			}
 
-				else{
-					stringvalue = "Pharmacy ID:&nbsp" + d.pharmacynpi + "</br>" + "Patient Count:" + d.patient_count;
-					return stringvalue;
-				}
+			else{
+				stringvalue = "Pharmacy ID:&nbsp" + d.pharmacynpi + "</br>" + "Patient Count:" + d.patient_count;
+				return stringvalue;
+			}
 		}
 
 		var aggrepharmacy;
@@ -153,81 +133,7 @@ var getMap = function(target){
 				//console.log("cz ", cz);
 				 return "hsl(242,100%," + cz + "%)" ;
 			}
-
-
-<<<<<<< Updated upstream
-	// console.log("aggrepharmacy", aggrepharmacy[0]);
-
-	function getcolor(d){
-
-		if(target=="patient" && indi_pat == true){
-
-			var cy = 100 - ((d.overflow_idx - 1)*100)* 5;
-            // console.log("cy ", cy);
-             return "hsl(0, 100%," + cy + "%)" ;
-        }
-        else if(target=="patient2"){
-
-			var cy = 100 - (d.patient_count)/4;
-            // console.log("cy ", cy);
-             return "hsl(100, 100%," + cy + "%)" ;
-        }
-        else{
-        	var cz = 100 - (d.patient_count)/3;
-        	//console.log("cz ", cz);
-             return "hsl(242,100%," + cz + "%)" ;
-        }
-
-
-     }
-
-	function render(){
-		var bounds = map.getBounds();
-		var topLeft = map.latLngToLayerPoint(bounds.getNorthWest())
-		var bottomRight = map.latLngToLayerPoint(bounds.getSouthEast())
-		// console.log(bounds, topLeft, bottomRight)
-		svgPatient.style("width", map.getSize().x + "px")
-		.style("height", map.getSize().y + "px")
-		.style("left", topLeft.x + "px")
-		.style("top", topLeft.y + "px");
-		g.attr("transform", "translate(" + -topLeft.x + "," + -topLeft.y + ")");
-		dots.call(formatDots);
-		dots.attr("transform", "translate(" + -topLeft.x + "," + -topLeft.y + ")")
-		.on("mouseover", function(d){   
-                      d3.select(this).classed('active', true)
-                      hoverdiv.transition()      
-                .duration(200)      
-                .style("opacity", .9)
-                hoverdiv.html(tooltip(d))
-                .style("left", (d3.event.pageX) + "px")     
-                .style("top", (d3.event.pageY) + "px");
-                //  .style("left","50px")     
-                // .style("top","50px");
-            })
-		.on("mouseout", function(d){
-                      d3.select(this).classed('active', false)
-                      hoverdiv.transition()      
-                .duration(500)      
-                .style("opacity", 0);   
-                  });
-
-	// var pathLine = d3.svg.line()
- //        .interpolate("cardinal")
- //        .x(function(d) { return project(findlatlngpath(d.x,d.y)).x; })
- //        .y(function(d) { return project(findlatlngpath(d.x,d.y)).y; });
-
-
-    // if(target=="paths"||target=="paths2"){
-    //  	var haiyanPath = svgPatient.append("path")
-    // .attr("d",pathLine(data))
-    // .attr("class","path");
-    // }
-
-    
-//           
-	}
-=======
-		 }
+		}
 
 		function render(){
 			var bounds = map.getBounds();
@@ -260,22 +166,18 @@ var getMap = function(target){
 					.style("opacity", 0);   
 					  });
 
-		var pathLine = d3.svg.line()
-			.interpolate("cardinal")
-			.x(function(d) { return project(findlatlngpath(d.x,d.y)).x - topLeft.x; })
-			.y(function(d) { return project(findlatlngpath(d.x,d.y)).y - topLeft.y; });
+			var pathLine = d3.svg.line()
+				.interpolate("cardinal")
+				.x(function(d) { return project(findlatlngpath(d.x,d.y)).x - topLeft.x; })
+				.y(function(d) { return project(findlatlngpath(d.x,d.y)).y - topLeft.y; });
 
-		if(target=="paths"||target=="paths2"){
-			svgPatient.selectAll("path").remove();
-			var haiyanPath = svgPatient.append("path")
-				.attr("d",pathLine(data))
-				.attr("class","path");
-		}
->>>>>>> Stashed changes
-
-		
-	//           
-		}
+			if(target=="paths"||target=="paths2"){
+				svgPatient.selectAll("path").remove();
+				var haiyanPath = svgPatient.append("path")
+					.attr("d",pathLine(data))
+					.attr("class","path");
+			}
+		}     
 
 		render();
 
