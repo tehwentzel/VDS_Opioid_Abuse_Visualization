@@ -44,8 +44,7 @@
                
             </div>
 			<div class="col-md-6" id="paths">
-                <svg width=100% id="pathsvg" height="400px">
-                 </svg>
+                <svg width=100% id="pathsvg" height="400px"></svg>
             </div>
         </div>
         <div class="row" id="maps2" style="display:none">
@@ -74,10 +73,16 @@
 			<div class="col-md-6" id="gantt-filters" height='200px'>
 			</div>
        </div>
+	   
+	<div id="radio">
+        <input type="radio" name="people" id="patientRadioSwitch" value="1" checked>By Patients<br>
+		<input type="radio" name="people" id="doctorRadioSwitch" value="0" >By Doctors<br>
+	</div>
 
     </div>
     <script>
     var count = 1;
+<<<<<<< Updated upstream
     function show2(){
  
     	indi_pat = false;
@@ -97,16 +102,16 @@
   		document.getElementById('maps').style.display ='block';
   		selected_id = 2098621;
   		change_indiLoc();
+=======
+   
+	selected_id = 2098621;//260650195;
+>>>>>>> Stashed changes
 
-	}	
-
-	selected_id = 2098621;
-
-	var indi_pat = true;
+	var is_patient = true;
+	
+	
 	
 
-
-	function change_indiLoc(){
 	d3.queue()
     .defer(d3.csv,"https://gist.githubusercontent.com/tehwentzel/24bf8357ad86a3db70510480b020d7d3/raw/4468783d3445b83b4350ac1c1327a0b592c8cfdf/455_pharmacies.csv")
     .defer(d3.csv,"https://gist.githubusercontent.com/tehwentzel/24bf8357ad86a3db70510480b020d7d3/raw/4468783d3445b83b4350ac1c1327a0b592c8cfdf/500_doctors.csv")
@@ -114,57 +119,82 @@
     .defer(d3.csv,"https://gist.githubusercontent.com/tehwentzel/24bf8357ad86a3db70510480b020d7d3/raw/4468783d3445b83b4350ac1c1327a0b592c8cfdf/27073_prescriptions.csv")
 	.defer(d3.csv,"https://raw.githubusercontent.com/tehwentzel/VDS_Opioid_Abuse_Visualization/master/data/node_graph1.csv?token=Ah_SvLgamzIb9eWrAaZ3MG3u4zWm7fVoks5b_vcLwA%3D%3D")
     .await(start_here);
-	// selected_id = 2098621;
-
-	}
-
+	
     function start_here(error, PHARMACY_LOC, DOCTOR_LOC, PATIENT_LOC,PRESCRIPTION_LOC,NODE_GRAPH) {
-        
         if (error) return console.log(error);
-        // var map;
-        // doctors = drawMap(PATIENT_LOC, PRESCRIPTION_LOC, 'map');
-        if(indi_pat == true){
-        	patients = drawMap(PATIENT_LOC, PRESCRIPTION_LOC, 'patient', indi_pat, count);
-        	// console.log("count1", count)
-        }
-        else{
-        	patients = drawMap(DOCTOR_LOC, PRESCRIPTION_LOC, 'patient2', indi_pat, count);
-        	// console.log("count2", count)
-        }
-
-         if(indi_pat == true){
-         pharms = drawMap(PHARMACY_LOC, PRESCRIPTION_LOC, 'paths', indi_pat, count);
-        	// console.log("count1", count)
-        }
-        else{
+		console.log("running");
+		var patientMap = getMap('patient');
+		var pathMap = getMap('paths');
 		
-		pharms = drawMap(PHARMACY_LOC, PRESCRIPTION_LOC,'paths2', count);
+		var show2 = function() {
+			is_patient = true;
+			//document.getElementById('maps').style.display ='none';
+			//document.getElementById('maps2').style.display ='block';
+			// if(count==1){
+			// 	change_indiLoc();
+			// }
+			//selected_id = 260650195;
+			var [addresses, paths] = change_indiLoc();
 		}
-		// console.log("count3", count)
-		timeline = new TimeLine(selected_id, PRESCRIPTION_LOC);
-		//n=new NetworkGraph(selected_id,NODE_GRAPH);
-		struct=createStruct(selected_id,NODE_GRAPH);
-        tryS(struct);
-		// console.log(patients);
-		patients.on('click', function(d){
-			timeline.setID(d.pat_id);
+		var show1 = function(){
+			is_patient = false;
+			//document.getElementById('maps2').style.display ='none';
+			//document.getElementById('maps').style.display ='block';
+			//selected_id = 260650195;
+			var [addresses, paths] = change_indiLoc();
+
+		}	
+		var change_indiLoc = function(PHARMACY_LOC, DOCTOR_LOC, PATIENT_LOC,PRESCRIPTION_LOC){
+			var addresses;
+			var paths;
+			if(is_patient == true){
+				addresses = patientMap(PATIENT_LOC, PRESCRIPTION_LOC, 'patient', is_patient, count);
+				paths = pathMap(PHARMACY_LOC, PRESCRIPTION_LOC, 'paths', is_patient, count);
+				// console.log("count1", count)
+			}
+			else{
+				addresses = patientMap(DOCTOR_LOC, PRESCRIPTION_LOC, 'patient', is_patient, count);
+				paths = pathMap(PHARMACY_LOC, PRESCRIPTION_LOC,'paths', is_patient, count);
+				// console.log("count2", count)
+			}
+			return [addresses, paths];
+		}
+		var setDotOnClick = g => g.on('click', function(d){
+		if(is_patient){
+			timeline.setID(d.pat_id, "Patient", null);
 			struct=createStruct(d.pat_id,NODE_GRAPH);
 			tryS(struct);
+			}
+		else{
+			timeline.setID(d.physiciannpi, "Doctor", null);
+			//struct=createStruct(d.physiciannpi,NODE_GRAPH);
+			//tryS(struct);
+			}
 		});
 		
+		var [addresses, paths] = change_indiLoc(PHARMACY_LOC, DOCTOR_LOC, PATIENT_LOC,PRESCRIPTION_LOC);
+       
+		timeline = new TimeLine(selected_id, PRESCRIPTION_LOC, is_patient? "Patient":"Doctor");
+		struct = createStruct(selected_id,NODE_GRAPH);
+        tryS(struct);
+		addresses.call(setDotOnClick);
+		var patientSelection = d3.select("#radio").selectAll("input").on('click',function(d){
+			var was_patient = (is_patient)? true:false;
+			is_patient = document.getElementById("patientRadioSwitch").checked;
+			console.log(is_patient);
+			if(is_patient != was_patient){
+				d3.selectAll("circle.dot").remove();
+				[addresses, paths] = change_indiLoc(PHARMACY_LOC, DOCTOR_LOC, PATIENT_LOC,PRESCRIPTION_LOC);
+				addresses.call(setDotOnClick);
+			}
+		});
     }
 
-    change_indiLoc();
-
-  
     </script>
 
     <!-- <script src='scripts/mapapp.js'></script> -->
 
-    <div id="radio">
-        <input type="radio" name="people" id="patients" value="1"  onclick="show1()" checked>By Patients<br>
-		<input type="radio" name="people" id="doctors" value="0" onclick="show2()">By Doctors<br>
-	</div>
+    
 
 </body>
 </html>

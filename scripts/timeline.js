@@ -7,14 +7,28 @@ Date.prototype.addDays = function(days) {
     return date;
 }
 
+function treatAsUTC(date) {
+    var result = new Date(date);
+    result.setMinutes(result.getMinutes() - result.getTimezoneOffset());
+    return result;
+}
+
+function daysBetween(startDate, endDate) {
+    var millisecondsPerDay = 24 * 60 * 60 * 1000;
+    return (treatAsUTC(endDate) - treatAsUTC(startDate)) / millisecondsPerDay;
+}
+
 var fillGaps = g => g.attr('shape-rendering', 'crispEdges');
 
 class TimeLine {
-	constructor(pat_id, prescriptions, start_date_filter = null){
-		this.prescriptions = prescriptions
-		this.height = 120;
+	constructor(pat_id, prescriptions, dtype = "Patient", start_date_filter = null){
+		this.prescriptions = prescriptions;
+		this.dtype = dtype;
+		this.height = .22*screen.availHeight;
+		//console.log(this.height);
+		this.baseline = this.height - 40;
 		this.baseColor = '#2ca25f';
-		this.maxDays = 365;
+		this.maxDays = 100000;
 		this.start_date_filter = start_date_filter;
 		if(start_date_filter != null){
 			this.start_date = new Date(start_date_filter);
@@ -30,16 +44,37 @@ class TimeLine {
 			.attr('width','90%')
 			.attr('height', this.height + 'px');
 		this.width = this.svg.node().clientWidth;
-		this.setID(pat_id)
+		this.xOffset = .051*this.width;
+		this.setID(pat_id, dtype);
 	}
 	
-	setID(pat_id, start_date = null) {
-		if(this.id == pat_id){
+	setID(iD, dtype= "Patient", start_date = null) {
+		if(this.id == iD && this.dtype == dtype){
 			return;
 		}
-		d3.select('#timeline-title').html('Patient prescriptions vs Time&nbsp&nbsp&nbsp&nbsp&nbsp Patient ID: ' + pat_id);
-		this.id = pat_id;	
-		this.allData = this.prescriptions.filter( script => script.pat_id == this.id );
+		if(this.dtype != dtype){
+			d3.selectAll("#gantt-chart").selectAll("svg").remove();
+			this.svg = d3.select("#gantt-chart")
+				.append('svg')
+				.attr('width','90%')
+				.attr('height', this.height + 'px');
+		}
+		this.dtype = dtype;
+		d3.select('#timeline-title')
+			.html('Prescriptions vs Time&nbsp&nbsp&nbsp&nbsp&nbsp ' +  this.dtype + ' ID: ' + iD);
+		this.id = iD;	
+		switch(this.dtype){
+			case 'Doctor':
+				this.allData = this.prescriptions.filter( script => script.physiciannpi == this.id );
+				break;
+			case 'Pharmacy':
+				this.allData = this.prescriptions.filter( script => script.pharmacynpi == this.id );
+				break;
+			default: //defaults to patient
+				this.allData = this.prescriptions.filter( script => script.pat_id == this.id );
+		}
+		//console.log(this.allData);
+		//this.allData = this.prescriptions.filter( script => script.pat_id == this.id );
 		//format data
 		this.allData.forEach(function(d){
 				d.filldate = new Date(d.filldate);
@@ -48,7 +83,7 @@ class TimeLine {
 				d.days_supply = +d.days_supply;
 			});
 		this.drugName = null;
-		this.maxDays = 365;
+		this.maxDays = 1000;
 		this.start_date_filter = null;
 		this.runFilters();
 		this.setupDrugFilter();
@@ -87,44 +122,73 @@ class TimeLine {
 				d.begin_date = this.start_date;
 			}
 		}, this);
+		this.getTime();
 		this.drawSvg();
 		this.drawRects();
 		d3.selectAll('rect').call(fillGaps);
 	}
 	
-	drawSvg(){
-		//draw axis
+	getTime(){
+			//draw axis
 		this.xAxis = d3.scaleTime()
 			.domain( [this.start_date, this.end_date] )
 			.range( [0, .9*this.width] );
 		this.data.forEach(function(d){
-			d.startPos = this.xAxis(d.begin_date) + .051*this.width;
-			d.endPos = this.xAxis(d.cutoff_date) + .051*this.width;
+			d.startPos = this.xAxis(d.begin_date) + this.xOffset;
+			d.endPos = this.xAxis(d.cutoff_date) + this.xOffset;
 		}, this);
-		//console.log(this.data)
-		this.svg.selectAll(".timeAxis").remove();
-		this.svg.append("g")
-			.attr("class", "timeAxis")
-			.attr("transform", "translate(" + .051*this.width + "," + .8*this.height + " )")
-			.call( d3.axisBottom(this.xAxis) );
 		//maps a map of {time: number of active prescription}
 		this.time = d3.timeDay.range(this.start_date, this.end_date);
+		this.scriptTimes = d3.timeDay.range(this.start_date, 
+			d3.max(this.data, function(d){
+				return d.filldate;
+				})
+			);
+		var maxCount = 0;
 		this.time.forEach(function(given_day){
 			given_day.count = 0;
-			given_day.xPos = this.xAxis(given_day) + .051*this.width;
+			given_day.xPos = this.xAxis(given_day) + this.xOffset;
 			//console.log(this.xAxis(given_day));
 			this.data.forEach(function(rx){
 				if(rx.filldate <= given_day && rx.final_date > given_day){
 					given_day.count += 1;
+					if( given_day.count > maxCount){
+						maxCount = given_day.count;
+					}
 				}
 			}, given_day);
 		}, this);
+		//console.log(maxCount);
+		this.maxCount = maxCount;
+
+	}
+	
+	drawSvg(){
+		this.stepSize = Math.min(30, (this.baseline - 10)/this.maxCount);
+		var yAxis = d3.scaleLinear()
+			.domain([this.maxCount, 0])
+			.range( [0, this.stepSize*this.maxCount])
+		//console.log(this.data)
+		this.svg.selectAll(".timeAxis").remove();
+		this.svg.selectAll(".yAxis").remove();
+		this.svg.append("g")
+			.attr("class", "timeAxis")
+			.attr("transform", "translate(" + this.xOffset + "," + this.baseline + " )")
+			.call( d3.axisBottom(this.xAxis)
+				.ticks(d3.timeDay.filter(d=>d3.timeDay.count(0, d) % (Math.floor(this.time.length/7)+1) === 0))
+				.tickFormat(d3.timeFormat("%m/%d")) );
+		this.svg.append("g")
+			.attr("class", "yAxis")
+			.attr("transform", "translate(" + .95*this.xOffset + "," +  (this.baseline - this.stepSize*this.maxCount) + " )")
+			.call( d3.axisLeft(yAxis)
+				.ticks(this.maxCount)
+			);
 		//console.log(this.time);
 	}
 	
-	drawRects(){
+	drawRects(maxCount){
 		var self = this;
-		var stepSize = 30;
+		//console.log(this.stepSize);
 		var nodes = this.svg.selectAll("rect.timeRectangle")
 			.data(this.time, function(d) {return d;});
 		var barWidth =  .9*this.width/this.time.length;
@@ -132,60 +196,95 @@ class TimeLine {
 		nodes.enter().append('rect').merge(nodes)
 			.attr('class','timeRectangle')
 			.attr('x', function(d){return d.xPos;})
-			.attr('y', function(d){ return .8*self.height - stepSize*d.count; } )
-			.attr('height', function(d){return stepSize*d.count;})
+			.attr('y', function(d){ return self.baseline - self.stepSize*d.count; } )
+			.attr('height', function(d){return self.stepSize*d.count;})
 			.attr('width', barWidth)
 			.attr('fill', this.baseColor)
 			.attr('fill-opacity', .9);
-		var visitWidth = .5*barWidth;
-		if(barWidth > 10){
-			visitWidth = 5;
+		
+
+		//console.log(this.data);
+		//if(this.dtype == "Patient"){
+		this.drawRedRects(barWidth);
+		//}
+	}
+	
+	drawRedRects(barWidth){
+		var self = this;
+		var visitWidth = barWidth;
+		var redBarXOffset = this.xOffset;
+		if(this.dtype == "Patient"){
+			visitWidth = (barWidth > 10)? 5 : .5*barWidth;
+			redBarXOffset -= .5*visitWidth;
 		}
+		var counts = d3.timeDay.range(this.start_date, 
+			d3.max(this.data, function(d){
+				return d.filldate;
+				})
+			);
+		counts.forEach(function(day){
+			day.count = 0;
+			this.data.forEach(function(script){
+				if(script.filldate.toDateString() === day.toDateString()){
+					day.count += 1;
+				}
+			});
+		}, this);
 		this.svg.selectAll('.visit').remove();
-		var visits = this.svg.selectAll('rect.visit')
-			.data(this.data, function(d) { return d.filldate; })
+		var visits = this.svg.selectAll('g.visit')
+			.data(this.data, function(d) {return d.filldate;})
 			.enter()
 			.append('g')
 			.attr('class','visit');
-		//console.log(this.data);
-		visits.append('rect')
-			.attr('class', 'fillperiod')
-			.attr('y', function(d) {return .8*self.height - stepSize;})
-			.attr('x', function(d) {return d.startPos - .8*visitWidth; })
-			.attr('height', stepSize)
-			.attr('width', function(d) {return d.endPos - d.startPos; })
-			.attr('fill', 'blue')
-			.attr('fill-opacity', 0)
-			.attr('style', 'stroke-width:2;stroke:blue;stroke-opacity:0');
+		if(this.dtype == "Patient"){	
+			this.drawToolTip(visits, redBarXOffset);
+		}
 		//console.log('bars');
-		visits.append('rect')
+		//console.log(counts);
+		var scriptFills = visits.selectAll('.fillstart')
+			.data(counts, function(d){ return d;})
+			.enter()//.merge(visits)
+			.append('rect')
 			.attr('class','fillstart')
-			.attr('y', function(d) {return .8*self.height - stepSize;})
-			.attr('x', function(d){ return d.startPos - .5*visitWidth; })
-			.attr('height', stepSize)
+			.attr('y', function(d) {return self.baseline - d.count*self.stepSize;})
+			.attr('x', function(d){ return self.xAxis(d) + redBarXOffset; })
+			.attr('height', function(d) {return d.count*self.stepSize;})
 			.attr('width', visitWidth)
 			.attr('fill', 'red');
+	}
+	
+	drawToolTip(visits, redBarXOffset){
+		self = this;
+		var scriptDateRange = visits.append('rect')
+				.attr('class', 'fillperiod')
+				.attr('y', function(d) {return self.baseline - self.stepSize;})
+				.attr('x', function(d) {return d.startPos + redBarXOffset; })
+				.attr('height', self.stepSize)
+				.attr('width', function(d) {return d.endPos - d.startPos; })
+				.attr('fill', 'blue')
+				.attr('fill-opacity', 0)
+				.attr('style', 'stroke-width:2;stroke:blue;stroke-opacity:0');
 		var div = this.div
-		d3.selectAll('.visit').on("mouseover", function(d){
+		scriptDateRange.on("mouseover", function(d){
 			d3.select(this).select('.fillperiod')
 				.attr('style', 'stroke-width:2;stroke:blue;stroke-opacity:1');
-			div.transition().duration(100).style('opacity',.9);
+			div.transition().duration(10).style('opacity',.9);
 			div.html( "Drug: " + d.nonproprietaryname.split(' ')[0] + '<br/>'
 				+ "rx Count: " + d.rxcount + '<br/>'
 				+ "physician ID: " + d.physiciannpi + "<br/>"
 				+ "Fill Date: " + d.filldate.toDateString() + '<br/>'
 				+ "Script Duration: " + d.days_supply + " days" +'<br/>')
 				.style('left', d3.event.pageX + 10 + 'px')
-				.style('top', d3.event.pageY - 1.5*stepSize + 'px');
+				.style('top', d3.event.pageY - 1.5*self.stepSize + 'px');
 			
 			d3.selectAll('.visit').on("mousemove", function(){
 				div.style('left', d3.event.pageX + 10 + 'px')
-					.style('top', d3.event.pageY - 1.5*stepSize + 'px');
+					.style('top', d3.event.pageY - 1.5*self.stepSize + 'px');
 			});
 		}).on("mouseout", function(){
 			d3.select(this).select('.fillperiod')
 				.attr('style', 'stroke-width:2;stroke:blue;stroke-opacity:0');
-			div.transition().duration(200)
+			div.transition().duration(10)
 				.style('opacity', 0);
 		});
 	}
@@ -193,16 +292,18 @@ class TimeLine {
 	setupDrugFilter(target = '#gantt-chart'){
 		var filters = this.getDrugNames();
 		d3.selectAll('.drugFilter').remove();
-		var selectionBox = d3.selectAll(target).insert('div','svg')
+		var selectionBox = d3.selectAll(target).insert('g','svg')
 			.attr('class','drugFilter')
 			.style('position','absolute')
 			.style('left',.1*this.width + 'px')
-			.style('top', this.height + 'px');
+			.style('top', this.height - 15 + 'px')
+			.style('height','18px');
 		selectionBox.append('p')
 			.style('display','inline-block')
 			.html("Filter By Drug:&nbsp");
 		var selectionMenu = selectionBox.append('select')
-			.style('margin', '0 auto');
+			.style('margin', '0 auto')
+			.style('height','20px');
 		selectionMenu.selectAll('option')
 			.data(filters)
 			.enter()
@@ -234,7 +335,7 @@ class TimeLine {
 			d3.selectAll(target).selectAll('.slider').remove()
 		var box = d3.selectAll(target);
 		var width = .9*box.node().clientWidth;
-		var xOffset = .05*width;
+		var xOffset = .051*width;
 		//console.log(width);
 		var slideAxis = d3.scaleTime()
 			.domain( [minDate, maxDate] )
@@ -247,7 +348,9 @@ class TimeLine {
 		sliderSvg.append("g")
 			.attr("class", "sliderAxis")
 			.attr("transform", "translate(" + xOffset + "," + yPosition*height + " )")
-			.call( d3.axisBottom(slideAxis));
+			.call( d3.axisBottom(slideAxis)
+				.ticks(d3.timeDay.filter(d=>d3.timeDay.count(0, d) % (Math.floor(daysBetween(minDate,maxDate)/7)+1) === 0))
+				.tickFormat(d3.timeFormat("%m/%d")) );
 			
 		var timeLine = d3.timeDay.range( minDate, maxDate );
 		//console.log(timeLine);
@@ -292,7 +395,7 @@ class TimeLine {
 				pressed[i] = 1;
 				selectionRectangles.on('mouseover',function(d){
 					var update = function(){
-						selectionRectangles.transition().duration(100)
+						selectionRectangles.transition().duration(10)
 							.style('fill-opacity', function(d){
 							if(self.start_date <= d && self.end_date > d){
 								return .8;
@@ -302,7 +405,7 @@ class TimeLine {
 					};
 					if( pressed[0] == 1 && d < self.start_date.addDays(self.maxDays) ){
 						self.setStartDate(d);
-						handle.transition().duration(100)
+						handle.transition().duration(10)
 							.attr('cx', slideAxis(d.addDays(i)) + xOffset);
 						update();
 					} else if(pressed[1] == 1 && d.addDays(1) > self.start_date) {
@@ -360,4 +463,3 @@ class TimeLine {
 		this.runFilters();
 	}
 }
-

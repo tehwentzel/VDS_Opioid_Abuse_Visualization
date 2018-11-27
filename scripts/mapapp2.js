@@ -1,13 +1,4 @@
-// L.mapbox.accessToken = 'pk.eyJ1IjoiYW5haWszIiwiYSI6ImNqbWNkNTZ0bDBlM2Izb3M0MWQzNHZtYzEifQ.fLozOxjrg08I3StfKz0AhA'
-//     var map = L.mapbox.map('patient', 'mapbox.dark', {maxZoom: 18, minZoom: 0})
-//     .setView([41.77, -87.62], 10);
-
-// L.mapbox.accessToken = 'pk.eyJ1IjoiYW5haWszIiwiYSI6ImNqbWNkNTZ0bDBlM2Izb3M0MWQzNHZtYzEifQ.fLozOxjrg08I3StfKz0AhA'
-//     var mappharmacy = L.mapbox.map('paths', 'mapbox.dark', {maxZoom: 18, minZoom: 0})
-//     .setView([41.77, -87.62], 10);
-
-
-
+var map;
 function removesvg(target){
 	// console.log("svg", target);
 	// d3.select("svg").remove();
@@ -21,32 +12,11 @@ function removesvg(target){
 
 //     }
 // }
-var drawMap1 = function(data, presdata, target, indi_pat, count, map){ 
-	// var container = L.DomUtil.get(Map);
-	// console.log(container);
-	// if(container != null){
-	// container = null;
-	// }
-	// console.log(container);
-	// var hello = document.getElementById('Map');
-	// console.log(typeof(Map));
-	// Map = undefined;
-	// console.log(Map);
-	// // Map.delete();
-	L.mapbox.accessToken = 'pk.eyJ1IjoiYW5haWszIiwiYSI6ImNqbWNkNTZ0bDBlM2Izb3M0MWQzNHZtYzEifQ.fLozOxjrg08I3StfKz0AhA'
-    var map = L.mapbox.map(target, 'mapbox.dark', {maxZoom: 18, minZoom: 0})
-    .setView([41.77, -87.62], 10);
-	// }
-	// console.log()
-	// var defaultCoords = [41.77, -87.62];
+var drawMap = function(data, presdata, target, indi_pat, count){ 
 
- //        //set up our map
- //        var map = L.map(target).setView(defaultCoords, 10);
- //        L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
- //            {
- //                maxZoom: 18
- //            }).addTo(map);
-	// var map = Map;
+	L.mapbox.accessToken = 'pk.eyJ1IjoiYW5haWszIiwiYSI6ImNqbWNkNTZ0bDBlM2Izb3M0MWQzNHZtYzEifQ.fLozOxjrg08I3StfKz0AhA'
+    map = L.mapbox.map(target, 'mapbox.dark', {maxZoom: 18, minZoom: 0})
+    .setView([41.77, -87.62], 10);
     
 
     function project(latlng){
@@ -117,13 +87,13 @@ var drawMap1 = function(data, presdata, target, indi_pat, count, map){
 			 stringvalue = "Patient ID:&nbsp" + d.pat_id + "</br>" + "OverFlow Index:" + d.overflow_idx;
 			 return stringvalue;
 		}
-		else if(target=="patient2" && indi_pat == true){
+		else if(target=="patient2"){
 			 stringvalue = "Doctor ID:&nbsp" + d.physiciannpi + "</br>" + "Patient Count:" + d.patient_count;
 			 return stringvalue;
 		}
 
 			else{
-				stringvalue = "Doctor ID:&nbsp" + d.pharmacynpi + "</br>" + "Patient Count:" + d.patient_count;
+				stringvalue = "Pharmacy ID:&nbsp" + d.pharmacynpi + "</br>" + "Patient Count:" + d.patient_count;
 				return stringvalue;
 			}
 	}
@@ -143,8 +113,14 @@ var drawMap1 = function(data, presdata, target, indi_pat, count, map){
 	// console.log("aggrepharmacy", aggrepharmacy[0]);
 
 	function getcolor(d){
-	console.log(target);
-	if(target=="patient2"){
+
+		if(target=="patient" && indi_pat == true){
+
+			var cy = 100 - ((d.overflow_idx - 1)*100)* 5;
+            // console.log("cy ", cy);
+             return "hsl(0, 100%," + cy + "%)" ;
+        }
+        else if(target=="patient2"){
 
 			var cy = 100 - (d.patient_count)/4;
             // console.log("cy ", cy);
@@ -165,14 +141,14 @@ var drawMap1 = function(data, presdata, target, indi_pat, count, map){
 		var bottomRight = map.latLngToLayerPoint(bounds.getSouthEast())
 		// console.log(bounds, topLeft, bottomRight)
 		svgPatient.style("width", map.getSize().x + "px")
-		.style("height", map.getSize().y + "px")
-		.style("left", topLeft.x + "px")
-		.style("top", topLeft.y + "px");
-		
+			.style("height", map.getSize().y + "px")
+			.style("left", topLeft.x + "px")
+			.style("top", topLeft.y + "px");
+		var translate = item => item.attr("transform", "translate(" + -topLeft.x + "," + -topLeft.y + ")");
+		g.call(translate);
 		dots.call(formatDots);
-		g.attr("transform", "translate(" + -topLeft.x + "," + -topLeft.y + ")");
-		//dots.attr("transform", "translate(" + -topLeft.x + "," + -topLeft.y + ")")
-		.on("mouseover", function(d){   
+		//dots.call(translate);
+		dots.on("mouseover", function(d){   
                       d3.select(this).classed('active', true)
                       hoverdiv.transition()      
                 .duration(200)      
@@ -192,15 +168,15 @@ var drawMap1 = function(data, presdata, target, indi_pat, count, map){
 
 	var pathLine = d3.svg.line()
         .interpolate("cardinal")
-        .x(function(d) { return project(findlatlngpath(d.x,d.y)).x; })
-        .y(function(d) { return project(findlatlngpath(d.x,d.y)).y; });
-	pathLine.attr("transform", "translate(" + -topLeft.x + "," + -topLeft.y + ")");
+        .x(function(d) { return project(findlatlngpath(d.x,d.y)).x - topLeft.x; })
+        .y(function(d) { return project(findlatlngpath(d.x,d.y)).y - topLeft.y; });
 
-    // if(target=="paths"){
-    //  	var haiyanPath = svgPatient.append("path")
-    // .attr("d",pathLine(data))
-    // .attr("class","path");
-    // }
+    if(target=="paths"||target=="paths2"){
+		svgPatient.selectAll("path").remove();
+     	var haiyanPath = svgPatient.append("path")
+			.attr("d",pathLine(data))
+			.attr("class","path");
+    }
 
     
 //           
@@ -209,9 +185,11 @@ var drawMap1 = function(data, presdata, target, indi_pat, count, map){
 	render();
 
 	map.on("viewreset", function(){
+		console.log("reset");
 		render();
 	})
 	map.on("move", function(){
+		console.log("move");
 		render();
 	})
 	return dots;
