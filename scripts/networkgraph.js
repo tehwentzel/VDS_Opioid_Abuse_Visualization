@@ -387,7 +387,7 @@ function tryS1(struct)
                     else if(d.dose>=30)
                     return "25";
                 })
-                .on("click",clicked)
+                //.on("click",clicked)
                 .call(d3.drag()
                 .on("start", dragstarted)
                 .on("drag", dragged)
@@ -483,10 +483,10 @@ function tryS1(struct)
     if (!d3.event.active) simulation.alphaTarget(0);
     //simulation.unfix(d);
     }
-    function clicked(d){
-        console.log("heieie")
-        console.log("done")
-    }
+    //function clicked(d){
+    //    console.log("heieie")
+    //    console.log("done")
+    //}
 
     run(graph)
     }

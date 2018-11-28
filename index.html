@@ -99,6 +99,19 @@
 		var pathMap = getMap('paths');
 		var is_patient = true;
 		var selected_id = 2098621;
+		var currentSelection = {id: selected_id, type: "Patient"};
+		var initGraphOnClick = function(){
+			d3.select('.nodes').selectAll('circle').on('click',function(d){
+				if(d.group == 'patient' || d.group == 'doctor'){
+					backStack.push(currentSelection);
+					timeline.setID(d.id, capitalizeFirstLetter(d.group), null);
+					d3.selectAll('.tooltippatient').remove();
+					CallingNodeGraph(d.id, NODE_GRAPH, d.group);
+					currentSelection = {id: d.id, type: capitalizeFirstLetter(d.group)};
+					initGraphOnClick();
+				}
+			});
+		}
 		var change_indiLoc = function(PHARMACY_LOC, DOCTOR_LOC, PATIENT_LOC,PRESCRIPTION_LOC){
 			var addresses;
 			var paths;
@@ -115,16 +128,18 @@
 			return [addresses, paths];
 		}
 		var setDotOnClick = g => g.on('click', function(d){
+			backStack.push(currentSelection);
 			if(is_patient){
 				timeline.setID(d.pat_id, "Patient", null);
 				CallingNodeGraph(d.pat_id, NODE_GRAPH, 'patient');
-				backStack.push({id: d.pat_id, type: "Patient"});
+				currentSelection = {id: d.pat_id, type: "Patient"};
 			}
 			else{
 				timeline.setID(d.physiciannpi, "Doctor", null);
 				CallingNodeGraph(d.physiciannpi, NODE_GRAPH, 'doctor');
-				backStack.push({id: d.physiciannpi, type: "Doctor"})
+				currentSelection = {id: d.physiciannpi, type: "Doctor"};
 			}
+			initGraphOnClick();
 			console.log(backStack);
 		});
 		
@@ -133,7 +148,8 @@
 		timeline = new TimeLine(selected_id, PRESCRIPTION_LOC, is_patient? "Patient":"Doctor");
 		//struct = createStruct(selected_id,NODE_GRAPH);
         //tryS(struct);
-		CallingNodeGraph(selected_id, NODE_GRAPH, "patient")
+		CallingNodeGraph(selected_id, NODE_GRAPH, "patient");
+		initGraphOnClick();
 		addresses.call(setDotOnClick);
 		var patientSelection = d3.select("#radio").selectAll("input").on('click',function(d){
 			var was_patient = (is_patient)? true:false;
@@ -151,7 +167,7 @@
 				timeline.setID(previousItem.id, previousItem.type, null);
 				CallingNodeGraph(previousItem.id, NODE_GRAPH, previousItem.type.toLowerCase());
 			}
-		})
+		});
     }
     </script>
 
