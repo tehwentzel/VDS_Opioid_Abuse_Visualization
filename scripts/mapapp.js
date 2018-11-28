@@ -89,7 +89,7 @@ var getMap = function(target){
 				 stringvalue = "Patient ID:&nbsp" + d.pat_id + "</br>" + "OverFlow Index:" + d.overflow_idx;
 				 return stringvalue;
 			}
-			else if(target=="patient2"){
+			else if(target=="patient"){
 				 stringvalue = "Doctor ID:&nbsp" + d.physiciannpi + "</br>" + "Patient Count:" + d.patient_count;
 				 return stringvalue;
 			}
@@ -122,7 +122,7 @@ var getMap = function(target){
 				// console.log("cy ", cy);
 				 return "hsl(0, 100%," + cy + "%)" ;
 			}
-			else if(target=="patient2"){
+			else if(target=="patient"){
 
 				var cy = 100 - (d.patient_count)/4;
 				// console.log("cy ", cy);
@@ -166,17 +166,17 @@ var getMap = function(target){
 					.style("opacity", 0);   
 					  });
 
-			var pathLine = d3.svg.line()
-				.interpolate("cardinal")
-				.x(function(d) { return project(findlatlngpath(d.x,d.y)).x - topLeft.x; })
-				.y(function(d) { return project(findlatlngpath(d.x,d.y)).y - topLeft.y; });
+			// var pathLine = d3.svg.line()
+				// .interpolate("cardinal")
+				// .x(function(d) { return project(findlatlngpath(d.x,d.y)).x - topLeft.x; })
+				// .y(function(d) { return project(findlatlngpath(d.x,d.y)).y - topLeft.y; });
 
-			if(target=="paths"||target=="paths2"){
-				svgPatient.selectAll("path").remove();
-				var haiyanPath = svgPatient.append("path")
-					.attr("d",pathLine(data))
-					.attr("class","path");
-			}
+			// if(target=="paths"||target=="paths2"){
+				// svgPatient.selectAll("path").remove();
+				// var haiyanPath = svgPatient.append("path")
+					// .attr("d",pathLine(data))
+					// .attr("class","path");
+			// }
 		}     
 
 		render();

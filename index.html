@@ -112,15 +112,15 @@
 			return [addresses, paths];
 		}
 		var setDotOnClick = g => g.on('click', function(d){
-		if(is_patient){
-			timeline.setID(d.pat_id, "Patient", null);
-			struct=createStruct(d.pat_id,NODE_GRAPH);
-			tryS(struct);
+			if(is_patient){
+				timeline.setID(d.pat_id, "Patient", null);
+				struct=createStruct(d.pat_id,NODE_GRAPH);
+				tryS(struct);
 			}
-		else{
-			timeline.setID(d.physiciannpi, "Doctor", null);
-			//struct=createStruct(d.physiciannpi,NODE_GRAPH);
-			//tryS(struct);
+			else{
+				timeline.setID(d.physiciannpi, "Doctor", null);
+				//struct=createStruct(d.physiciannpi,NODE_GRAPH);
+				//tryS(struct);
 			}
 		});
 		

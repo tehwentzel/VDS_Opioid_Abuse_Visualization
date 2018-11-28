@@ -38,6 +38,10 @@ svg .path {
   background: black;
 }
 
+.fillperiod{
+	position: absolute;
+}
+
 flex-container {
 	display: inline-flex;
 	flex-direction: row;

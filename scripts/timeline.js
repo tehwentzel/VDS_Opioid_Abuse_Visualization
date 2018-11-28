@@ -24,7 +24,7 @@ class TimeLine {
 	constructor(pat_id, prescriptions, dtype = "Patient", start_date_filter = null){
 		this.prescriptions = prescriptions;
 		this.dtype = dtype;
-		this.height = .22*screen.availHeight;
+		this.height = .28*screen.availHeight;
 		//console.log(this.height);
 		this.baseline = this.height - 40;
 		this.baseColor = '#2ca25f';
@@ -38,7 +38,8 @@ class TimeLine {
 		this.div = d3.select("#gantt-items")
 			.append('div')
 			.attr('class','tooltip')
-			.style('opacity', 0);
+			.style('opacity', 1)
+			.style('visibility','hidden');
 		this.svg = d3.select("#gantt-chart")
 			.append('svg')
 			.attr('width','90%')
@@ -125,7 +126,7 @@ class TimeLine {
 		this.getTime();
 		this.drawSvg();
 		this.drawRects();
-		d3.selectAll('rect').call(fillGaps);
+		
 	}
 	
 	getTime(){
@@ -133,27 +134,25 @@ class TimeLine {
 		this.xAxis = d3.scaleTime()
 			.domain( [this.start_date, this.end_date] )
 			.range( [0, .9*this.width] );
-		this.data.forEach(function(d){
-			d.startPos = this.xAxis(d.begin_date) + this.xOffset;
-			d.endPos = this.xAxis(d.cutoff_date) + this.xOffset;
-		}, this);
+		
 		//maps a map of {time: number of active prescription}
 		this.time = d3.timeDay.range(this.start_date, this.end_date);
-		this.scriptTimes = d3.timeDay.range(this.start_date, 
-			d3.max(this.data, function(d){
-				return d.filldate;
-				})
-			);
+
 		var maxCount = 0;
 		this.time.forEach(function(given_day){
-			given_day.count = 0;
+			given_day.activeCount = 0;
+			given_day.fillCount = 0;
 			given_day.xPos = this.xAxis(given_day) + this.xOffset;
 			//console.log(this.xAxis(given_day));
 			this.data.forEach(function(rx){
 				if(rx.filldate <= given_day && rx.final_date > given_day){
-					given_day.count += 1;
-					if( given_day.count > maxCount){
-						maxCount = given_day.count;
+					given_day.activeCount += 1;
+					if( given_day.activeCount > maxCount){
+						maxCount = given_day.activeCount;
+					}
+					if(rx.filldate.toDateString() == given_day.toDateString()){
+						given_day.fillCount += 1;
+						//console.log(given_day);
 					}
 				}
 			}, given_day);
@@ -175,13 +174,13 @@ class TimeLine {
 			.attr("class", "timeAxis")
 			.attr("transform", "translate(" + this.xOffset + "," + this.baseline + " )")
 			.call( d3.axisBottom(this.xAxis)
-				.ticks(d3.timeDay.filter(d=>d3.timeDay.count(0, d) % (Math.floor(this.time.length/7)+1) === 0))
+				.ticks(d3.timeDay.filter(d=>d3.timeDay.count(0, d) % (Math.round(this.time.length/7)+1) === 0))
 				.tickFormat(d3.timeFormat("%m/%d")) );
 		this.svg.append("g")
 			.attr("class", "yAxis")
 			.attr("transform", "translate(" + .95*this.xOffset + "," +  (this.baseline - this.stepSize*this.maxCount) + " )")
 			.call( d3.axisLeft(yAxis)
-				.ticks(this.maxCount)
+				.ticks( (this.maxCount < 24)? this.maxCount : Math.round(this.maxCount/2) )
 			);
 		//console.log(this.time);
 	}
@@ -189,27 +188,23 @@ class TimeLine {
 	drawRects(maxCount){
 		var self = this;
 		//console.log(this.stepSize);
-		var nodes = this.svg.selectAll("rect.timeRectangle")
+		var nodes = this.svg.selectAll(".timeRectangle")
 			.data(this.time, function(d) {return d;});
 		var barWidth =  .9*this.width/this.time.length;
 		nodes.exit().remove();
 		nodes.enter().append('rect').merge(nodes)
 			.attr('class','timeRectangle')
 			.attr('x', function(d){return d.xPos;})
-			.attr('y', function(d){ return self.baseline - self.stepSize*d.count; } )
-			.attr('height', function(d){return self.stepSize*d.count;})
+			.attr('y', function(d){ return self.baseline - self.stepSize*d.activeCount; } )
+			.attr('height', function(d){return self.stepSize*d.activeCount;})
 			.attr('width', barWidth)
 			.attr('fill', this.baseColor)
-			.attr('fill-opacity', .9);
-		
-
-		//console.log(this.data);
-		//if(this.dtype == "Patient"){
+			.attr('fill-opacity', .7);
+		d3.selectAll('rect').call(fillGaps);
 		this.drawRedRects(barWidth);
-		//}
 	}
 	
-	drawRedRects(barWidth){
+	drawRedRects(barWidth, nodes){
 		var self = this;
 		var visitWidth = barWidth;
 		var redBarXOffset = this.xOffset;
@@ -217,75 +212,96 @@ class TimeLine {
 			visitWidth = (barWidth > 10)? 5 : .5*barWidth;
 			redBarXOffset -= .5*visitWidth;
 		}
-		var counts = d3.timeDay.range(this.start_date, 
-			d3.max(this.data, function(d){
-				return d.filldate;
-				})
-			);
-		counts.forEach(function(day){
-			day.count = 0;
-			this.data.forEach(function(script){
-				if(script.filldate.toDateString() === day.toDateString()){
-					day.count += 1;
-				}
-			});
-		}, this);
 		this.svg.selectAll('.visit').remove();
-		var visits = this.svg.selectAll('g.visit')
-			.data(this.data, function(d) {return d.filldate;})
-			.enter()
+		var visits = this.svg.selectAll(".visit")
+			.data(this.time, function(d) {return d;});
+		var scriptFills = visits.enter().merge(visits)
 			.append('g')
 			.attr('class','visit');
-		if(this.dtype == "Patient"){	
-			this.drawToolTip(visits, redBarXOffset);
-		}
 		//console.log('bars');
 		//console.log(counts);
-		var scriptFills = visits.selectAll('.fillstart')
-			.data(counts, function(d){ return d;})
-			.enter()//.merge(visits)
-			.append('rect')
+		scriptFills.append('rect')
 			.attr('class','fillstart')
-			.attr('y', function(d) {return self.baseline - d.count*self.stepSize;})
+			.attr('y', function(d) {return self.baseline - d.fillCount*self.stepSize;})
 			.attr('x', function(d){ return self.xAxis(d) + redBarXOffset; })
-			.attr('height', function(d) {return d.count*self.stepSize;})
+			.attr('height', function(d) {return d.fillCount*self.stepSize;})
 			.attr('width', visitWidth)
+			.attr('fill-opacity',.7)
 			.attr('fill', 'red');
+		scriptFills.exit().remove();
+		if(this.dtype == "Patient"){	
+			this.drawPatientToolTip(redBarXOffset);
+		}else{
+			this.drawDoctorToolTip();
+		}
 	}
 	
-	drawToolTip(visits, redBarXOffset){
+	drawDoctorToolTip(){
+		var timeRectangles = this.svg.selectAll('.fillstart, .timeRectangle');
+		timeRectangles.on('mouseover',function(d){
+			self.div.html("Date: " + d.toDateString() + '<br/>'
+				+ "Active Prescriptions: " + d.activeCount + '<br/>'
+				+ "Prescriptions Filled: " + d.fillCount + "<br/>")
+				.style('left', d3.event.pageX  + 'px')
+				.style('top', d3.event.pageY - 90 + 'px');
+			self.div.transition().duration(50).style('visibility','visible');
+			timeRectangles.on('mousemove',function(){
+				d3.select(this).transition().duration(20)
+					.attr('fill-opacity','1');
+				self.div.transition().duration(20)
+					.style('left', d3.event.pageX + 10 + 'px')
+					.style('top', d3.event.pageY - 90 + 'px');
+			});
+		}).on("mouseout", function(){
+			self.div.transition().duration(50).style('visibility', 'hidden');
+			d3.select(this).transition().duration(20)
+					.attr('fill-opacity','.7');
+		});
+	}
+	
+	drawPatientToolTip(redBarXOffset){
 		self = this;
-		var scriptDateRange = visits.append('rect')
-				.attr('class', 'fillperiod')
-				.attr('y', function(d) {return self.baseline - self.stepSize;})
-				.attr('x', function(d) {return d.startPos + redBarXOffset; })
-				.attr('height', self.stepSize)
-				.attr('width', function(d) {return d.endPos - d.startPos; })
-				.attr('fill', 'blue')
-				.attr('fill-opacity', 0)
-				.attr('style', 'stroke-width:2;stroke:blue;stroke-opacity:0');
-		var div = this.div
-		scriptDateRange.on("mouseover", function(d){
-			d3.select(this).select('.fillperiod')
+		this.data.forEach(function(d){
+			d.startPos = this.xAxis(d.begin_date) + redBarXOffset;
+			d.endPos = this.xAxis(d.cutoff_date) + redBarXOffset;
+		}, this);
+		var scriptDateRange = this.svg.selectAll('rect.fillperiod')
+			.data( this.data, function(d){return d;});
+		var tooltipRects = scriptDateRange.enter()
+			.merge(scriptDateRange)
+			.append('rect')
+			.attr('class', 'fillperiod')
+			.attr('y', function(d) {return self.baseline - self.stepSize;})
+			.attr('x', function(d) {return d.startPos; })
+			.attr('height', self.stepSize)
+			.attr('width', function(d) {return d.endPos - d.startPos; })
+			.attr('fill', 'blue')
+			.attr('fill-opacity', 0)
+			.attr('style', 'stroke-width:2;stroke:blue;stroke-opacity:0');
+		scriptDateRange.exit().remove();
+		tooltipRects.on("mouseover", function(d){
+			d3.select(this).transition()
+				.duration(100)
 				.attr('style', 'stroke-width:2;stroke:blue;stroke-opacity:1');
-			div.transition().duration(10).style('opacity',.9);
-			div.html( "Drug: " + d.nonproprietaryname.split(' ')[0] + '<br/>'
+			self.div.style('visibility','visible');
+			self.div.html( "Drug: " + d.nonproprietaryname.split(' ')[0] + '<br/>'
 				+ "rx Count: " + d.rxcount + '<br/>'
 				+ "physician ID: " + d.physiciannpi + "<br/>"
 				+ "Fill Date: " + d.filldate.toDateString() + '<br/>'
 				+ "Script Duration: " + d.days_supply + " days" +'<br/>')
-				.style('left', d3.event.pageX + 10 + 'px')
-				.style('top', d3.event.pageY - 1.5*self.stepSize + 'px');
+				.style('left', d3.event.pageX  + 'px')
+				.style('top', d3.event.pageY - 3.5*self.stepSize + 'px');
 			
-			d3.selectAll('.visit').on("mousemove", function(){
-				div.style('left', d3.event.pageX + 10 + 'px')
-					.style('top', d3.event.pageY - 1.5*self.stepSize + 'px');
+			tooltipRects.on("mousemove", function(){
+				self.div.transition().duration(20)
+					.style('left', d3.event.pageX + 'px')
+					.style('top', d3.event.pageY - 3.5*self.stepSize + 'px');
 			});
 		}).on("mouseout", function(){
-			d3.select(this).select('.fillperiod')
+			d3.select(this).transition()
+				.duration(100)
 				.attr('style', 'stroke-width:2;stroke:blue;stroke-opacity:0');
-			div.transition().duration(10)
-				.style('opacity', 0);
+			self.div.style('visibility', 'hidden');
 		});
 	}
 	
@@ -319,8 +335,8 @@ class TimeLine {
 	}
 	
 	setupTimeFilter(target = '#gantt-filters'){
-		var height = 80;
-		var yPosition = .8;
+		var height = 60;
+		var yPosition = .6;
 		var rectHeightScale = .25;
 		var tempData;
 		if( this.drugName != null ){
@@ -373,9 +389,9 @@ class TimeLine {
 				}
 				else{ return .2; }
 			})
-		var circleRadius = .8*rectHeightScale*height;
-		if( circleRadius < 20 ){
-			circleRadius = 20;
+		var circleRadius = .6*rectHeightScale*height;
+		if( circleRadius < 15 ){
+			circleRadius = 15;
 		} else if (circleRadius > 25){
 			circleRadius = 25;
 		}
