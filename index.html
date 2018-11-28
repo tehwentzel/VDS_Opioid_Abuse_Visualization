@@ -78,6 +78,8 @@
         <input type="radio" name="people" id="patientRadioSwitch" value="1" checked>By Patients<br>
 		<input type="radio" name="people" id="doctorRadioSwitch" value="0" >By Doctors<br>
 	</div>
+	
+	<button type="button" id="backButton">Back</button>
 
     </div>
     <script>
@@ -92,6 +94,7 @@
     function start_here(error, PHARMACY_LOC, DOCTOR_LOC, PATIENT_LOC,PRESCRIPTION_LOC,NODE_GRAPH) {
         if (error) return console.log(error);
 		console.log("running");
+		var backStack = new Array();
 		var patientMap = getMap('patient');
 		var pathMap = getMap('paths');
 		var is_patient = true;
@@ -115,11 +118,14 @@
 			if(is_patient){
 				timeline.setID(d.pat_id, "Patient", null);
 				CallingNodeGraph(d.pat_id, NODE_GRAPH, 'patient');
+				backStack.push({id: d.pat_id, type: "Patient"});
 			}
 			else{
 				timeline.setID(d.physiciannpi, "Doctor", null);
 				CallingNodeGraph(d.physiciannpi, NODE_GRAPH, 'doctor');
+				backStack.push({id: d.physiciannpi, type: "Doctor"})
 			}
+			console.log(backStack);
 		});
 		
 		var [addresses, paths] = change_indiLoc(PHARMACY_LOC, DOCTOR_LOC, PATIENT_LOC,PRESCRIPTION_LOC);
@@ -139,6 +145,13 @@
 				addresses.call(setDotOnClick);
 			}
 		});
+		d3.select("#backButton").on('click',function(){
+			if(backStack.length > 0){
+				var previousItem = backStack.pop();
+				timeline.setID(previousItem.id, previousItem.type, null);
+				CallingNodeGraph(previousItem.id, NODE_GRAPH, previousItem.type.toLowerCase());
+			}
+		})
     }
     </script>
 

@@ -38,6 +38,20 @@ svg .path {
   background: black;
 }
 
+button {
+	position: absolute;
+    top: 90%;
+    left: 40%;
+    background-color: #4CAF50; /* Green */
+    border: none;
+    color: white;
+    padding: 10px 10px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+}
+
 .fillperiod{
 	position: absolute;
 }
