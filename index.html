@@ -71,9 +71,9 @@
     .defer(d3.csv,"https://gist.githubusercontent.com/tehwentzel/24bf8357ad86a3db70510480b020d7d3/raw/4468783d3445b83b4350ac1c1327a0b592c8cfdf/500_doctors.csv")
     .defer(d3.csv,"https://gist.githubusercontent.com/tehwentzel/24bf8357ad86a3db70510480b020d7d3/raw/4468783d3445b83b4350ac1c1327a0b592c8cfdf/5000_patients.csv")
     .defer(d3.csv,"https://gist.githubusercontent.com/tehwentzel/24bf8357ad86a3db70510480b020d7d3/raw/4468783d3445b83b4350ac1c1327a0b592c8cfdf/27073_prescriptions.csv")
-	.defer(d3.csv,"https://raw.githubusercontent.com/tehwentzel/VDS_Opioid_Abuse_Visualization/master/data/node_graph1.csv?token=Ah_SvLgamzIb9eWrAaZ3MG3u4zWm7fVoks5b_vcLwA%3D%3D")
+	.defer(d3.csv,"./data/node_graph1.csv")
     .await(start_here);
-	selected_id = 2098621;
+	selected_id =866254390;
     function start_here(error, PHARMACY_LOC, DOCTOR_LOC, PATIENT_LOC,PRESCRIPTION_LOC,NODE_GRAPH) {
         
         if (error) return console.log(error);
@@ -82,13 +82,11 @@
 		pharms = drawMap(PHARMACY_LOC,'paths');
 		timeline = new TimeLine(selected_id, PRESCRIPTION_LOC);
 		//n=new NetworkGraph(selected_id,NODE_GRAPH);
-		struct=createStruct(selected_id,NODE_GRAPH);
-        tryS(struct);
+		CallingNodeGraph(selected_id,NODE_GRAPH,type)
 		console.log(patients);
 		patients.on('click', function(d){
 			timeline.setID(d.pat_id);
-			struct=createStruct(d.pat_id,NODE_GRAPH);
-			tryS(struct);
+			
 		});
 		//drawMap(PHARMACY_LOC,'paths');
     }
