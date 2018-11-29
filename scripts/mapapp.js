@@ -16,7 +16,7 @@ function removesvg(target){
 var getMap = function(target){ 
 	console.log(map);
 	L.mapbox.accessToken = 'pk.eyJ1IjoiYW5haWszIiwiYSI6ImNqbWNkNTZ0bDBlM2Izb3M0MWQzNHZtYzEifQ.fLozOxjrg08I3StfKz0AhA'
-    var map = L.mapbox.map(target, 'mapbox.dark', {maxZoom: 18, minZoom: 0})
+    var map = L.mapbox.map(target, 'mapbox.dark', {maxZoom: 12, minZoom: 9})
 		.setView([41.77, -87.62], 10);
     
 	var drawMap = function(data, presdata, target, indi_pat){
@@ -167,15 +167,15 @@ var getMap = function(target){
 					  });
 
 			// var pathLine = d3.svg.line()
-				// .interpolate("cardinal")
-				// .x(function(d) { return project(findlatlngpath(d.x,d.y)).x - topLeft.x; })
-				// .y(function(d) { return project(findlatlngpath(d.x,d.y)).y - topLeft.y; });
+			// 	.interpolate("cardinal")
+			// 	.x(function(d) { return project(findlatlngpath(d.x,d.y)).x - topLeft.x; })
+			// 	.y(function(d) { return project(findlatlngpath(d.x,d.y)).y - topLeft.y; });
 
 			// if(target=="paths"||target=="paths2"){
-				// svgPatient.selectAll("path").remove();
-				// var haiyanPath = svgPatient.append("path")
-					// .attr("d",pathLine(data))
-					// .attr("class","path");
+			// 	svgPatient.selectAll("path").remove();
+			// 	var haiyanPath = svgPatient.append("path")
+			// 		.attr("d",pathLine(data))
+			// 		.attr("class","path");
 			// }
 		}     
 
