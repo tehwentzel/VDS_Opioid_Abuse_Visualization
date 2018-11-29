@@ -60,7 +60,7 @@ function createStruct(selected_id,NODE_GRAPH)
         
        
 
-    console.log(struct)
+    // console.log(struct)
     return struct;  
 }
 

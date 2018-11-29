@@ -8,7 +8,7 @@
     <!-- CSS Libraries -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
     <!-- CSS Source -->
- <link rel="stylesheet" href="./styles/main.css" />
+	<link rel="stylesheet" href="./styles/main.css" />
     <link href='https://api.mapbox.com/mapbox.js/v2.2.3/mapbox.css' rel='stylesheet' />
 	
 
@@ -32,10 +32,10 @@
     <div class="container-fluid">
 		<div class="row">
 			<div class='col-md-6'>
-				<h3>Patient Locations</h3>
+				<h3 style="color:white">Patient/Doctor Locations</h3>
 			</div>
 			<div class='col-md-6'>
-				<h3>Pharmacy Locations (Placeholder)</h3>
+				<h3 style="color:white">Pharmacy Locations</h3>
 			</div>
 		</div>
 		<div class="row" id="maps">
@@ -59,10 +59,10 @@
         </div>
 		<div class="row">
 			<div class='col-md-6'>
-				<h4>Patient-Doctor/Pharmacy Connections</h4>
+				<h4 style="color:white">Patient-Doctor/Pharmacy Connections</h4>
 			</div>
 			<div class='col-md-6'>
-				<h4 id='timeline-title'>Patient prescriptions vs Time</h4>
+				<h4 id='timeline-title' style="color:white">Patient prescriptions vs Time</h4>
 			</div>
 		</div>
         <div class="row" id="gantt-items">
@@ -101,12 +101,12 @@
 			var paths;
 			if(is_patient == true){
 				addresses = patientMap(PATIENT_LOC, PRESCRIPTION_LOC, 'patient', is_patient);
-				paths = pathMap(PHARMACY_LOC, PRESCRIPTION_LOC, 'paths', is_patient);
+				paths = pathMap(PHARMACY_LOC, PRESCRIPTION_LOC, 'paths', is_patient, selected_id);
 				// console.log("count1", count)
 			}
 			else{
 				addresses = patientMap(DOCTOR_LOC, PRESCRIPTION_LOC, 'patient', is_patient);
-				paths = pathMap(PHARMACY_LOC, PRESCRIPTION_LOC,'paths', is_patient);
+				paths = pathMap(PHARMACY_LOC, PRESCRIPTION_LOC,'paths2', is_patient);
 				// console.log("count2", count)
 			}
 			return [addresses, paths];
@@ -115,10 +115,12 @@
 			if(is_patient){
 				timeline.setID(d.pat_id, "Patient", null);
 				CallingNodeGraph(d.pat_id, NODE_GRAPH, 'patient');
+				paths = pathMap(PHARMACY_LOC, PRESCRIPTION_LOC, 'paths', is_patient, d.pat_id);
 			}
 			else{
 				timeline.setID(d.physiciannpi, "Doctor", null);
 				CallingNodeGraph(d.physiciannpi, NODE_GRAPH, 'doctor');
+				paths = pathMap(PHARMACY_LOC, PRESCRIPTION_LOC,'paths2', is_patient, d.physiciannpi);
 			}
 		});
 		
