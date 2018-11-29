@@ -164,13 +164,15 @@ function tryS(struct)
                         .duration(200)		
                         .style("opacity", .9);		
                     div	.html(d.group + "<br/>"  + d.id)	
-                        .style("left", (d3.event.pageX) + "px")		
+                        .style("left", (d3.event.pageX + 10) + "px")		
                         .style("top", (d3.event.pageY - 28) + "px");	
                     })					
-                .on("mouseout", function(d) {		
+                .on("mouseout", function(d) {	
+					div.style('left', 0)
+						.style('top',0);
                     div.transition()		
-                        .duration(500)		
-                        .style("opacity", 0);	
+                        .duration(100)		
+                        .style("opacity", 0)	
                 });
 
         //var label = svg.append("g")
@@ -397,12 +399,14 @@ function tryS1(struct)
                         .duration(200)		
                         .style("opacity", .9);		
                     div	.html(d.group + "<br/>"  + d.id)	
-                        .style("left", (d3.event.pageX) + "px")		
+                        .style("left", (d3.event.pageX + 10) + "px")		
                         .style("top", (d3.event.pageY - 28) + "px");	
                     })					
-                .on("mouseout", function(d) {		
+                .on("mouseleave", function(d) {
+					div.style('left',0)
+						.style('top',0);
                     div.transition()		
-                        .duration(500)		
+                        .duration(50)		
                         .style("opacity", 0);	
                 });
 

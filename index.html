@@ -110,6 +110,7 @@
 				if(d.group == 'patient' || d.group == 'doctor'){
 					backStack.push(currentSelection);
 					timeline.setID(d.id, capitalizeFirstLetter(d.group), null);
+					paths = pathMap(PHARMACY_LOC, PRESCRIPTION_LOC,'paths', (d.group == 'patient'), d.id);
 					d3.selectAll('.tooltippatient').remove();
 					CallingNodeGraph(d.id, NODE_GRAPH, d.group);
 					currentSelection = {id: d.id, type: capitalizeFirstLetter(d.group)};
@@ -122,13 +123,13 @@
 			var paths;
 			if(is_patient == true){
 				addresses = patientMap(PATIENT, PRESCRIPTION, 'patient', is_patient);
-				paths = pathMap(PHARMACY, PRESCRIPTION, 'paths', is_patient);
+				//paths = pathMap(PHARMACY, PRESCRIPTION, 'paths', is_patient);
 				valueSlider.draw(PATIENT_LOC, 'patient');
 				// console.log("count1", count)
 			}
 			else{
 				addresses = patientMap(DOCTOR, PRESCRIPTION, 'patient', is_patient);
-				paths = pathMap(PHARMACY, PRESCRIPTION, 'paths', is_patient);
+				//paths = pathMap(PHARMACY, PRESCRIPTION, 'paths', is_patient);
 				valueSlider.draw(DOCTOR_LOC, 'doctor');
 				// console.log("count2", count)
 			}
@@ -142,11 +143,13 @@
 				timeline.setID(d.pat_id, "Patient", null);
 				CallingNodeGraph(d.pat_id, NODE_GRAPH, 'patient');
 				currentSelection = {id: d.pat_id, type: "Patient"};
+				paths = pathMap(PHARMACY_LOC, PRESCRIPTION_LOC,'paths', is_patient, d.pat_id);
 			}
 			else{
 				timeline.setID(d.physiciannpi, "Doctor", null);
 				CallingNodeGraph(d.physiciannpi, NODE_GRAPH, 'doctor');
 				currentSelection = {id: d.physiciannpi, type: "Doctor"};
+				paths = pathMap(PHARMACY_LOC, PRESCRIPTION_LOC, 'paths', is_patient, d.physiciannpi);
 			}
 			initGraphOnClick();
 			console.log(backStack);
@@ -168,6 +171,7 @@
 			if(backStack.length > 0){
 				var previousItem = backStack.pop();
 				timeline.setID(previousItem.id, previousItem.type, null);
+				paths = pathMap(PHARMACY_LOC, PRESCRIPTION_LOC,'paths', (previousItem.type == 'Patient'), previousItem.id);
 				CallingNodeGraph(previousItem.id, NODE_GRAPH, previousItem.type.toLowerCase());
 			}
 		});
