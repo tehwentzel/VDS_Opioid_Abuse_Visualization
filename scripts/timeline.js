@@ -64,6 +64,7 @@ class TimeLine {
 				.append('svg')
 				.attr('width','90%')
 				.attr('height', this.height + 'px');
+			this.drawLegend();
 		}
 		this.dtype = dtype;
 		d3.select('#timeline-title')

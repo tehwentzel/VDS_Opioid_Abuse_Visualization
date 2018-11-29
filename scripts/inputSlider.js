@@ -64,14 +64,21 @@ var valueSlider = (function(height = 50, width = 400){
 		if(target != type.toLowerCase()){
 			target = type.toLowerCase();
 			d3.select("#patientHeader").selectAll('.slider').remove();
-			var maxValue = d3.max(data, function(d){ return getValue(d, target); });
+			//var maxValue = d3.max(data, function(d){ return getValue(d, target); });
 			var minValue = d3.min(data, function(d){ return getValue(d, target); });
-
+			var endValue;
+			if(target == 'patient'){
+				endValue = .8*d3.max(data, function(d){ return getValue(d, target); });
+			}
+			else{
+				endValue = d3.mean(data, function(d){ return getValue(d, target); }) 
+					+ 2*d3.deviation(data, function(d){ return getValue(d, target); });
+			}
 			var colors = new Array(100);
 			xOffset = 20;
 			rectWidth = (width - xOffset)/colors.length;
 			for( var i = 0; i < colors.length; i++){
-				var val = minValue + i*(maxValue - minValue)/100;
+				var val = minValue + i*(endValue - minValue)/100;
 				colors[i] = {
 					color: getColor(val, target),
 					xPosition: (xOffset + i*rectWidth),
