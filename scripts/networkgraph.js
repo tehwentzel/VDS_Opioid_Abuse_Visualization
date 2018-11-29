@@ -173,13 +173,13 @@ function tryS(struct)
                         .style("opacity", 0);	
                 });
 
-        var label = svg.append("g")
-        .attr("class", "labels")
-        .selectAll("text")
-        .data(graph.nodes)
-        .enter().append("text")
-            .attr("class", "label")
-            .text(function(d) { return d.id; });
+        //var label = svg.append("g")
+        //.attr("class", "labels")
+        //.selectAll("text")
+        //.data(graph.nodes)
+        //.enter().append("text")
+        //    .attr("class", "label")
+        //    .text(function(d) { return d.id; });
 
         simulation
         .nodes(graph.nodes)
@@ -224,10 +224,10 @@ function tryS(struct)
             .attr("cx", function (d) { return d.x+5; })
             .attr("cy", function(d) { return d.y-3; });
 
-        label
-            .attr("x", function(d) { return d.x; })
-            .attr("y", function (d) { return d.y; })
-            .style("font-size", "10px").style("fill", "#333");
+        //label
+        //    .attr("x", function(d) { return d.x; })
+        //    .attr("y", function (d) { return d.y; })
+        //    .style("font-size", "10px").style("fill", "#333");
         }
     }
 
@@ -406,13 +406,13 @@ function tryS1(struct)
                         .style("opacity", 0);	
                 });
 
-        var label = svg.append("g")
-        .attr("class", "labels")
-        .selectAll("text")
-        .data(graph.nodes)
-        .enter().append("text")
-            .attr("class", "label")
-            .text(function(d) { return d.id; });
+        //var label = svg.append("g")
+        //.attr("class", "labels")
+        //.selectAll("text")
+        //.data(graph.nodes)
+        //.enter().append("text")
+        ///    .attr("class", "label")
+        //    .text(function(d) { return d.id; });
 
         simulation
         .nodes(graph.nodes)
@@ -457,10 +457,10 @@ function tryS1(struct)
             .attr("cx", function (d) { return d.x+5; })
             .attr("cy", function(d) { return d.y-3; });
 
-        label
-            .attr("x", function(d) { return d.x; })
-            .attr("y", function (d) { return d.y; })
-            .style("font-size", "10px").style("fill", "#333");
+        //label
+        //    .attr("x", function(d) { return d.x; })
+        //    .attr("y", function (d) { return d.y; })
+        //    .style("font-size", "10px").style("fill", "#333");
         }
     }
 
