@@ -1,25 +1,11 @@
 
-function removesvg(target){
-	// console.log("svg", target);
-	// d3.select("svg").remove();
-}
-
-// var map;
-// function RemoveExistingMap(target) {
-//     if (target != null) {
-//         target.remove();
-//         target = null;
-
-//     }
-// }
-
 var getMap = function(target){ 
-	console.log(map);
+	// console.log(map);
 	L.mapbox.accessToken = 'pk.eyJ1IjoiYW5haWszIiwiYSI6ImNqbWNkNTZ0bDBlM2Izb3M0MWQzNHZtYzEifQ.fLozOxjrg08I3StfKz0AhA'
     var map = L.mapbox.map(target, 'mapbox.dark', {maxZoom: 12, minZoom: 9})
 		.setView([41.77, -87.62], 10);
     
-	var drawMap = function(data, presdata, target, indi_pat){
+	var drawMap = function(data, presdata, target, indi_pat, selectedId = 0){
 
 		function project(latlng){
 			// var array = [+latlng.lat, +latlng.lon];
@@ -45,8 +31,7 @@ var getMap = function(target){
 				return coord;
 		}
 
-		// d3.select("svg").remove();
-		// d3.selectAll("g > *").remove()
+		
 		d3.selectAll(map.getPanes().overlayPane).remove();
 		var svgPatient = d3.select(map.getPanes().overlayPane).append("svg");
 		
@@ -59,22 +44,74 @@ var getMap = function(target){
 		var hoverdiv = d3.select("body").append("div")   
 			.attr("class", "tooltippatient")               
 			.style("opacity", 0);
-		// }
-		//    else{
-		//    	var hoverdiv = d3.select("body").append("div")   
-		//     .attr("class", "tooltippharmacy")               
-		//     .style("opacity", 0);
 
-		//    }
-	   
-	//         
 
-		var dots = svgPatient.selectAll("circle.dot")
-			.data(data, function(d) {return d.x/d.y;})
-			.enter()
-			.append('circle')
-			.attr('class','dot');
+		
+		var aggrepharmacy_pat = d3.nest()
+		  .key(function(d) { return d.pat_id;})
+		  .key(function(d) { return d.pharmacynpi;})
+		  // .key(function(d) { return d.pat_id;})
+		  .rollup(function(v) { return ( function(d) { return d.key.values; }); })
+		  .entries(presdata);
+
+		  var aggrepharmacy_doc = d3.nest()
+		  .key(function(d) { return d.physiciannpi;})
+		  .key(function(d) { return d.pharmacynpi;})
+		  // .key(function(d) { return d.pat_id;})
+		  .rollup(function(v) { return ( function(d) { return d.key.values; }); })
+		  .entries(presdata);  
+		  // console.log("doc data", aggrepharmacy_doc);
+
+		function findAllPharmacyIds(id){
+			if(id == 0){ return new Array(); }
+			
+			var pharmIds = [];
+			if(indi_pat){
+
+				for(i in aggrepharmacy_pat){
+					if(aggrepharmacy_pat[i].key == id){
+						for(j in aggrepharmacy_pat[i].values){
+							pharmIds[j] = aggrepharmacy_pat[i].values[j].key;
+						}
+						//console.log(pharmIds);
+						return pharmIds;
+					} 
+				}
+			} 
+			else{
+			 	for(i in aggrepharmacy_doc){
+					if(aggrepharmacy_doc[i].key == id){
+						for(j in aggrepharmacy_doc[i].values){
+							pharmIds[j] = aggrepharmacy_doc[i].values[j].key;
+						}
+						//console.log(pharmIds);
+						return pharmIds;
+			 		} 
+				}
+			}
+		}
+	   // var selectedId = "1855833";
+	   // console.log("firstpharm", pharmIds);
+		 if(target=="paths"||target=="paths2"){
+		 	d3.selectAll(".pathDot").remove();
+			var dots = svgPatient.selectAll("circle.pathDot")
+				.data(data.filter(function(d) { return findAllPharmacyIds(selectedId).includes(d.pharmacynpi);}))//, function(d) {return d.x/d.y;})
+				.enter()
+				.append('circle')
+				.attr('class','pathDot');
+			dots.exit().remove();
+		}
+		else{
+			var dots = svgPatient.selectAll("circle.dot")
+				.data(data)//, function(d) {return d.x/d.y;})
+				.enter()
+				.append('circle')
+				.attr('class','dot');
+		}
+
+	
 		var formatDots = g => 
+			// .filter(function(d) { return d.pharmacynpi == "787411294" })
 			g.attr('cx', function(d){ return project(findlatlng(d.x,d.y)).x;})
 			.attr('cy', function(d){ return project(findlatlng(d.x,d.y)).y;})
 			.attr('r','4')
@@ -82,6 +119,7 @@ var getMap = function(target){
 			.attr("fill", function (d) {  return getcolor(d);})
 			.attr('opacity', 0.8);
 		dots.call(formatDots);
+	
 
 		function tooltip(d){
 			var stringvalue;
@@ -99,20 +137,23 @@ var getMap = function(target){
 				return stringvalue;
 			}
 		}
+ 
 
-		var aggrepharmacy;
-		if(target=="paths"){
-		aggrepharmacy = d3.nest()
-		  .key(function(d) { return d.pat_id;})
-		  .key(function(d) { return d.pharmacynpi;})
-		  // .key(function(d) { return d.pharmacynpi;})
-		  .rollup(function(v) { return ( function(d) { return d.key.values; }); })
-		  .entries(presdata);  
-		  // console.log("aggrepharmacy", aggrepharmacy[0].values[0].key);
-		  // console.log("aggrepharmacy", aggrepharmacy);
+		function findPharmLoc(){
+			var pharmIds = findAllPharmacyIds();
+
+			// pharmIds.forEach(function(d){
+			// 	var obj = data.find(function(e){
+			// 		return d.pharmacynpi === e.pharmacynpi
+			// 	});
+				
+			// });
+
+			// console.log(pharmIds);
+			return pharmIds;
+
 		}
 
-		// console.log("aggrepharmacy", aggrepharmacy[0]);
 
 		function getcolor(d){
 
@@ -166,17 +207,28 @@ var getMap = function(target){
 					.style("opacity", 0);   
 					  });
 
-			// var pathLine = d3.svg.line()
-			// 	.interpolate("cardinal")
-			// 	.x(function(d) { return project(findlatlngpath(d.x,d.y)).x - topLeft.x; })
-			// 	.y(function(d) { return project(findlatlngpath(d.x,d.y)).y - topLeft.y; });
 
-			// if(target=="paths"||target=="paths2"){
-			// 	svgPatient.selectAll("path").remove();
-			// 	var haiyanPath = svgPatient.append("path")
-			// 		.attr("d",pathLine(data))
-			// 		.attr("class","path");
-			// }
+			var pathdiv = d3.select("body").append("div")   
+			.attr("class", "path")               
+			.style("opacity", 0);
+
+			var pathLine = d3.svg.line()
+				.interpolate("cardinal-open")
+				.x(function(d) { return project(findlatlngpath(d.x,d.y)).x - topLeft.x; })
+				.y(function(d) { return project(findlatlngpath(d.x,d.y)).y - topLeft.y; });
+
+			if(target=="paths"||target=="paths2"){
+				// pathLine.remove();
+
+				d3.selectAll("path").remove();
+				var haiyanPath = svgPatient.append("path")
+					// transition()
+				 //    .duration(500)
+				 //    .ease("linear")
+					.attr("d",pathLine(data.filter(function(d) { return findAllPharmacyIds(selectedId).includes(d.pharmacynpi);})))
+					.attr("class","path");
+			}
+
 		}     
 
 		render();

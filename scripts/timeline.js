@@ -18,6 +18,10 @@ function daysBetween(startDate, endDate) {
     return (treatAsUTC(endDate) - treatAsUTC(startDate)) / millisecondsPerDay;
 }
 
+function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
 var fillGaps = g => g.attr('shape-rendering', 'crispEdges');
 
 class TimeLine {
@@ -47,6 +51,7 @@ class TimeLine {
 		this.width = this.svg.node().clientWidth;
 		this.xOffset = .051*this.width;
 		this.setID(pat_id, dtype);
+		this.drawLegend();
 	}
 	
 	setID(iD, dtype= "Patient", start_date = null) {
@@ -59,6 +64,7 @@ class TimeLine {
 				.append('svg')
 				.attr('width','90%')
 				.attr('height', this.height + 'px');
+			this.drawLegend();
 		}
 		this.dtype = dtype;
 		d3.select('#timeline-title')
@@ -126,7 +132,6 @@ class TimeLine {
 		this.getTime();
 		this.drawSvg();
 		this.drawRects();
-		
 	}
 	
 	getTime(){
@@ -305,6 +310,31 @@ class TimeLine {
 		});
 	}
 	
+	drawLegend(){
+		var legend = this.svg.append('g')
+			.attr('class','legend');
+		legend.append('rect')
+			.attr('x', .1*this.width + 160 + 'px')
+			.attr('y', this.height - 15 + 'px')
+			.attr('height', "15px")
+			.attr('width', "15px")
+			.attr('fill', this.baseColor);
+		legend.append('text')
+			.attr('x', .1*this.width + 180 + 'px')
+			.attr('y', this.height - 3 + 'px')
+			.html('Active Prescriptions');
+		legend.append('rect')
+			.attr('x', .1*this.width + 330 + 'px')
+			.attr('y', this.height - 15 + 'px')
+			.attr('height', "15px")
+			.attr('width', "15px")
+			.attr('fill', 'red');
+		legend.append('text')
+			.attr('x', .1*this.width + 350 + 'px')
+			.attr('y', this.height - 3 + 'px')
+			.html('Prescriptions Fills');
+	}
+	
 	setupDrugFilter(target = '#gantt-chart'){
 		var filters = this.getDrugNames();
 		d3.selectAll('.drugFilter').remove();
@@ -319,7 +349,8 @@ class TimeLine {
 			.html("Filter By Drug:&nbsp");
 		var selectionMenu = selectionBox.append('select')
 			.style('margin', '0 auto')
-			.style('height','20px');
+			.style('height','20px')
+			.style('width', '50px');
 		selectionMenu.selectAll('option')
 			.data(filters)
 			.enter()

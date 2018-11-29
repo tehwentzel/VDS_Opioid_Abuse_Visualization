@@ -23,6 +23,7 @@
 	<script src="./scripts/timeline.js"></script>
 	<script src="./scripts/networkgraph.js"></script>
 	<script src='scripts/mapapp.js'></script>
+	<script src="scripts/inputSlider.js"></script>
 	<!-- <script src='scripts/mapdocapp.js'></script> -->
 
 </head>
@@ -30,9 +31,11 @@
 <body>
 
     <div class="container-fluid">
-		<div class="row">
-			<div class='col-md-6'>
-				<h3>Patient Locations</h3>
+		<div class="row mt-0 p-0">
+			<div class='col-md-6' id="patientHeader">
+				<h3 style="display:inline-block">
+					Patient Locations
+				</h3>
 			</div>
 			<div class='col-md-6'>
 				<h3>Pharmacy Locations (Placeholder)</h3>
@@ -78,6 +81,8 @@
         <input type="radio" name="people" id="patientRadioSwitch" value="1" checked>By Patients<br>
 		<input type="radio" name="people" id="doctorRadioSwitch" value="0" >By Doctors<br>
 	</div>
+	
+	<button type="button" id="backButton">Back</button>
 
     </div>
     <script>
@@ -91,44 +96,68 @@
 	
     function start_here(error, PHARMACY_LOC, DOCTOR_LOC, PATIENT_LOC,PRESCRIPTION_LOC,NODE_GRAPH) {
         if (error) return console.log(error);
+		valueSlider.setScale(PATIENT_LOC, DOCTOR_LOC, PHARMACY_LOC);
+		valueSlider.draw(PATIENT_LOC,"patient");
 		console.log("running");
+		var backStack = new Array();
 		var patientMap = getMap('patient');
 		var pathMap = getMap('paths');
 		var is_patient = true;
 		var selected_id = 2098621;
-		var change_indiLoc = function(PHARMACY_LOC, DOCTOR_LOC, PATIENT_LOC,PRESCRIPTION_LOC){
+		var currentSelection = {id: selected_id, type: "Patient"};
+		var initGraphOnClick = function(){
+			d3.select('.nodes').selectAll('circle').on('click',function(d){
+				if(d.group == 'patient' || d.group == 'doctor'){
+					backStack.push(currentSelection);
+					timeline.setID(d.id, capitalizeFirstLetter(d.group), null);
+					paths = pathMap(PHARMACY_LOC, PRESCRIPTION_LOC,'paths', (d.group == 'patient'), d.id);
+					d3.selectAll('.tooltippatient').remove();
+					CallingNodeGraph(d.id, NODE_GRAPH, d.group);
+					currentSelection = {id: d.id, type: capitalizeFirstLetter(d.group)};
+					initGraphOnClick();
+				}
+			});
+		}
+		var change_indiLoc = function(PHARMACY, DOCTOR, PATIENT,PRESCRIPTION){
 			var addresses;
 			var paths;
 			if(is_patient == true){
-				addresses = patientMap(PATIENT_LOC, PRESCRIPTION_LOC, 'patient', is_patient);
-				paths = pathMap(PHARMACY_LOC, PRESCRIPTION_LOC, 'paths', is_patient);
+				addresses = patientMap(PATIENT, PRESCRIPTION, 'patient', is_patient);
+				//paths = pathMap(PHARMACY, PRESCRIPTION, 'paths', is_patient);
+				valueSlider.draw(PATIENT_LOC, 'patient');
 				// console.log("count1", count)
 			}
 			else{
-				addresses = patientMap(DOCTOR_LOC, PRESCRIPTION_LOC, 'patient', is_patient);
-				paths = pathMap(PHARMACY_LOC, PRESCRIPTION_LOC,'paths', is_patient);
+				addresses = patientMap(DOCTOR, PRESCRIPTION, 'patient', is_patient);
+				//paths = pathMap(PHARMACY, PRESCRIPTION, 'paths', is_patient);
+				valueSlider.draw(DOCTOR_LOC, 'doctor');
 				// console.log("count2", count)
 			}
+			valueSlider.setOnClick(change_indiLoc,PHARMACY_LOC, DOCTOR_LOC, PATIENT_LOC,PRESCRIPTION_LOC);
+			addresses.call(setDotOnClick);
 			return [addresses, paths];
 		}
 		var setDotOnClick = g => g.on('click', function(d){
+			backStack.push(currentSelection);
 			if(is_patient){
 				timeline.setID(d.pat_id, "Patient", null);
 				CallingNodeGraph(d.pat_id, NODE_GRAPH, 'patient');
+				currentSelection = {id: d.pat_id, type: "Patient"};
+				paths = pathMap(PHARMACY_LOC, PRESCRIPTION_LOC,'paths', is_patient, d.pat_id);
 			}
 			else{
 				timeline.setID(d.physiciannpi, "Doctor", null);
 				CallingNodeGraph(d.physiciannpi, NODE_GRAPH, 'doctor');
+				currentSelection = {id: d.physiciannpi, type: "Doctor"};
+				paths = pathMap(PHARMACY_LOC, PRESCRIPTION_LOC, 'paths', is_patient, d.physiciannpi);
 			}
+			initGraphOnClick();
+			console.log(backStack);
 		});
-		
 		var [addresses, paths] = change_indiLoc(PHARMACY_LOC, DOCTOR_LOC, PATIENT_LOC,PRESCRIPTION_LOC);
-       
 		timeline = new TimeLine(selected_id, PRESCRIPTION_LOC, is_patient? "Patient":"Doctor");
-		//struct = createStruct(selected_id,NODE_GRAPH);
-        //tryS(struct);
-		CallingNodeGraph(selected_id, NODE_GRAPH, "patient")
-		addresses.call(setDotOnClick);
+		CallingNodeGraph(selected_id, NODE_GRAPH, "patient");
+		initGraphOnClick();
 		var patientSelection = d3.select("#radio").selectAll("input").on('click',function(d){
 			var was_patient = (is_patient)? true:false;
 			is_patient = document.getElementById("patientRadioSwitch").checked;
@@ -136,7 +165,14 @@
 			if(is_patient != was_patient){
 				d3.selectAll("circle.dot").remove();
 				[addresses, paths] = change_indiLoc(PHARMACY_LOC, DOCTOR_LOC, PATIENT_LOC,PRESCRIPTION_LOC);
-				addresses.call(setDotOnClick);
+			}
+		});
+		d3.select("#backButton").on('click',function(){
+			if(backStack.length > 0){
+				var previousItem = backStack.pop();
+				timeline.setID(previousItem.id, previousItem.type, null);
+				paths = pathMap(PHARMACY_LOC, PRESCRIPTION_LOC,'paths', (previousItem.type == 'Patient'), previousItem.id);
+				CallingNodeGraph(previousItem.id, NODE_GRAPH, previousItem.type.toLowerCase());
 			}
 		});
     }

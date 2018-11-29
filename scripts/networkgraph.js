@@ -164,22 +164,24 @@ function tryS(struct)
                         .duration(200)		
                         .style("opacity", .9);		
                     div	.html(d.group + "<br/>"  + d.id)	
-                        .style("left", (d3.event.pageX) + "px")		
+                        .style("left", (d3.event.pageX + 10) + "px")		
                         .style("top", (d3.event.pageY - 28) + "px");	
                     })					
-                .on("mouseout", function(d) {		
+                .on("mouseout", function(d) {	
+					div.style('left', 0)
+						.style('top',0);
                     div.transition()		
-                        .duration(500)		
-                        .style("opacity", 0);	
+                        .duration(100)		
+                        .style("opacity", 0)	
                 });
 
-        var label = svg.append("g")
-        .attr("class", "labels")
-        .selectAll("text")
-        .data(graph.nodes)
-        .enter().append("text")
-            .attr("class", "label")
-            .text(function(d) { return d.id; });
+        //var label = svg.append("g")
+        //.attr("class", "labels")
+        //.selectAll("text")
+        //.data(graph.nodes)
+        //.enter().append("text")
+        //    .attr("class", "label")
+        //    .text(function(d) { return d.id; });
 
         simulation
         .nodes(graph.nodes)
@@ -224,10 +226,10 @@ function tryS(struct)
             .attr("cx", function (d) { return d.x+5; })
             .attr("cy", function(d) { return d.y-3; });
 
-        label
-            .attr("x", function(d) { return d.x; })
-            .attr("y", function (d) { return d.y; })
-            .style("font-size", "10px").style("fill", "#333");
+        //label
+        //    .attr("x", function(d) { return d.x; })
+        //    .attr("y", function (d) { return d.y; })
+        //    .style("font-size", "10px").style("fill", "#333");
         }
     }
 
@@ -387,7 +389,7 @@ function tryS1(struct)
                     else if(d.dose>=30)
                     return "25";
                 })
-                .on("click",clicked)
+                //.on("click",clicked)
                 .call(d3.drag()
                 .on("start", dragstarted)
                 .on("drag", dragged)
@@ -397,22 +399,24 @@ function tryS1(struct)
                         .duration(200)		
                         .style("opacity", .9);		
                     div	.html(d.group + "<br/>"  + d.id)	
-                        .style("left", (d3.event.pageX) + "px")		
+                        .style("left", (d3.event.pageX + 10) + "px")		
                         .style("top", (d3.event.pageY - 28) + "px");	
                     })					
-                .on("mouseout", function(d) {		
+                .on("mouseleave", function(d) {
+					div.style('left',0)
+						.style('top',0);
                     div.transition()		
-                        .duration(500)		
+                        .duration(50)		
                         .style("opacity", 0);	
                 });
 
-        var label = svg.append("g")
-        .attr("class", "labels")
-        .selectAll("text")
-        .data(graph.nodes)
-        .enter().append("text")
-            .attr("class", "label")
-            .text(function(d) { return d.id; });
+        //var label = svg.append("g")
+        //.attr("class", "labels")
+        //.selectAll("text")
+        //.data(graph.nodes)
+        //.enter().append("text")
+        ///    .attr("class", "label")
+        //    .text(function(d) { return d.id; });
 
         simulation
         .nodes(graph.nodes)
@@ -457,10 +461,10 @@ function tryS1(struct)
             .attr("cx", function (d) { return d.x+5; })
             .attr("cy", function(d) { return d.y-3; });
 
-        label
-            .attr("x", function(d) { return d.x; })
-            .attr("y", function (d) { return d.y; })
-            .style("font-size", "10px").style("fill", "#333");
+        //label
+        //    .attr("x", function(d) { return d.x; })
+        //    .attr("y", function (d) { return d.y; })
+        //    .style("font-size", "10px").style("fill", "#333");
         }
     }
 
@@ -483,10 +487,10 @@ function tryS1(struct)
     if (!d3.event.active) simulation.alphaTarget(0);
     //simulation.unfix(d);
     }
-    function clicked(d){
-        console.log("heieie")
-        console.log("done")
-    }
+    //function clicked(d){
+    //    console.log("heieie")
+    //    console.log("done")
+    //}
 
     run(graph)
     }
