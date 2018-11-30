@@ -91,7 +91,7 @@ function tryS(struct)
         //       .radius(d => 40)
         //       .iterations(2)
         //     )
-        .force("center", d3.forceCenter(width / 2, height / 1.5));
+        .force("center", d3.forceCenter(width / 1.3, height / 1.5));
 
 
     var graph = 
