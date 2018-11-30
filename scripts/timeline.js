@@ -247,15 +247,15 @@ class TimeLine {
 			self.div.html("Date: " + d.toDateString() + '<br/>'
 				+ "Active Prescriptions: " + d.activeCount + '<br/>'
 				+ "Prescriptions Filled: " + d.fillCount + "<br/>")
-				.style('left', d3.event.pageX  + 'px')
-				.style('top', d3.event.pageY - 90 + 'px');
+				.style('left', d3.event.pageX + 10 + 'px')
+				.style('top', d3.event.pageY + 10 + 'px');
 			self.div.transition().duration(50).style('visibility','visible');
 			timeRectangles.on('mousemove',function(){
 				d3.select(this).transition().duration(20)
 					.attr('fill-opacity','1');
 				self.div.transition().duration(20)
 					.style('left', d3.event.pageX + 10 + 'px')
-					.style('top', d3.event.pageY - 90 + 'px');
+					.style('top', d3.event.pageY + 10 + 'px');
 			});
 		}).on("mouseout", function(){
 			self.div.transition().duration(50).style('visibility', 'hidden');
@@ -294,13 +294,13 @@ class TimeLine {
 				+ "physician ID: " + d.physiciannpi + "<br/>"
 				+ "Fill Date: " + d.filldate.toDateString() + '<br/>'
 				+ "Script Duration: " + d.days_supply + " days" +'<br/>')
-				.style('left', d3.event.pageX  + 'px')
-				.style('top', d3.event.pageY - 3.5*self.stepSize + 'px');
+				.style('left', d3.event.pageX + 10 + 'px')
+				.style('top', d3.event.pageY + 10 + 'px');
 			
 			tooltipRects.on("mousemove", function(){
 				self.div.transition().duration(20)
-					.style('left', d3.event.pageX + 'px')
-					.style('top', d3.event.pageY - 3.5*self.stepSize + 'px');
+					.style('left', d3.event.pageX + 10 + 'px')
+					.style('top', d3.event.pageY + 10 + 'px');
 			});
 		}).on("mouseout", function(){
 			d3.select(this).transition()
@@ -322,7 +322,8 @@ class TimeLine {
 		legend.append('text')
 			.attr('x', .1*this.width + 180 + 'px')
 			.attr('y', this.height - 3 + 'px')
-			.html('Active Prescriptions');
+			.html('Active Prescriptions')
+			.style('stroke','white');
 		legend.append('rect')
 			.attr('x', .1*this.width + 330 + 'px')
 			.attr('y', this.height - 15 + 'px')
@@ -332,7 +333,8 @@ class TimeLine {
 		legend.append('text')
 			.attr('x', .1*this.width + 350 + 'px')
 			.attr('y', this.height - 3 + 'px')
-			.html('Prescriptions Fills');
+			.html('Prescriptions Fills')
+			.style('stroke','white');
 	}
 	
 	setupDrugFilter(target = '#gantt-chart'){
@@ -346,7 +348,8 @@ class TimeLine {
 			.style('height','18px');
 		selectionBox.append('p')
 			.style('display','inline-block')
-			.html("Filter By Drug:&nbsp");
+			.html("Filter By Drug:&nbsp")
+			.style('color','white');
 		var selectionMenu = selectionBox.append('select')
 			.style('margin', '0 auto')
 			.style('height','20px')

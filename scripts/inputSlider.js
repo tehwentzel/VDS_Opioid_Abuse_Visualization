@@ -9,13 +9,13 @@ var colorSelector = function(patient_data, doctor_data, pharmacy_data){
 	
 	var patientScale = d3.scaleLinear()
 		.domain([patientMin, patientMean, patientMax])
-		.range([95, 50, 10]);
+		.range([100, 50, 0]);
 	var doctorScale = d3.scaleLog()
 		.domain([doctorMin, doctorMax])
-		.range([90,0]);
+		.range([100,0]);
 	var pharmacyScale = d3.scaleLinear()
 		.domain([pharmacyMin, pharmacyMax])
-		.range([90,0]);
+		.range([100,0]);
 		
 	var getColor = function (value, type){
 		switch(type.toLowerCase()){
@@ -31,7 +31,7 @@ var colorSelector = function(patient_data, doctor_data, pharmacy_data){
 }
 
 
-var valueSlider = (function(height = 50, width = 400){
+var valueSlider = (function(height = 60, width = 400){
 	var public = {};
 	var height = height;
 	var width = width;
@@ -42,6 +42,7 @@ var valueSlider = (function(height = 50, width = 400){
 	var filter_value;
 	var target;
 	var sliderRect;
+	var overlayRects;
 	var isSetup = false;
 	public.setScale = function(patient_data, doctor_data, pharmacy_data){
 		getColor = colorSelector(patient_data, doctor_data, pharmacy_data);
@@ -69,7 +70,7 @@ var valueSlider = (function(height = 50, width = 400){
 			var minValue = d3.min(data, function(d){ return getValue(d, target); });
 			var endValue;
 			if(target == 'patient'){
-				endValue = .7*d3.max(data, function(d){ return getValue(d, target); });
+				endValue = .9*d3.max(data, function(d){ return getValue(d, target); });
 			}
 			else{
 				endValue = d3.mean(data, function(d){ return getValue(d, target); }) 
@@ -97,18 +98,28 @@ var valueSlider = (function(height = 50, width = 400){
 				.enter()
 				.append('rect')
 				.attr('class','valueSliderSegment')
-				.attr('height', .4*height)
+				.attr('height', .3*height)
 				.attr('width', rectWidth)
 				.attr('x', function(d){return d.xPosition;})
-				.attr('y',.4*height)
+				.attr('y',.6*height)
 				.attr('fill', function(d){return d.color;});
+			overlayRects = svg.selectAll('rect.invisibleRectangles')
+				.data(colors)
+				.enter()
+				.append('rect')
+				.attr('class','invisibleRectangles')
+				.attr('height', 2*height)
+				.attr('width', rectWidth)
+				.attr('x', function(d){return d.xPosition;})
+				.attr('y', -height)
+				.attr('opacity', 0);
 			d3.select("#patientHeader").selectAll(".valueSliderHandle").remove();
 			sliderRect = d3.select("#patientHeader").select(".slider").insert('circle')
 				.attr('class',"valueSliderHandle")
 				.attr('fill','black')
 				.attr('cx', xOffset + rectWidth)
-				.attr('cy',.4*height + .2*height)
-				.attr('r', height/3);
+				.attr('cy',.6*height + .15*height)
+				.attr('r', height/4);
 			isSetup = true;
 		}
 	}
@@ -118,7 +129,7 @@ var valueSlider = (function(height = 50, width = 400){
 		sliderRect.on('mousedown', function(g,i){
 			var handle = d3.select(this);
 			d3.event.preventDefault();
-			sliderSegments.on('mouseover', function(d){
+			overlayRects.on('mouseover', function(d){
 				handle.transition().duration(40)
 					.attr('cx', d.xPosition);
 				filter_value = d.value;
@@ -134,7 +145,7 @@ var valueSlider = (function(height = 50, width = 400){
 					console.log(doctor_data.length);
 					d3.selectAll("circle.dot").remove();
 					changeFunction(pharm_data, doctor_data, patient_data, prescription_data);
-					sliderSegments.on('mouseover',null);
+					overlayRects.on('mouseover',null);
 					d3.select("#patientHeader").on('mouseleave',null);
 				});
 		}).on('mouseup',function(h){
@@ -147,7 +158,7 @@ var valueSlider = (function(height = 50, width = 400){
 			console.log(doctor_data.length);
 			d3.selectAll("circle.dot").remove();
 			changeFunction(pharm_data, doctor_data, patient_data, prescription_data);
-			sliderSegments.on('mouseover',null);
+			overlayRects.on('mouseover',null);
 			d3.select("#patientHeader").on('mouseleave',null);
 		});
 		

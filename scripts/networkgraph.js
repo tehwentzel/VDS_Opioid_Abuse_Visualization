@@ -129,7 +129,7 @@ function tryS(struct)
 
         var div = d3.select("body").append("div")	
             .attr("class", "tooltippatient")				
-            .style("opacity", 0);
+            .style("opacity", .9);
 
 
         var link = svg.append("g")
@@ -159,20 +159,18 @@ function tryS(struct)
                     .on("start", dragstarted)
                     .on("drag", dragged)
                     .on("end", dragended))
-                .on("mouseover", function(d) {		
+                .on("mouseover", function(d) {
                     div.transition()		
                         .duration(200)		
-                        .style("opacity", .9);		
-                    div	.html(d.group + "<br/>"  + d.id)	
+                        .style("visibility", 'visible');		
+                    div.html(d.group + "<br/>"  + d.id)	
                         .style("left", (d3.event.pageX + 10) + "px")		
                         .style("top", (d3.event.pageY - 28) + "px");	
                     })					
                 .on("mouseout", function(d) {	
-                    div.style('left', 0)
-                        .style('top',0);
                     div.transition()		
                         .duration(100)		
-                        .style("opacity", 0)	
+                        .style("visibility", 'hidden')	
                 });
      
         function zoom() {
@@ -368,7 +366,8 @@ function tryS1(struct)
 
         var div = d3.select("body").append("div")	
             .attr("class", "tooltippatient")				
-            .style("opacity", 0);
+            .style("visibility", 'visible')
+			.style('opacity', .9);
 
 
         var link = svg.append("g")
@@ -398,20 +397,18 @@ function tryS1(struct)
                 .on("start", dragstarted)
                 .on("drag", dragged)
                 .on("end", dragended))
-                .on("mouseover", function(d) {		
+                .on("mouseover", function(d) {
                     div.transition()		
                         .duration(200)		
-                        .style("opacity", .9);		
+                        .style("visibility", 'visible');		
                     div	.html(d.group + "<br/>"  + d.id)	
                         .style("left", (d3.event.pageX + 10) + "px")		
                         .style("top", (d3.event.pageY - 28) + "px");	
                     })					
                 .on("mouseleave", function(d) {
-					div.style('left',0)
-						.style('top',0);
                     div.transition()		
                         .duration(50)		
-                        .style("opacity", 0);	
+                        .style("visibility", 'hidden');	
                 });
 
         //var label = svg.append("g")

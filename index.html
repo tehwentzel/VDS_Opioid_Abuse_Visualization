@@ -107,6 +107,7 @@
 		var selected_id = 2098621;
 		var currentSelection = {id: selected_id, type: "Patient"};
 		var initGraphOnClick = function(selected_id){
+			console.log('graphOnClick ', d3.select('.nodes').selectAll('circle').length);
 			d3.select('.nodes').selectAll('circle').on('click',function(d){
 				if(d.group == 'patient' || d.group == 'doctor'){
 					console.log("selected_id", selected_id);
@@ -160,6 +161,7 @@
 		timeline = new TimeLine(selected_id, PRESCRIPTION_LOC, is_patient? "Patient":"Doctor");
 		CallingNodeGraph(selected_id, NODE_GRAPH, "patient");
 		initGraphOnClick();
+		paths = pathMap(PHARMACY_LOC, PRESCRIPTION_LOC, 'paths', is_patient, selected_id);
 		var patientSelection = d3.select("#radio").selectAll("input").on('click',function(d){
 			var was_patient = (is_patient)? true:false;
 			is_patient = document.getElementById("patientRadioSwitch").checked;
@@ -175,6 +177,7 @@
 				timeline.setID(previousItem.id, previousItem.type, null);
 				paths = pathMap(PHARMACY_LOC, PRESCRIPTION_LOC,'paths', (previousItem.type == 'Patient'), previousItem.id);
 				CallingNodeGraph(previousItem.id, NODE_GRAPH, previousItem.type.toLowerCase());
+				initGraphOnClick();
 			}
 		});
     }
