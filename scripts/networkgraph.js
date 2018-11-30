@@ -198,7 +198,8 @@ function tryS(struct)
             .attr("x1", function(d) { return d.source.x; })
             .attr("y1", function(d) { return d.source.y; })
             .attr("x2", function(d) { return d.target.x; })
-            .attr("y2", function(d) { return d.target.y; });
+            .attr("y2", function(d) { return d.target.y; })
+            .style("opacity",0.5);
 
         node
             .attr("r", function(d){
@@ -226,6 +227,7 @@ function tryS(struct)
                 }})
             .style("stroke", "#424242")
             .style("stroke-width", "1px")
+            .style("opacity",0.9)
             .attr("cx", function (d) { return d.x+5; })
             .attr("cy", function(d) { return d.y-3; });
 
@@ -440,7 +442,8 @@ function tryS1(struct)
             .attr("x1", function(d) { return d.source.x; })
             .attr("y1", function(d) { return d.source.y; })
             .attr("x2", function(d) { return d.target.x; })
-            .attr("y2", function(d) { return d.target.y; });
+            .attr("y2", function(d) { return d.target.y; })
+            .style("opacity",0.5);
 
         node
             .attr("r", function(d){
@@ -468,6 +471,8 @@ function tryS1(struct)
                 }})
             .style("stroke", "#424242")
             .style("stroke-width", "1px")
+            .style("opacity",0.9)
+
             .attr("cx", function (d) { return d.x+5; })
             .attr("cy", function(d) { return d.y-3; });
 
