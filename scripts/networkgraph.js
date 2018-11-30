@@ -156,9 +156,9 @@ function tryS(struct)
                 })
                 .on("click",clicked)
                 .call(d3.drag()
-                .on("start", dragstarted)
-                .on("drag", dragged)
-                .on("end", dragended))
+                    .on("start", dragstarted)
+                    .on("drag", dragged)
+                    .on("end", dragended))
                 .on("mouseover", function(d) {		
                     div.transition()		
                         .duration(200)		
@@ -168,28 +168,32 @@ function tryS(struct)
                         .style("top", (d3.event.pageY - 28) + "px");	
                     })					
                 .on("mouseout", function(d) {	
-					div.style('left', 0)
-						.style('top',0);
+                    div.style('left', 0)
+                        .style('top',0);
                     div.transition()		
                         .duration(100)		
                         .style("opacity", 0)	
                 });
+     
+        function zoom() {
+            node.attr("transform", d3.event.transform);
+            link.attr("transform", d3.event.transform);
+          }
+        var zoom_handler = d3.zoom()
+                                .scaleExtent([0.2, 8])
+                                .on("zoom", zoom);
+        zoom_handler(svg);
+        
 
-        //var label = svg.append("g")
-        //.attr("class", "labels")
-        //.selectAll("text")
-        //.data(graph.nodes)
-        //.enter().append("text")
-        //    .attr("class", "label")
-        //    .text(function(d) { return d.id; });
 
         simulation
         .nodes(graph.nodes)
         .on("tick", ticked);
-
+        
         simulation.force("link")
         .links(graph.links);
 
+      
         function ticked() {
         link
             .attr("x1", function(d) { return d.source.x; })
@@ -424,7 +428,15 @@ function tryS1(struct)
 
         simulation.force("link")
         .links(graph.links);
-
+        function zoom() {
+            node.attr("transform", d3.event.transform);
+            link.attr("transform", d3.event.transform);
+          }
+        var zoom_handler = d3.zoom()
+                                .scaleExtent([0.2, 8])
+                                .on("zoom", zoom);
+        zoom_handler(svg);
+        
         function ticked() {
         link
             .attr("x1", function(d) { return d.source.x; })
@@ -467,7 +479,7 @@ function tryS1(struct)
         //    .style("font-size", "10px").style("fill", "#333");
         }
     }
-
+    
     function dragstarted(d) {
     if (!d3.event.active) simulation.alphaTarget(0.3).restart()
     d.fx = d.x
