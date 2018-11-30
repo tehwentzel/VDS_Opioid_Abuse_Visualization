@@ -31,7 +31,7 @@ var colorSelector = function(patient_data, doctor_data, pharmacy_data){
 }
 
 
-var valueSlider = (function(height = 60, width = 500){
+var valueSlider = (function(height = 40, width = 500){
 	var public = {};
 	var height = height;
 	var width = width;
@@ -102,24 +102,24 @@ var valueSlider = (function(height = 60, width = 500){
 				.attr('height', .3*height)
 				.attr('width', rectWidth)
 				.attr('x', function(d){return d.xPosition;})
-				.attr('y',.6*height)
+				.attr('y',.4*height)
 				.attr('fill', function(d){return d.color;});
 			overlayRects = svg.selectAll('rect.invisibleRectangles')
 				.data(colors)
 				.enter()
 				.append('rect')
 				.attr('class','invisibleRectangles')
-				.attr('height', 2*height)
+				.attr('height', height)
 				.attr('width', rectWidth)
 				.attr('x', function(d){return d.xPosition;})
-				.attr('y', -height)
+				.attr('y', 0)
 				.attr('opacity', 0);
 			d3.select("#patientHeader").selectAll(".valueSliderHandle").remove();
 			sliderRect = d3.select("#patientHeader").select(".slider").insert('circle')
 				.attr('class',"valueSliderHandle")
 				.attr('fill','black')
 				.attr('cx', xOffset + rectWidth)
-				.attr('cy',.6*height + .15*height)
+				.attr('cy',.4*height + .15*height)
 				.attr('r', height/4);
 			isSetup = true;
 		}

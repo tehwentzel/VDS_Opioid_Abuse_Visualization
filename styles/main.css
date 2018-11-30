@@ -71,6 +71,16 @@ svg .path {
   background: black;
 }
 
+#patientHeader{
+  position: absolute;
+  top: 400px;
+  left: 8%;
+  /*color: #efedf5;*/
+  width: 500px;
+  height:40px;
+  bottom: 190px;
+}
+
 .back{
   position: absolute;
   top: 20%;
