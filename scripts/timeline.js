@@ -68,7 +68,8 @@ class TimeLine {
 		}
 		this.dtype = dtype;
 		d3.select('#timeline-title')
-			.html('Prescriptions vs Time&nbsp&nbsp&nbsp&nbsp&nbsp ' +  this.dtype + ' ID: ' + iD);
+			// .html('Prescriptions vs Time&nbsp&nbsp&nbsp&nbsp&nbsp ' +  this.dtype + ' ID: ' + iD);
+			.html(': ' + iD);
 		this.id = iD;	
 		switch(this.dtype){
 			case 'Doctor':

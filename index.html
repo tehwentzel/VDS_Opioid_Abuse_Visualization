@@ -31,64 +31,77 @@
 <body>
 
     <div class="container-fluid">
-		
-		<div class="row mt-0 p-0">
-			<div class='col-md-6'>
-				<h4 style="display:inline-block; color:gray">
-					Patient/Doctor Locations
-				</h4>
+			<div class="row mt-0 p-0">
+			<div class='col-md-2'>
+				<!-- <img id="imgsrc" src="patient.svg"><h4 id='timeline-title' class='id'>: 2098621</h4> -->
 			</div>
-			<div class='col-md-6'>
-				<h4 style="color:gray">Pharmacy Locations</h4>
+			<div class='col-md-8'>
+				<center><h3 class="class="jumbotron" style="display:inline-block; color:lightgray;">
+					Identifying Opioid Abuse in Chicagoland Area
+				</h3></center>
 			</div>
+			<div class='col-md-2'>
+				<img id="imgsrc" src="images/patient.svg"><h4 id='timeline-title' class='id'>: 2098621</h4>
+			</div>
+			
 		</div>
+		
 		<div class="row" id="maps">
-            <div class="col-md-6" id="patient">
+            <div class="col-md-6" id="patient" style="border: 5px solid black; border-left: 10px solid black">
                 <svg width=400px id="patsvg" height="400px"></svg>
                
             </div>
-			<div class="col-md-6" id="paths">
+			<div class="col-md-6" id="paths" style="border: 5px solid black; border-right: 10px solid black">
                 <svg width=400px id="pathsvg" height="400px"></svg>
             </div>
         </div>
-        <div class="row" id="maps2" style="display:none">
+        <div class="row" id="maps2" style="display:none" style="border: 5px solid black">
             <div class="col-md-6" id="patient2">
                 <svg width=100% id="patsvg" height="400px"></svg>
                
             </div>
-			<div class="col-md-6" id="paths2">
+			<div class="col-md-6" id="paths2" style="border: 5px solid black">
                 <svg width=100% id="pathsvg" height="400px">
                  </svg>
             </div>
         </div>
 		<div class="row">
 			<div class='col-md-6'>
-				<h4 style="color:gray">Patient-Doctor/Pharmacy Connections</h4>
+				<h4 style="color:gray" class="divnames">Entity Relationships</h4>
 			</div>
 			<div class='col-md-6'>
-				<h4 id='timeline-title' style="color:gray">Patient prescriptions vs Time</h4>
+				<h4 style="color:gray" class="divnames">Prescriptions vs Time</h4>
 			</div>
 		</div>
-        <div class="row" id="gantt-items" style="background-color: #202020">
-			<div class="col-md-6" id="network">
+        <div class="row" id="gantt-items" style="background-color: #202020; border: 5px solid black; border-left: 10px solid black;border-right: 10px solid black">
+			<div class="col-md-6" id="network" style="border-right: 5px solid black">
 			 </div>
-			<div class="col-md-6" id="gantt-chart">
+			<div class="col-md-6" id="gantt-chart" style="border-left: 5px solid black">
 			</div>
-			<div class="col-md-6" id="gantt-filters" height='200px'>
+			<div class="col-md-6" id="gantt-filters"  style="border-left: 5px solid black" >
 			</div>
        </div>
 	   
 	<div id="radio">
-        <input type="radio" name="people" id="patientRadioSwitch" value="1" checked>By Patients<br>
-		<input type="radio" name="people" id="doctorRadioSwitch" value="0" >By Doctors<br>
+        <input type="radio" name="people" id="patientRadioSwitch" value="1" checked>Patients<br>
+		<input type="radio" name="people" id="doctorRadioSwitch" value="0" >Doctors<br>
 	</div>
-	
+	<div>
+				<h4 style="display:inline-block; color:gray" class="divnames2">
+					Patient Locations
+				</h4>
+			</div>
+			<div>
+				<h4 style="color:gray" class="divnames3">Pharmacy Paths</h4>
+			</div>
+		
 	<button type="button" class="back" id="backButton">Back</button>
 	<div id="patientHeader">
 	</div>
 
     </div>
     <script>
+
 	d3.queue()
     .defer(d3.csv,"https://gist.githubusercontent.com/tehwentzel/24bf8357ad86a3db70510480b020d7d3/raw/4468783d3445b83b4350ac1c1327a0b592c8cfdf/455_pharmacies.csv")
     .defer(d3.csv,"https://gist.githubusercontent.com/tehwentzel/24bf8357ad86a3db70510480b020d7d3/raw/4468783d3445b83b4350ac1c1327a0b592c8cfdf/500_doctors.csv")
@@ -168,6 +181,8 @@
 			var was_patient = (is_patient)? true:false;
 			is_patient = document.getElementById("patientRadioSwitch").checked;
 			if(is_patient != was_patient){
+				d3.select(".divnames2").text( (is_patient? "Patient": "Doctor") + " Locations");
+				$('#imgsrc').attr('src', (is_patient? "images/patient.svg": "images/doctor.svg"));
 				d3.selectAll("circle.dot").remove();
 				[addresses, paths] = change_indiLoc(PHARMACY_LOC, DOCTOR_LOC, PATIENT_LOC,PRESCRIPTION_LOC);
 			}

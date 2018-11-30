@@ -13,6 +13,11 @@ body {
 }
 }
 
+.leaflet-bottom.leaflet-right{
+  opacity: 0;
+
+}
+
 .mapbox-improve-map {
     display: none;
 }
@@ -59,10 +64,10 @@ svg .path {
 
 #radio{
   position: absolute;
-  top: 13%;
+  top: 18%;
   left: 40%;
   /*color: #efedf5;*/
-  width: 100px;
+  width: 80px;
   height:50px;
   bottom: 190px;
   color: white;
@@ -81,12 +86,78 @@ svg .path {
   bottom: 190px;
 }
 
+.divnames{
+  position: absolute;
+  top: 5%;
+  right: 1%;
+  /*color: #efedf5;*/
+  width: 200px;
+  height:50px;
+  /*bottom: 190px;*/
+  color: white;
+  /*border: 1px solid darkgray;*/
+  /*border-radius: 4px;*/
+  /*background: black;*/
+}
+
+#imgsrc{
+  width:30px;
+  height:30px;
+  position: relative;
+  margin-top:8%;
+}
+
+.id{
+  position: absolute;
+  top:20%;
+  right: 32%;
+  color: gray;
+  width: 120px;
+  height:50px;
+  /*bottom: 190px;*/
+  /*color: white;*/
+ /* border: 1px solid darkgray;
+  border-radius: 4px;
+  background: black;*/
+}
+
+.divnames2{
+  position: absolute;
+  top:8%;
+  left: 36%;
+  /*color: #efedf5;*/
+  width: 200px;
+  height:50px;
+  /*bottom: 190px;*/
+  color: white;
+  
+ /* border: 1px solid darkgray;
+  border-radius: 4px;
+  background: black;*/
+}
+
+.divnames3{
+  position: absolute;
+  top: 8%;
+  right: 1%;
+  /*color: #efedf5;*/
+  width: 150px;
+  height:50px;
+  bottom: 190px;
+  color: white;
+  /*border: 1px solid darkgray;
+  border-radius: 4px;
+  background: black;*/
+}
+
+
+
 .back{
   position: absolute;
-  top: 20%;
+  top: 25%;
   left: 40%;
   /*color: #efedf5;*/
-  width: 100px;
+  width: 80px;
   height:50px;
   bottom: 190px;
   color: white;
