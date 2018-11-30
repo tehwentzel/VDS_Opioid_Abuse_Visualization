@@ -31,7 +31,7 @@ var colorSelector = function(patient_data, doctor_data, pharmacy_data){
 }
 
 
-var valueSlider = (function(height = 60, width = 400){
+var valueSlider = (function(height = 60, width = 500){
 	var public = {};
 	var height = height;
 	var width = width;
@@ -92,7 +92,8 @@ var valueSlider = (function(height = 60, width = 400){
 				.append('svg')
 				.attr('class','slider')
 				.attr('width', width + 'px')
-				.attr('height', height + 'px');
+				.attr('height', height + 'px')
+				.attr('shape-rendering', 'crispEdges');
 			sliderSegments = svg.selectAll('rect.valueSliderSegment')
 				.data(colors)
 				.enter()
