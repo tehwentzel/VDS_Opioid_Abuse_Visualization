@@ -4,7 +4,7 @@ function createStruct(selected_id,NODE_GRAPH)
     struct.nodes=[];
     struct.links=[];
     
-    struct.nodes.push({"id":selected_id,"group":"patient"});
+    struct.nodes.push({"id":selected_id,"group":"Patient"});
     NODE_GRAPH.forEach(function(d)
         {
         if (d.pat_id==selected_id)
@@ -21,7 +21,7 @@ function createStruct(selected_id,NODE_GRAPH)
                     if(animal.id==d.pharmacynpi){hasMatchPHA=true;animal.dose=animal.dose+d.days_supply}
                     }
                 if(hasMatchPHY==false){
-                    hospital_node = {"id":d.physiciannpi,"group":"hospital","dose":d.days_supply};
+                    hospital_node = {"id":d.physiciannpi,"group":"Hospital","dose":d.days_supply};
                     struct.nodes.push(hospital_node);
                     hospital_link={"source":selected_id,"target":d.physiciannpi}
                     struct.links.push(hospital_link);
@@ -40,7 +40,7 @@ function createStruct(selected_id,NODE_GRAPH)
                     }
                 if(hasMatchPHY==false)
                     {
-                    doctor_node = {"id":d.physiciannpi,"group":"doctor","dose":d.days_supply};
+                    doctor_node = {"id":d.physiciannpi,"group":"Doctor","dose":d.days_supply};
                     struct.nodes.push(doctor_node);
                     doctor_link={"source":selected_id,"target":d.physiciannpi}
                     struct.links.push(doctor_link);
@@ -48,7 +48,7 @@ function createStruct(selected_id,NODE_GRAPH)
               
                 if(hasMatchPHA==false)
                     {
-                    pharmacy_node={"id":d.pharmacynpi,"group":"pharmacy","dose":d.days_supply};
+                    pharmacy_node={"id":d.pharmacynpi,"group":"Pharmacy","dose":d.days_supply};
                     struct.nodes.push(pharmacy_node);
                     pharmacy_link={"source":selected_id,"target":d.pharmacynpi}
                     struct.links.push(pharmacy_link);
@@ -202,7 +202,7 @@ function tryS(struct)
         node
             .attr("r", function(d){
                 
-                if(d.group=="patient")
+                if(d.group=="Patient")
                     return 15
                 if (d.dose<=10)
                     return 7;
@@ -214,11 +214,11 @@ function tryS(struct)
                     return 30;
             })
             .style("fill", function(d){
-                if(d.group=="patient") 
+                if(d.group=="Patient") 
                     return "#FF6600";
-                if(d.group=="pharmacy")
+                if(d.group=="Pharmacy")
                     return "#1ECAEC";
-                if(d.group=="doctor")
+                if(d.group=="Doctor")
                     return "green"
                 else{
                     return "#FFFF33";
@@ -272,7 +272,7 @@ function tryS(struct)
     struct.nodes=[];
     struct.links=[];
     
-    struct.nodes.push({"id":selected_id,"group":"doctor"});
+    struct.nodes.push({"id":selected_id,"group":"Doctor"});
     NODE_GRAPH.forEach(function(d)
         {
         if (d.physiciannpi==selected_id)
@@ -286,7 +286,7 @@ function tryS(struct)
                     }
                 if(hasMatchPHY==false)
                     {
-                    pat_node = {"id":d.pat_id,"group":"patient","dose":d.days_supply};
+                    pat_node = {"id":d.pat_id,"group":"Patient","dose":d.days_supply};
                     struct.nodes.push(pat_node);
                     pat_link={"source":selected_id,"target":d.pat_id}
                     struct.links.push(pat_link);
@@ -444,7 +444,7 @@ function tryS1(struct)
         node
             .attr("r", function(d){
                 
-                if(d.group=="doctor")
+                if(d.group=="Doctor")
                     return 15
                 if (d.dose<=10)
                     return 7;
@@ -456,11 +456,11 @@ function tryS1(struct)
                     return 30;
             })
             .style("fill", function(d){
-                if(d.group=="patient") 
+                if(d.group=="Patient") 
                     return "#FF6600";
-                if(d.group=="pharmacy")
+                if(d.group=="Pharmacy")
                     return "#1ECAEC";
-                if(d.group=="doctor")
+                if(d.group=="Doctor")
                     return "green"
                 else{
                     return "#FFFF33";
