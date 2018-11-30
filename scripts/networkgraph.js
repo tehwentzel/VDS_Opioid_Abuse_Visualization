@@ -60,7 +60,7 @@ function createStruct(selected_id,NODE_GRAPH)
         
        
 
-    console.log(struct)
+    //console.log(struct)
     return struct;  
 }
 
@@ -128,7 +128,8 @@ function tryS(struct)
         });           
 
         var div = d3.select("body").append("div")	
-            .attr("class", "tooltippatient")				
+            .attr("class", "tooltippatient")
+			.style('visibility', 'hidden')
             .style("opacity", .9);
 
 
@@ -297,7 +298,7 @@ function tryS(struct)
         
        
 
-    console.log(struct)
+    //console.log(struct)
     return struct;  
 }
 
@@ -366,7 +367,7 @@ function tryS1(struct)
 
         var div = d3.select("body").append("div")	
             .attr("class", "tooltippatient")				
-            .style("visibility", 'visible')
+            .style("visibility", 'hidden')
 			.style('opacity', .9);
 
 
@@ -401,7 +402,7 @@ function tryS1(struct)
                     div.transition()		
                         .duration(200)		
                         .style("visibility", 'visible');		
-                    div	.html(d.group + "<br/>"  + d.id)	
+                    div	.html(d.group + "<br/>"  + d.id)
                         .style("left", (d3.event.pageX + 10) + "px")		
                         .style("top", (d3.event.pageY - 28) + "px");	
                     })					
@@ -510,7 +511,7 @@ function tryS1(struct)
 
     function CallingNodeGraph(selected_id,NODE_GRAPH,type)
     {
-        if (type=="patient")
+        if (type=="Patient")
         {
             struct=createStruct(selected_id,NODE_GRAPH);
 			tryS(struct);
