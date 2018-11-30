@@ -154,7 +154,7 @@ function tryS(struct)
                     else if(d.dose>=30)
                     return "25";
                 })
-                .on("click",clicked)
+                //.on("click",clicked)
                 .call(d3.drag()
                     .on("start", dragstarted)
                     .on("drag", dragged)

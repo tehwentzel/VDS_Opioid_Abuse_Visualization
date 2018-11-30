@@ -99,9 +99,10 @@
 		valueSlider.setScale(PATIENT_LOC, DOCTOR_LOC, PHARMACY_LOC);
 		valueSlider.draw(PATIENT_LOC,"patient");
 		console.log("running");
+		colorPicker = colorSelector(PATIENT_LOC, DOCTOR_LOC, PHARMACY_LOC);
 		var backStack = new Array();
-		var patientMap = getMap('patient');
-		var pathMap = getMap('paths');
+		var patientMap = getMap('patient', colorPicker);
+		var pathMap = getMap('paths', colorPicker);
 		var is_patient = true;
 		var selected_id = 2098621;
 		var currentSelection = {id: selected_id, type: "Patient"};
@@ -153,7 +154,7 @@
 				paths = pathMap(PHARMACY_LOC, PRESCRIPTION_LOC, 'paths', is_patient, d.physiciannpi);
 			}
 			initGraphOnClick();
-			console.log(backStack);
+			//console.log(backStack);
 		});
 		var [addresses, paths] = change_indiLoc(PHARMACY_LOC, DOCTOR_LOC, PATIENT_LOC,PRESCRIPTION_LOC);
 		timeline = new TimeLine(selected_id, PRESCRIPTION_LOC, is_patient? "Patient":"Doctor");

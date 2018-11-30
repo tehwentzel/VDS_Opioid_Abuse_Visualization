@@ -1,20 +1,21 @@
 var colorSelector = function(patient_data, doctor_data, pharmacy_data){
 	var patientMax = d3.max(patient_data, function(d){return d.overflow_idx;});
 	var patientMin = d3.min(patient_data, function(d){return d.overflow_idx;});
+	var patientMean = d3.mean(patient_data, function(d){return d.overflow_idx;});
 	var doctorMax = d3.max(doctor_data, function(d){return d.patient_count;});
 	var doctorMin =  d3.min(doctor_data, function(d){return d.patient_count;});
 	var pharmacyMax = d3.max(pharmacy_data, function(d){return d.patient_count;});
 	var pharmacyMin =  d3.min(pharmacy_data, function(d){return d.patient_count;});
 	
 	var patientScale = d3.scaleLinear()
-		.domain([patientMin, patientMax])
-		.range([100,0]);
-	var doctorScale = d3.scaleLinear()
+		.domain([patientMin, patientMean, patientMax])
+		.range([95, 50, 10]);
+	var doctorScale = d3.scaleLog()
 		.domain([doctorMin, doctorMax])
-		.range([100,0]);
+		.range([90,0]);
 	var pharmacyScale = d3.scaleLinear()
 		.domain([pharmacyMin, pharmacyMax])
-		.range([100,0]);
+		.range([90,0]);
 		
 	var getColor = function (value, type){
 		switch(type.toLowerCase()){
@@ -68,7 +69,7 @@ var valueSlider = (function(height = 50, width = 400){
 			var minValue = d3.min(data, function(d){ return getValue(d, target); });
 			var endValue;
 			if(target == 'patient'){
-				endValue = .8*d3.max(data, function(d){ return getValue(d, target); });
+				endValue = .7*d3.max(data, function(d){ return getValue(d, target); });
 			}
 			else{
 				endValue = d3.mean(data, function(d){ return getValue(d, target); }) 
