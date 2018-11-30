@@ -2,10 +2,10 @@
 var getMap = function(target){ 
 	// console.log(map);
 	L.mapbox.accessToken = 'pk.eyJ1IjoiYW5haWszIiwiYSI6ImNqbWNkNTZ0bDBlM2Izb3M0MWQzNHZtYzEifQ.fLozOxjrg08I3StfKz0AhA'
-    var map = L.mapbox.map(target, 'mapbox.dark', {maxZoom: 12, minZoom: 9})
+    var map = L.mapbox.map(target, 'mapbox.dark', {maxZoom: 12, minZoom: 9}, {attributionControl: false})
 		.setView([41.77, -87.62], 10);
     
-	var drawMap = function(data, presdata, target, indi_pat, selectedId = 0){
+	var drawMap = function(data, presdata, target, indi_pat, selectedId){
 
 		function project(latlng){
 			// var array = [+latlng.lat, +latlng.lon];
@@ -137,22 +137,7 @@ var getMap = function(target){
 				return stringvalue;
 			}
 		}
- 
 
-		function findPharmLoc(){
-			var pharmIds = findAllPharmacyIds();
-
-			// pharmIds.forEach(function(d){
-			// 	var obj = data.find(function(e){
-			// 		return d.pharmacynpi === e.pharmacynpi
-			// 	});
-				
-			// });
-
-			// console.log(pharmIds);
-			return pharmIds;
-
-		}
 
 
 		function getcolor(d){
@@ -213,7 +198,7 @@ var getMap = function(target){
 			.style("opacity", 0);
 
 			var pathLine = d3.svg.line()
-				.interpolate("cardinal-open")
+				.interpolate("linear-open")
 				.x(function(d) { return project(findlatlngpath(d.x,d.y)).x - topLeft.x; })
 				.y(function(d) { return project(findlatlngpath(d.x,d.y)).y - topLeft.y; });
 
@@ -221,12 +206,32 @@ var getMap = function(target){
 				// pathLine.remove();
 
 				d3.selectAll("path").remove();
-				var haiyanPath = svgPatient.append("path")
+				// var haiyanPath = svgPatient.append("path")
 					// transition()
 				 //    .duration(500)
 				 //    .ease("linear")
+				 var path = svgPatient.append("path")
 					.attr("d",pathLine(data.filter(function(d) { return findAllPharmacyIds(selectedId).includes(d.pharmacynpi);})))
-					.attr("class","path");
+					.attr("class", "path")
+					.attr("stroke", "orange")
+				      .attr("stroke-width", "2")
+				      .attr("fill", "none");
+
+  				  var totalLength = path.node().getTotalLength();
+
+			    path
+			      .attr("stroke-dasharray", totalLength + " " + totalLength)
+			      .attr("stroke-dashoffset", totalLength)
+			      .transition()
+			        .duration(3000)
+			        // .ease("linear")
+			        .attr("stroke-dashoffset", 0);
+					// .attr("class","path")
+					// .attr("stroke", "orange")
+					// .transition()
+					// .duration(2000)
+     //    			// .ease("linear")
+     //    			.attr("stroke-dashoffset", 0);
 			}
 
 		}     
