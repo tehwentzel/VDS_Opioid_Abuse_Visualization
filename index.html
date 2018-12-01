@@ -111,8 +111,12 @@
 		var is_patient = true;
 		var selected_id = 2098621;
 		var currentSelection = {id: selected_id, type: "Patient"};
+		var swapImage = function(){
+			$('#imgsrc').attr('src', 
+				((currentSelection.type == "Patient")? "images/patient.svg": "images/doctor.svg")
+			);
+		};
 		var initGraphOnClick = function(selected_id){
-
 			d3.select('.nodes').selectAll('circle').on('click',function(d){
 				if(d.group == 'Patient' || d.group == 'Doctor'  || d.group == "Hospital"){
 					backStack.push(currentSelection);
@@ -121,6 +125,7 @@
 					d3.selectAll('.tooltippatient').remove();
 					CallingNodeGraph(d.id, NODE_GRAPH, d.group);
 					currentSelection = {id: d.id, type: d.group};
+					swapImage();
 					initGraphOnClick();
 				}
 			});
@@ -154,6 +159,7 @@
 				currentSelection = {id: d.physiciannpi, type: "Doctor"};
 				paths = pathMap(PHARMACY_LOC, PRESCRIPTION_LOC, 'paths', is_patient, d.physiciannpi);
 			}
+			swapImage();
 			initGraphOnClick();
 		});
 		var [addresses, paths] = change_indiLoc(PHARMACY_LOC, DOCTOR_LOC, PATIENT_LOC,PRESCRIPTION_LOC);
@@ -166,7 +172,7 @@
 			is_patient = document.getElementById("patientRadioSwitch").checked;
 			if(is_patient != was_patient){
 				d3.select(".divnames2").text( (is_patient? "Patient": "Doctor") + " Locations");
-				$('#imgsrc').attr('src', (is_patient? "images/patient.svg": "images/doctor.svg"));
+				//$('#imgsrc').attr('src', (is_patient? "images/patient.svg": "images/doctor.svg"));
 				d3.selectAll("circle.dot").remove();
 				[addresses, paths] = change_indiLoc(PHARMACY_LOC, DOCTOR_LOC, PATIENT_LOC,PRESCRIPTION_LOC);
 			}
@@ -177,6 +183,7 @@
 				timeline.setID(previousItem.id, previousItem.type, null);
 				paths = pathMap(PHARMACY_LOC, PRESCRIPTION_LOC,'paths', (previousItem.type == 'Patient'), previousItem.id);
 				CallingNodeGraph(previousItem.id, NODE_GRAPH, previousItem.type);
+				swapImage();
 				initGraphOnClick();
 			}
 		});
