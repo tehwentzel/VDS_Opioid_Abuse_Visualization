@@ -24,7 +24,6 @@
 	<script src="./scripts/networkgraph.js"></script>
 	<script src='scripts/mapapp.js'></script>
 	<script src="scripts/inputSlider.js"></script>
-	<!-- <script src='scripts/mapdocapp.js'></script> -->
 
 </head>
 
@@ -53,16 +52,6 @@
             </div>
 			<div class="col-md-6" id="paths" style="border: 5px solid black; border-right: 10px solid black">
                 <svg width=400px id="pathsvg" height="400px"></svg>
-            </div>
-        </div>
-        <div class="row" id="maps2" style="display:none" style="border: 5px solid black">
-            <div class="col-md-6" id="patient2">
-                <svg width=100% id="patsvg" height="400px"></svg>
-               
-            </div>
-			<div class="col-md-6" id="paths2" style="border: 5px solid black">
-                <svg width=100% id="pathsvg" height="400px">
-                 </svg>
             </div>
         </div>
 		<div class="row">
@@ -125,13 +114,13 @@
 		var initGraphOnClick = function(selected_id){
 
 			d3.select('.nodes').selectAll('circle').on('click',function(d){
-				if(d.group == 'Patient' || d.group == 'Doctor'){
+				if(d.group == 'Patient' || d.group == 'Doctor'  || d.group == "Hospital"){
 					backStack.push(currentSelection);
 					timeline.setID(d.id, capitalizeFirstLetter(d.group), null);
 					paths = pathMap(PHARMACY_LOC, PRESCRIPTION_LOC,'paths', (d.group == 'Patient'), d.id);
 					d3.selectAll('.tooltippatient').remove();
 					CallingNodeGraph(d.id, NODE_GRAPH, d.group);
-					currentSelection = {id: d.id, type: capitalizeFirstLetter(d.group)};
+					currentSelection = {id: d.id, type: d.group};
 					initGraphOnClick();
 				}
 			});
@@ -141,15 +130,11 @@
 			var paths;
 			if(is_patient == true){
 				addresses = patientMap(PATIENT, PRESCRIPTION, 'patient', is_patient);
-				//paths = pathMap(PHARMACY, PRESCRIPTION, 'paths', is_patient);
 				valueSlider.draw(PATIENT_LOC, 'patient', selected_id);
-				// console.log("count1", count)
 			}
 			else{
 				addresses = patientMap(DOCTOR, PRESCRIPTION, 'patient', is_patient);
-				//paths = pathMap(PHARMACY, PRESCRIPTION, 'paths', is_patient);
 				valueSlider.draw(DOCTOR_LOC, 'doctor', selected_id);
-				// console.log("count2", count)
 			}
 			valueSlider.setOnClick(change_indiLoc,PHARMACY_LOC, DOCTOR_LOC, PATIENT_LOC,PRESCRIPTION_LOC);
 			addresses.call(setDotOnClick);
@@ -170,7 +155,6 @@
 				paths = pathMap(PHARMACY_LOC, PRESCRIPTION_LOC, 'paths', is_patient, d.physiciannpi);
 			}
 			initGraphOnClick();
-			//console.log(backStack);
 		});
 		var [addresses, paths] = change_indiLoc(PHARMACY_LOC, DOCTOR_LOC, PATIENT_LOC,PRESCRIPTION_LOC);
 		timeline = new TimeLine(selected_id, PRESCRIPTION_LOC, is_patient? "Patient":"Doctor");
@@ -198,11 +182,7 @@
 		});
     }
     </script>
-
-    <!-- <script src='scripts/mapapp.js'></script> -->
-
     
-
 </body>
 </html>
 

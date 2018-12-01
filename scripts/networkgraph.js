@@ -58,9 +58,6 @@ function createStruct(selected_id,NODE_GRAPH)
             }
         })
         
-       
-
-    //console.log(struct)
     return struct;  
 }
 
@@ -81,16 +78,11 @@ function tryS(struct)
 
     var simulation = d3.forceSimulation()
         .force("link", d3.forceLink().id(function(d) { return d.id; }))
-        //.force("charge", d3.forceManyBody().strength(-200))
             .force('charge', d3.forceManyBody()
         .strength(-800)
         .theta(1.2)
         .distanceMax(400)
         )
-        // 		.force('collide', d3.forceCollide()
-        //       .radius(d => 40)
-        //       .iterations(2)
-        //     )
         .force("center", d3.forceCenter(width / 1.3, height / 1.5));
 
 
@@ -122,11 +114,6 @@ function tryS(struct)
 
     function run(graph) {
 
-        graph.links.forEach(function(d){
-        //     d.source = d.source_id;    
-        //     d.target = d.target_id;
-        });           
-
         var div = d3.select("body").append("div")	
             .attr("class", "tooltippatient")
 			.style('visibility', 'hidden')
@@ -155,7 +142,6 @@ function tryS(struct)
                     else if(d.dose>=30)
                     return "25";
                 })
-                //.on("click",clicked)
                 .call(d3.drag()
                     .on("start", dragstarted)
                     .on("drag", dragged)
@@ -217,9 +203,9 @@ function tryS(struct)
             })
             .style("fill", function(d){
                 if(d.group=="Patient") 
-                    return "#FF6600";
+                    return "hsl(0, 100%, 50%)";
                 if(d.group=="Pharmacy")
-                    return "#1ECAEC";
+                    return "hsl(242, 100%, 50%)";
                 if(d.group=="Doctor")
                     return "green"
                 else{
@@ -230,11 +216,6 @@ function tryS(struct)
             .style("opacity",0.9)
             .attr("cx", function (d) { return d.x+5; })
             .attr("cy", function(d) { return d.y-3; });
-
-        //label
-        //    .attr("x", function(d) { return d.x; })
-        //    .attr("y", function (d) { return d.y; })
-        //    .style("font-size", "10px").style("fill", "#333");
         }
     }
 
@@ -242,20 +223,17 @@ function tryS(struct)
     if (!d3.event.active) simulation.alphaTarget(0.3).restart()
     d.fx = d.x
     d.fy = d.y
-    //  simulation.fix(d);
     }
 
     function dragged(d) {
     d.fx = d3.event.x
     d.fy = d3.event.y
-    //  simulation.fix(d, d3.event.x, d3.event.y);
     }
 
     function dragended(d) {
     d.fx = d3.event.x
     d.fy = d3.event.y
     if (!d3.event.active) simulation.alphaTarget(0);
-    //simulation.unfix(d);
     }
     function clicked(d){
         console.log("heieie")
@@ -298,9 +276,6 @@ function tryS(struct)
             
         })
         
-       
-
-    //console.log(struct)
     return struct;  
 }
 
@@ -327,10 +302,6 @@ function tryS1(struct)
         .theta(1.2)
         .distanceMax(400)
         )
-        // 		.force('collide', d3.forceCollide()
-        //       .radius(d => 40)
-        //       .iterations(2)
-        //     )
         .force("center", d3.forceCenter(width / 1.3, height / 1.5));
 
 
@@ -395,7 +366,6 @@ function tryS1(struct)
                     else if(d.dose>=30)
                     return "25";
                 })
-                //.on("click",clicked)
                 .call(d3.drag()
                 .on("start", dragstarted)
                 .on("drag", dragged)
@@ -413,14 +383,6 @@ function tryS1(struct)
                         .duration(50)		
                         .style("visibility", 'hidden');	
                 });
-
-        //var label = svg.append("g")
-        //.attr("class", "labels")
-        //.selectAll("text")
-        //.data(graph.nodes)
-        //.enter().append("text")
-        ///    .attr("class", "label")
-        //    .text(function(d) { return d.id; });
 
         simulation
         .nodes(graph.nodes)
@@ -461,9 +423,9 @@ function tryS1(struct)
             })
             .style("fill", function(d){
                 if(d.group=="Patient") 
-                    return "#FF6600";
+                    return "hsl(0, 100%, 50%)";
                 if(d.group=="Pharmacy")
-                    return "#1ECAEC";
+                    return "hsl(0, 100%, 50%)";
                 if(d.group=="Doctor")
                     return "green"
                 else{
@@ -476,10 +438,6 @@ function tryS1(struct)
             .attr("cx", function (d) { return d.x+5; })
             .attr("cy", function(d) { return d.y-3; });
 
-        //label
-        //    .attr("x", function(d) { return d.x; })
-        //    .attr("y", function (d) { return d.y; })
-        //    .style("font-size", "10px").style("fill", "#333");
         }
     }
     
@@ -487,25 +445,18 @@ function tryS1(struct)
     if (!d3.event.active) simulation.alphaTarget(0.3).restart()
     d.fx = d.x
     d.fy = d.y
-    //  simulation.fix(d);
     }
 
     function dragged(d) {
     d.fx = d3.event.x
     d.fy = d3.event.y
-    //  simulation.fix(d, d3.event.x, d3.event.y);
     }
 
     function dragended(d) {
     d.fx = d3.event.x
     d.fy = d3.event.y
     if (!d3.event.active) simulation.alphaTarget(0);
-    //simulation.unfix(d);
     }
-    //function clicked(d){
-    //    console.log("heieie")
-    //    console.log("done")
-    //}
 
     run(graph)
     }

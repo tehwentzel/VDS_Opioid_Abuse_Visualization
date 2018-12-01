@@ -1,4 +1,3 @@
-var App = App || {};
 
 Date.prototype.addDays = function(days) {
 	//helper function to add on days to a date object
@@ -68,7 +67,6 @@ class TimeLine {
 		}
 		this.dtype = dtype;
 		d3.select('#timeline-title')
-			// .html('Prescriptions vs Time&nbsp&nbsp&nbsp&nbsp&nbsp ' +  this.dtype + ' ID: ' + iD);
 			.html(': ' + iD);
 		this.id = iD;	
 		switch(this.dtype){
@@ -81,9 +79,6 @@ class TimeLine {
 			default: //defaults to patient
 				this.allData = this.prescriptions.filter( script => script.pat_id == this.id );
 		}
-		//console.log(this.allData);
-		//this.allData = this.prescriptions.filter( script => script.pat_id == this.id );
-		//format data
 		this.allData.forEach(function(d){
 				d.filldate = new Date(d.filldate);
 				d.final_date = new Date(d.final_date).addDays(1);
@@ -116,8 +111,6 @@ class TimeLine {
 		if( d3.timeDay.count( this.start_date, this.end_date ) > this.maxDays ){
 			this.end_date = new Date(this.start_date).addDays( this.maxDays );
 		}
-		//console.log(this.end_date);
-		//console.log(this.data);
 		this.data = this.data.filter(d => d.filldate <= this.end_date)
 			.filter(d => d.final_date > this.start_date);
 		this.data.forEach(function(d){
@@ -149,7 +142,6 @@ class TimeLine {
 			given_day.activeCount = 0;
 			given_day.fillCount = 0;
 			given_day.xPos = this.xAxis(given_day) + this.xOffset;
-			//console.log(this.xAxis(given_day));
 			this.data.forEach(function(rx){
 				if(rx.filldate <= given_day && rx.final_date > given_day){
 					given_day.activeCount += 1;
@@ -158,12 +150,10 @@ class TimeLine {
 					}
 					if(rx.filldate.toDateString() == given_day.toDateString()){
 						given_day.fillCount += 1;
-						//console.log(given_day);
 					}
 				}
 			}, given_day);
 		}, this);
-		//console.log(maxCount);
 		this.maxCount = maxCount;
 
 	}
@@ -173,7 +163,6 @@ class TimeLine {
 		var yAxis = d3.scaleLinear()
 			.domain([this.maxCount, 0])
 			.range( [0, this.stepSize*this.maxCount])
-		//console.log(this.data)
 		this.svg.selectAll(".timeAxis").remove();
 		this.svg.selectAll(".yAxis").remove();
 		this.svg.append("g")
@@ -186,14 +175,12 @@ class TimeLine {
 			.attr("class", "yAxis")
 			.attr("transform", "translate(" + .95*this.xOffset + "," +  (this.baseline - this.stepSize*this.maxCount) + " )")
 			.call( d3.axisLeft(yAxis)
-				.ticks( (this.maxCount < 24)? this.maxCount : Math.round(this.maxCount/2) )
+				.ticks( Math.min(24, this.maxCount) )
 			);
-		//console.log(this.time);
 	}
 	
 	drawRects(maxCount){
 		var self = this;
-		//console.log(this.stepSize);
 		var nodes = this.svg.selectAll(".timeRectangle")
 			.data(this.time, function(d) {return d;});
 		var barWidth =  .9*this.width/this.time.length;
@@ -224,8 +211,7 @@ class TimeLine {
 		var scriptFills = visits.enter().merge(visits)
 			.append('g')
 			.attr('class','visit');
-		//console.log('bars');
-		//console.log(counts);
+
 		scriptFills.append('rect')
 			.attr('class','fillstart')
 			.attr('y', function(d) {return self.baseline - d.fillCount*self.stepSize;})
@@ -404,9 +390,7 @@ class TimeLine {
 				.tickFormat(d3.timeFormat("%m/%d")) );
 			
 		var timeLine = d3.timeDay.range( minDate, maxDate );
-		//console.log(timeLine);
 		var sectionWidth = .9*width/(timeLine.length);
-		//console.log(width);
 		self = this;
 		var selectionRectangles = sliderSvg.selectAll('rect.selectionRectangles')
 			.data(timeLine)

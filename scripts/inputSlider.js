@@ -87,7 +87,6 @@ var valueSlider = (function(height = 40, width = 500){
 					value: val
 				};
 			}
-			//console.log(colors);
 			var svg = d3.select("#patientHeader")
 				.append('svg')
 				.attr('class','slider')

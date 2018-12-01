@@ -1,8 +1,7 @@
 
 var getMap = function(target, colorFunction){ 
-	// console.log(map);
 	L.mapbox.accessToken = 'pk.eyJ1IjoiYW5haWszIiwiYSI6ImNqbWNkNTZ0bDBlM2Izb3M0MWQzNHZtYzEifQ.fLozOxjrg08I3StfKz0AhA'
-    var map = L.mapbox.map(target, 'mapbox.dark', {maxZoom: 12, minZoom: 9}, {attributionControl: false})
+    var map = L.mapbox.map(target, 'mapbox.dark', {maxZoom: 16, minZoom: 9}, {attributionControl: false})
 		.setView([41.77, -87.62], 10);
     
 	var drawMap = function(data, presdata, target, indi_pat, selectedId){
@@ -49,10 +48,8 @@ var getMap = function(target, colorFunction){
 		  var aggrepharmacy_doc = d3.nest()
 		  .key(function(d) { return d.physiciannpi;})
 		  .key(function(d) { return d.pharmacynpi;})
-		  // .key(function(d) { return d.pat_id;})
 		  .rollup(function(v) { return ( function(d) { return d.key.values; }); })
 		  .entries(presdata);  
-		  // console.log("doc data", aggrepharmacy_doc);
 
 		function findAllPharmacyIds(id){
 			if(id == 0){ return new Array(); }
@@ -65,7 +62,6 @@ var getMap = function(target, colorFunction){
 						for(j in aggrepharmacy_pat[i].values){
 							pharmIds[j] = aggrepharmacy_pat[i].values[j].key;
 						}
-						//console.log(pharmIds);
 						return pharmIds;
 					} 
 				}
@@ -76,20 +72,20 @@ var getMap = function(target, colorFunction){
 						for(j in aggrepharmacy_doc[i].values){
 							pharmIds[j] = aggrepharmacy_doc[i].values[j].key;
 						}
-						//console.log(pharmIds);
 						return pharmIds;
 			 		} 
 				}
 			}
 		}
 
-		 if(target=="paths"||target=="paths2"){
+		 if(target=="paths"){
 		 	d3.selectAll(".pathDot").remove();
 			filteredData = data.filter(function(d) { return findAllPharmacyIds(selectedId).includes(d.pharmacynpi);});
 			var bounds = [];
 			filteredData.forEach(function(d){
-				bounds.push(findlatlng(d.x,d.y));
+				bounds.push([d.x,d.y]);
 			});
+			console.log(bounds);
 			var dots = g.selectAll("circle.pathDot")
 				.data(filteredData)//, function(d) {return d.x/d.y;})
 				.enter()
@@ -108,7 +104,6 @@ var getMap = function(target, colorFunction){
 
 	
 		var formatDots = g => 
-			// .filter(function(d) { return d.pharmacynpi == "787411294" })
 			g.attr('cx', function(d){ return project(findlatlng(d.x,d.y)).x;})
 			.attr('cy', function(d){ return project(findlatlng(d.x,d.y)).y;})
 			.attr('r','4')
@@ -145,26 +140,12 @@ var getMap = function(target, colorFunction){
 			} else{
 				return colorFunction(d.patient_count, "pharmacy");
 			}
-			// if(target=="patient" && indi_pat == true){
-
-				// var cy = 100 - ((d.overflow_idx - 1)*100)* 5;
-				 // return "hsl(0, 100%," + cy + "%)" ;
-			// }
-			// else if(target=="patient"){
-
-				// var cy = 100 - (d.patient_count)/4;
-				 // return "hsl(100, 100%," + cy + "%)" ;
-			// }
-			// else{
-				// var cz = 100 - (d.patient_count)/3;
-				 // return "hsl(242,100%," + cz + "%)" ;
-			// }
 		}
 
 		function render(){
-			var bounds = map.getBounds();
-			var topLeft = map.latLngToLayerPoint(bounds.getNorthWest())
-			var bottomRight = map.latLngToLayerPoint(bounds.getSouthEast())
+			var mapBounds = map.getBounds();
+			var topLeft = map.latLngToLayerPoint(mapBounds.getNorthWest())
+			var bottomRight = map.latLngToLayerPoint(mapBounds.getSouthEast())
 			// console.log(bounds, topLeft, bottomRight)
 			svgPatient.style("width", map.getSize().x + "px")
 				.style("height", map.getSize().y + "px")
@@ -172,7 +153,6 @@ var getMap = function(target, colorFunction){
 				.style("top", topLeft.y + "px");
 			var translate = item => item.attr("transform", "translate(" + (-topLeft.x) + "," + (-topLeft.y) + ")");
 			g.call(translate);
-			//dots.call(translate);
 			dots.call(formatDots);
 			dots.on("mouseover", function(d){   
 						  d3.select(this).classed('active', true)
