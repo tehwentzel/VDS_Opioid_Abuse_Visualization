@@ -35,7 +35,7 @@ var getMap = function(target, colorFunction){
 		
 		var hoverdiv = d3.select("body").append("div")   
 			.attr("class", "tooltippatient")               
-			.style("opacity", .9)
+			.style("opacity", .8)
 			.style('visibility', 'hidden');
 
 		var aggrepharmacy_pat = d3.nest()
