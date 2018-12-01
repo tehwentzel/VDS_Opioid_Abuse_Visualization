@@ -31,7 +31,7 @@ class TimeLine {
 		this.height = .28*screen.availHeight;
 		//console.log(this.height);
 		this.baseline = this.height - 40;
-		this.baseColor = '#2ca25f';
+		this.baseColor = 'DodgerBlue';
 		this.maxDays = 100000;
 		this.start_date_filter = start_date_filter;
 		if(start_date_filter != null){
@@ -232,8 +232,8 @@ class TimeLine {
 			.attr('x', function(d){ return self.xAxis(d) + redBarXOffset; })
 			.attr('height', function(d) {return d.fillCount*self.stepSize;})
 			.attr('width', visitWidth)
-			.attr('fill-opacity',.7)
-			.attr('fill', 'red');
+			.attr('fill-opacity',.9)
+			.attr('fill', 'Coral');
 		scriptFills.exit().remove();
 		if(this.dtype == "Patient"){	
 			this.drawPatientToolTip(redBarXOffset);
@@ -281,14 +281,14 @@ class TimeLine {
 			.attr('x', function(d) {return d.startPos; })
 			.attr('height', self.stepSize)
 			.attr('width', function(d) {return d.endPos - d.startPos; })
-			.attr('fill', 'blue')
+			.attr('fill', 'yellow')
 			.attr('fill-opacity', 0)
-			.attr('style', 'stroke-width:2;stroke:blue;stroke-opacity:0');
+			.attr('style', 'stroke-width:2;stroke:yellow;stroke-opacity:0');
 		scriptDateRange.exit().remove();
 		tooltipRects.on("mouseover", function(d){
 			d3.select(this).transition()
 				.duration(100)
-				.attr('style', 'stroke-width:2;stroke:blue;stroke-opacity:1');
+				.attr('style', 'stroke-width:2;stroke:yellow;stroke-opacity:1');
 			self.div.style('visibility','visible');
 			self.div.html( "Drug: " + d.nonproprietaryname.split(' ')[0] + '<br/>'
 				+ "rx Count: " + d.rxcount + '<br/>'
@@ -306,7 +306,7 @@ class TimeLine {
 		}).on("mouseout", function(){
 			d3.select(this).transition()
 				.duration(100)
-				.attr('style', 'stroke-width:2;stroke:blue;stroke-opacity:0');
+				.attr('style', 'stroke-width:2;stroke:yellow;stroke-opacity:0');
 			self.div.style('visibility', 'hidden');
 		});
 	}
@@ -330,7 +330,7 @@ class TimeLine {
 			.attr('y', this.height - 15 + 'px')
 			.attr('height', "15px")
 			.attr('width', "15px")
-			.attr('fill', 'red');
+			.attr('fill', 'Coral');
 		legend.append('text')
 			.attr('x', .1*this.width + 350 + 'px')
 			.attr('y', this.height - 3 + 'px')
@@ -417,7 +417,7 @@ class TimeLine {
 			.attr('width', sectionWidth)
 			.attr('y', (yPosition-rectHeightScale)*height)
 			.attr('x', function(d) {return slideAxis(d) + xOffset})
-			.style('fill','blue')
+			.style('fill','MediumBlue')
 			.style('fill-opacity', function(d){
 				if(self.start_date <= d && self.end_date > d){
 					return .8;
@@ -439,7 +439,7 @@ class TimeLine {
 			.attr('r', circleRadius)
 			.attr('cy', yPosition*height - .5*circleRadius)
 			.attr('cx', function(d) {return slideAxis(d) + xOffset;})
-			.style('fill', 'darkblue')
+			.style('fill', 'MidnighBlue')
 			.on('mousedown',function(g,i) {
 				var handle = d3.select(this);
 				d3.event.preventDefault();
