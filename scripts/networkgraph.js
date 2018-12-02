@@ -83,7 +83,7 @@ function tryS(struct)
         .theta(1.2)
         .distanceMax(400)
         )
-        .force("center", d3.forceCenter(width / 1.3, height / 1.5));
+        .force("center", d3.forceCenter(width / 1.3, height / 1.18));
 
 
     var graph = 
