@@ -54,6 +54,9 @@ class TimeLine {
 	}
 	
 	setID(iD, dtype= "Patient", start_date = null) {
+		if(dtype == "Hospital"){
+			dtype = "Doctor";
+		}
 		if(this.id == iD && this.dtype == dtype){
 			return;
 		}
