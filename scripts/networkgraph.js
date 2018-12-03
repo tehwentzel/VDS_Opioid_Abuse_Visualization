@@ -3,7 +3,7 @@ function createStruct(selected_id,NODE_GRAPH)
     var struct={};
     struct.nodes=[];
     struct.links=[];
-    struct.nodes.push({"id":String(selected_id),"group":"Patient","dose":0});
+    struct.nodes.push({"id":String(selected_id),"group":"Patient","count":0});
     NODE_GRAPH.forEach(function(d)
         {
         if (d.pat_id==selected_id)
@@ -15,11 +15,12 @@ function createStruct(selected_id,NODE_GRAPH)
                 for(var index=0;index<struct.nodes.length;++index)
                     {
                     var animal=struct.nodes[index]
-                    if(animal.id==d.physiciannpi){hasMatchPHY=true;animal.dose=animal.dose+d.days_supply}
-                    if(animal.id==d.pharmacynpi){hasMatchPHA=true;animal.dose=animal.dose+d.days_supply}
+                    if(animal.id==d.pat_id){animal.count=animal.count+1}
+                    if(animal.id==d.physiciannpi){hasMatchPHY=true;animal.dose=animal.dose+d.days_supply;animal.count=animal.count+1}
+                    if(animal.id==d.pharmacynpi){hasMatchPHA=true;animal.dose=animal.dose+d.days_supply;animal.count=animal.count+1}
                     }
                 if(hasMatchPHY==false){
-                    hospital_node = {"id":d.physiciannpi,"group":"Hospital","dose":d.days_supply};
+                    hospital_node = {"id":d.physiciannpi,"group":"Hospital","dose":d.days_supply,"count":1};
                     struct.nodes.push(hospital_node);
                     hospital_link={"source":selected_id,"target":d.physiciannpi}
                     struct.links.push(hospital_link);
@@ -32,12 +33,13 @@ function createStruct(selected_id,NODE_GRAPH)
                 for(var index=0;index<struct.nodes.length;++index)
                     {
                     var animal=struct.nodes[index]
-                    if(animal.id==d.physiciannpi){hasMatchPHY=true;animal.dose=animal.dose+d.days_supply}
-                    if(animal.id==d.pharmacynpi){hasMatchPHA=true;animal.dose=animal.dose+d.days_supply}
+                    if(animal.id==selected_id){animal.count=animal.count+1}
+                    if(animal.id==d.physiciannpi){hasMatchPHY=true;animal.dose=animal.dose+d.days_supply;animal.count=animal.count+1}
+                    if(animal.id==d.pharmacynpi){hasMatchPHA=true;animal.dose=animal.dose+d.days_supply;animal.count=animal.count+1}
                     }
                 if(hasMatchPHY==false)
                     {
-                    doctor_node = {"id":d.physiciannpi,"group":"Doctor","dose":d.days_supply};
+                    doctor_node = {"id":d.physiciannpi,"group":"Doctor","dose":d.days_supply,"count":1};
                     struct.nodes.push(doctor_node);
                     doctor_link={"source":selected_id,"target":d.physiciannpi}
                     struct.links.push(doctor_link);
@@ -45,7 +47,7 @@ function createStruct(selected_id,NODE_GRAPH)
               
                 if(hasMatchPHA==false)
                     {
-                    pharmacy_node={"id":d.pharmacynpi,"group":"Pharmacy","dose":d.days_supply};
+                    pharmacy_node={"id":d.pharmacynpi,"group":"Pharmacy","dose":d.days_supply,"count":1};
                     struct.nodes.push(pharmacy_node);
                     pharmacy_link={"source":selected_id,"target":d.pharmacynpi}
                     struct.links.push(pharmacy_link);
@@ -54,7 +56,7 @@ function createStruct(selected_id,NODE_GRAPH)
                 }
             }
         })
-        
+        console.log(struct)
     return struct;  
 }
 
@@ -130,13 +132,13 @@ function tryS(struct)
                 .enter().append("circle")
                 .attr("r", function(d){
                     
-                    if (d.dose>=1)
+                    if (d.count<2)
                     return "5";
-                    else if (d.dose>=7)
+                    else if (d.count<3)
                     return "10";
-                    else if(d.dose>=15)
+                    else if(d.count<4)
                     return "15";
-                    else if(d.dose>=30)
+                    else if(d.count<1030)
                     return "25";
                 })
                 .call(d3.drag()
@@ -147,7 +149,7 @@ function tryS(struct)
                     div.transition()		
                         .duration(200)		
                         .style("visibility", 'visible');		
-                    div.html(d.group + "<br/>"  + d.id+"<br/>"+"Days: "+d.dose)	
+                    div.html(d.group + "<br/>"  + d.id+"<br/>"+"Prescriptions: "+d.count) 	
                         .style("left", (d3.event.pageX + 10) + "px")		
                         .style("top", (d3.event.pageY - 28) + "px");	
                     })					
@@ -189,14 +191,16 @@ function tryS(struct)
                 
                 if(d.group=="Patient")
                     return 15
-                if (d.dose<=10)
-                    return 7;
-                else if (d.dose<=20)
-                    return 14;
-                else if(d.dose<=80)
-                    return 22;
-                else
-                    return 30;
+                    if (d.count<2)
+                    return "7";
+                    else if (d.count<3)
+                    return "18";
+                    else if(d.count<4)
+                    return "28";
+                    else if(d.count<1030)
+                    return "30";
+                    
+                
             })
             .style("fill", function(d){
                 if(d.group=="Patient") 
@@ -250,21 +254,22 @@ function tryS(struct)
     struct.nodes=[];
     struct.links=[];
     
-    struct.nodes.push({"id":selected_id,"group":"Doctor"});
+    struct.nodes.push({"id":selected_id,"group":"Doctor","count":0});
     NODE_GRAPH.forEach(function(d)
         {
         if (d.physiciannpi==selected_id)
             {
                 var hasMatchPHY=false;
                 var hasMatchPHA=false;
-                for(var index=1;index<struct.nodes.length;++index)
+                for(var index=0;index<struct.nodes.length;++index)
                     {
                     var animal=struct.nodes[index]
-                    if(animal.id==d.pat_id){hasMatchPHY=true;animal.dose=animal.dose+d.days_supply}
+                    if(animal.id==d.physiciannpi){animal.count=animal.count+1}
+                    if(animal.id==d.pat_id){hasMatchPHY=true;animal.dose=animal.dose+d.days_supplyl;animal.count=animal.count+1}
                     }
                 if(hasMatchPHY==false)
                     {
-                    pat_node = {"id":d.pat_id,"group":"Patient","dose":d.days_supply};
+                    pat_node = {"id":d.pat_id,"group":"Patient","dose":d.days_supply,"count":1};
                     struct.nodes.push(pat_node);
                     pat_link={"source":selected_id,"target":d.pat_id}
                     struct.links.push(pat_link);
@@ -371,7 +376,7 @@ function tryS1(struct)
                     div.transition()		
                         .duration(200)		
                         .style("visibility", 'visible');		
-                    div	.html(d.group + "<br/>"  + d.id)
+                    div	.html(d.group + "<br/>"  + d.id+"<br/>"+"Prescriptions: "+d.count)
                         .style("left", (d3.event.pageX + 10) + "px")		
                         .style("top", (d3.event.pageY - 28) + "px");	
                     })					
@@ -409,14 +414,14 @@ function tryS1(struct)
                 
                 if(d.group=="Doctor")
                     return 15
-                if (d.dose<=10)
-                    return 7;
-                else if (d.dose<=50)
-                    return 14;
-                else if(d.dose<=80)
-                    return 22;
-                else
-                    return 30;
+                    if (d.count<2)
+                    return "7";
+                    else if (d.count<3)
+                    return "18";
+                    else if(d.count<4)
+                    return "28";
+                    else if(d.count<1030)
+                    return "30";
             })
             .style("fill", function(d){
                 if(d.group=="Patient") 
