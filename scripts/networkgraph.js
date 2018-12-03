@@ -3,8 +3,7 @@ function createStruct(selected_id,NODE_GRAPH)
     var struct={};
     struct.nodes=[];
     struct.links=[];
-    
-    struct.nodes.push({"id":selected_id,"group":"Patient"});
+    struct.nodes.push({"id":String(selected_id),"group":"Patient","dose":0});
     NODE_GRAPH.forEach(function(d)
         {
         if (d.pat_id==selected_id)
@@ -13,10 +12,9 @@ function createStruct(selected_id,NODE_GRAPH)
                 {
                 var hasMatchPHY=false;
                 var hasMatchPHA=false;
-                for(var index=1;index<struct.nodes.length;++index)
+                for(var index=0;index<struct.nodes.length;++index)
                     {
                     var animal=struct.nodes[index]
-                    
                     if(animal.id==d.physiciannpi){hasMatchPHY=true;animal.dose=animal.dose+d.days_supply}
                     if(animal.id==d.pharmacynpi){hasMatchPHA=true;animal.dose=animal.dose+d.days_supply}
                     }
@@ -31,10 +29,9 @@ function createStruct(selected_id,NODE_GRAPH)
             else{
                 var hasMatchPHY=false;
                 var hasMatchPHA=false;
-                for(var index=1;index<struct.nodes.length;++index)
+                for(var index=0;index<struct.nodes.length;++index)
                     {
                     var animal=struct.nodes[index]
-                    
                     if(animal.id==d.physiciannpi){hasMatchPHY=true;animal.dose=animal.dose+d.days_supply}
                     if(animal.id==d.pharmacynpi){hasMatchPHA=true;animal.dose=animal.dose+d.days_supply}
                     }
@@ -150,7 +147,7 @@ function tryS(struct)
                     div.transition()		
                         .duration(200)		
                         .style("visibility", 'visible');		
-                    div.html(d.group + "<br/>"  + d.id)	
+                    div.html(d.group + "<br/>"  + d.id+"<br/>"+"Days: "+d.dose)	
                         .style("left", (d3.event.pageX + 10) + "px")		
                         .style("top", (d3.event.pageY - 28) + "px");	
                     })					
@@ -196,7 +193,7 @@ function tryS(struct)
                     return 7;
                 else if (d.dose<=20)
                     return 14;
-                else if(d.dose<=100)
+                else if(d.dose<=80)
                     return 22;
                 else
                     return 30;
@@ -416,7 +413,7 @@ function tryS1(struct)
                     return 7;
                 else if (d.dose<=50)
                     return 14;
-                else if(d.dose<=100)
+                else if(d.dose<=80)
                     return 22;
                 else
                     return 30;
