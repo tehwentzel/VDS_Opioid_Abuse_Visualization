@@ -205,7 +205,7 @@ class TimeLine {
 		var visitWidth = barWidth;
 		var redBarXOffset = this.xOffset;
 		if(this.dtype == "Patient"){
-			visitWidth = (barWidth > 10)? 5 : .5*barWidth;
+			visitWidth = Math.min(Math.max(.5*barWidth, 3), 8);
 			redBarXOffset -= .5*visitWidth;
 		}
 		this.svg.selectAll('.visit').remove();
@@ -260,8 +260,10 @@ class TimeLine {
 			d.startPos = this.xAxis(d.begin_date) + redBarXOffset;
 			d.endPos = this.xAxis(d.cutoff_date) + redBarXOffset;
 		}, this);
+		console.log(this.data);
 		var scriptDateRange = this.svg.selectAll('rect.fillperiod')
-			.data( this.data, function(d){return d;});
+			.data( this.data, function(d){return d + d.pat_id;});
+		scriptDateRange.exit().remove();
 		var tooltipRects = scriptDateRange.enter()
 			.merge(scriptDateRange)
 			.append('rect')
@@ -273,7 +275,7 @@ class TimeLine {
 			.attr('fill', 'yellow')
 			.attr('fill-opacity', 0)
 			.attr('style', 'stroke-width:2;stroke:yellow;stroke-opacity:0');
-		scriptDateRange.exit().remove();
+		tooltipRects.exit().remove();
 		tooltipRects.on("mouseover", function(d){
 			d3.select(this).transition()
 				.duration(100)
