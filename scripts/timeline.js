@@ -27,7 +27,7 @@ class TimeLine {
 	constructor(pat_id, prescriptions, dtype = "Patient", start_date_filter = null){
 		this.prescriptions = prescriptions;
 		this.dtype = dtype;
-		this.height = .28*screen.availHeight;
+		this.height = Math.max(350, .28*screen.availHeight);
 		this.baseline = this.height - 40;
 		this.baseColor = 'DodgerBlue';
 		this.maxDays = 100000;
@@ -259,11 +259,11 @@ class TimeLine {
 			d.startPos = this.xAxis(d.begin_date) + redBarXOffset;
 			d.endPos = this.xAxis(d.cutoff_date) + redBarXOffset;
 		}, this);
+		this.svg.selectAll('rect.fillperiod').remove();
 		var scriptDateRange = this.svg.selectAll('rect.fillperiod')
-			.data( this.data, function(d){return d + d.pat_id;});
-		scriptDateRange.exit().remove();
+			.data( this.data);
+		//scriptDateRange.exit().remove();
 		var tooltipRects = scriptDateRange.enter()
-			.merge(scriptDateRange)
 			.append('rect')
 			.attr('class', 'fillperiod')
 			.attr('y', function(d) {return self.baseline - self.stepSize;})

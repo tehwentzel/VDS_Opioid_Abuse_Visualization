@@ -425,7 +425,7 @@ function tryS1(struct)
             })
             .style("fill", function(d){
                 if(d.group=="Patient") 
-                    return "hsl(0, 100%, 55%)";
+                    return "hsl(0, 100%, 60%)";
                 if(d.group=="Pharmacy")
                     return "hsl(0, 100%, 50%)";
                 if(d.group=="Doctor")

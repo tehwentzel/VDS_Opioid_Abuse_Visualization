@@ -1,8 +1,13 @@
 
 var getMap = function(target, colorFunction){ 
 	L.mapbox.accessToken = 'pk.eyJ1IjoiYW5haWszIiwiYSI6ImNqbWNkNTZ0bDBlM2Izb3M0MWQzNHZtYzEifQ.fLozOxjrg08I3StfKz0AhA'
-    var map = L.mapbox.map(target, 'mapbox.dark', {maxZoom: 14, minZoom: 9}, {attributionControl: false})
-		.setView([41.77, -87.62], 10);
+	if(target == "paths"){
+		var map = L.mapbox.map(target, 'mapbox.dark', {maxZoom: 16, minZoom: 9}, {attributionControl: false})
+			.setView([41.77, -87.62], 10);
+	} else {
+		var map = L.mapbox.map(target, 'mapbox.dark', {maxZoom: 14, minZoom: 9}, {attributionControl: false})
+			.setView([41.77, -87.62], 10);
+	}
     
 	var drawMap = function(data, presdata, target, indi_pat, selectedId){
 
@@ -159,8 +164,8 @@ var getMap = function(target, colorFunction){
 					.duration(20)      
 					.style("visibility", 'visible')
 					hoverdiv.html(tooltip(d))
-					.style("left", (d3.event.pageX) + "px")     
-					.style("top", (d3.event.pageY) + "px");
+					.style("left", (d3.event.pageX) + 10 + "px")     
+					.style("top", (d3.event.pageY) + 10 + "px");
 					//  .style("left","50px")     
 					// .style("top","50px");
 				})
