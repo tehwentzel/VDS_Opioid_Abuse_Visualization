@@ -56,7 +56,7 @@ function createStruct(selected_id,NODE_GRAPH)
                 }
             }
         })
-        console.log(struct)
+        //console.log(struct)
     return struct;  
 }
 
@@ -237,8 +237,8 @@ function tryS(struct)
     if (!d3.event.active) simulation.alphaTarget(0);
     }
     function clicked(d){
-        console.log("heieie")
-        console.log("done")
+        //console.log("heieie")
+        //console.log("done")
     }
 
     run(graph)

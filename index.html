@@ -116,8 +116,8 @@
 				((currentSelection.type == "Patient")? "images/patient.svg": "images/doctor.svg")
 			);
 		};
-		var initGraphOnClick = function(selected_id){
-			d3.select('.nodes').selectAll('circle').on('click',function(d){
+		var initGraphOnClick = function(){
+			d3.select('.nodes').selectAll('circle').on('dblclick',function(d){
 				if(d.group == 'Patient' || d.group == 'Doctor'  || d.group == "Hospital"){
 					backStack.push(currentSelection);
 					timeline.setID(d.id, capitalizeFirstLetter(d.group), null);

@@ -139,10 +139,8 @@ var valueSlider = (function(height = 40, width = 500){
 					if(target == "patient"){
 						patient_data = patient_data.filter(val => val.overflow_idx > filter_value);
 					} else{
-						//console.log(doctor_data.length);
 						doctor_data = doctor_data.filter(val => val.patient_count > filter_value);
 					}
-					//console.log(doctor_data.length);
 					d3.selectAll("circle.dot").remove();
 					changeFunction(pharm_data, doctor_data, patient_data, prescription_data);
 					overlayRects.on('mouseover',null);
@@ -152,10 +150,8 @@ var valueSlider = (function(height = 40, width = 500){
 			if(target == "patient"){
 				patient_data = patient_data.filter(val => val.overflow_idx > filter_value);
 			} else{
-				//console.log(doctor_data.length);
 				doctor_data = doctor_data.filter(val => val.patient_count > filter_value);
 			}
-			//console.log(doctor_data.length);
 			d3.selectAll("circle.dot").remove();
 			changeFunction(pharm_data, doctor_data, patient_data, prescription_data);
 			overlayRects.on('mouseover',null);

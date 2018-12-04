@@ -28,7 +28,6 @@ class TimeLine {
 		this.prescriptions = prescriptions;
 		this.dtype = dtype;
 		this.height = .28*screen.availHeight;
-		//console.log(this.height);
 		this.baseline = this.height - 40;
 		this.baseColor = 'DodgerBlue';
 		this.maxDays = 100000;
@@ -178,7 +177,7 @@ class TimeLine {
 			.attr("class", "yAxis")
 			.attr("transform", "translate(" + .95*this.xOffset + "," +  (this.baseline - this.stepSize*this.maxCount) + " )")
 			.call( d3.axisLeft(yAxis)
-				.ticks( Math.min(24, this.maxCount) )
+				.ticks( Math.min(20, this.maxCount) )
 			);
 	}
 	
@@ -260,7 +259,6 @@ class TimeLine {
 			d.startPos = this.xAxis(d.begin_date) + redBarXOffset;
 			d.endPos = this.xAxis(d.cutoff_date) + redBarXOffset;
 		}, this);
-		console.log(this.data);
 		var scriptDateRange = this.svg.selectAll('rect.fillperiod')
 			.data( this.data, function(d){return d + d.pat_id;});
 		scriptDateRange.exit().remove();
@@ -378,7 +376,6 @@ class TimeLine {
 		var box = d3.selectAll(target);
 		var width = .9*box.node().clientWidth;
 		var xOffset = .051*width;
-		//console.log(width);
 		var slideAxis = d3.scaleTime()
 			.domain( [minDate, maxDate] )
 			.range( [0, .9*width ] );

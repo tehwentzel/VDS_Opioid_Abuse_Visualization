@@ -85,7 +85,6 @@ var getMap = function(target, colorFunction){
 			filteredData.forEach(function(d){
 				bounds.push([d.x,d.y]);
 			});
-			console.log(bounds);
 			var dots = g.selectAll("circle.pathDot")
 				.data(filteredData)//, function(d) {return d.x/d.y;})
 				.enter()
@@ -146,7 +145,7 @@ var getMap = function(target, colorFunction){
 			var mapBounds = map.getBounds();
 			var topLeft = map.latLngToLayerPoint(mapBounds.getNorthWest())
 			var bottomRight = map.latLngToLayerPoint(mapBounds.getSouthEast())
-			// console.log(bounds, topLeft, bottomRight)
+
 			svgPatient.style("width", map.getSize().x + "px")
 				.style("height", map.getSize().y + "px")
 				.style("left", topLeft.x + "px")
