@@ -179,10 +179,10 @@
 		});
 		d3.select("#backButton").on('click',function(){
 			if(backStack.length > 0){
-				var previousItem = backStack.pop();
-				timeline.setID(previousItem.id, previousItem.type, null);
-				paths = pathMap(PHARMACY_LOC, PRESCRIPTION_LOC,'paths', (previousItem.type == 'Patient'), previousItem.id);
-				CallingNodeGraph(previousItem.id, NODE_GRAPH, previousItem.type);
+				currentSelection = backStack.pop();
+				timeline.setID(currentSelection.id, currentSelection.type, null);
+				paths = pathMap(PHARMACY_LOC, PRESCRIPTION_LOC,'paths', (currentSelection.type == 'Patient'), currentSelection.id);
+				CallingNodeGraph(currentSelection.id, NODE_GRAPH, currentSelection.type);
 				swapImage();
 				initGraphOnClick();
 			}
