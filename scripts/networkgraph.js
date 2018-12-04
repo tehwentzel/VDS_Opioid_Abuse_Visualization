@@ -204,13 +204,13 @@ function tryS(struct)
             })
             .style("fill", function(d){
                 if(d.group=="Patient") 
-                    return "hsl(0, 100%, 60%)";
+                    return "hsl(26, 98.2%, 42.9%)";
                 if(d.group=="Pharmacy")
-                    return "hsl(242, 100%, 50%)";
+                    return "hsl(244.5, 70.6%, 57.1%)";
                 if(d.group=="Doctor")
-                    return "green"
+                    return "hsl(162.1, 78.8%, 36.3%)"
                 else{
-                    return "#FFFF33";
+                    return "hsl(65, 90%, 60%)";
                 }})
             .style("stroke", "#424242")
             .style("stroke-width", "1px")
@@ -425,13 +425,13 @@ function tryS1(struct)
             })
             .style("fill", function(d){
                 if(d.group=="Patient") 
-                    return "hsl(0, 100%, 60%)";
+                    return "hsl(26, 98.2%, 42.9%)";
                 if(d.group=="Pharmacy")
-                    return "hsl(0, 100%, 50%)";
+                    return "hsl(244.5, 70.6%, 57.1%)";
                 if(d.group=="Doctor")
-                    return "green"
+                    return "hsl(162.1, 78.8%, 36.3%)"
                 else{
-                    return "#FFFF33";
+                    return "hsl(65, 90%, 60%)";
                 }})
             .style("stroke", "#424242")
             .style("stroke-width", "1px")
