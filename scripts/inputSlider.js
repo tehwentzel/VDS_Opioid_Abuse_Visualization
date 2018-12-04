@@ -20,11 +20,11 @@ var colorSelector = function(patient_data, doctor_data, pharmacy_data){
 	var getColor = function (value, type){
 		switch(type.toLowerCase()){
 			case "patient":
-				return "hsl(26, 98%, " + patientScale(value) + "%)";
+				return "hsl(0, 70%, " + patientScale(value) + "%)";
 			case "doctor":
-				return "hsl(162.1, 70.8%, " + doctorScale(value) + "%)";
+				return "hsl(120, 70%, " + doctorScale(value) + "%)";
 			default: //pharmacy
-				return "hsl(244.5, 36.6%, " + pharmacyScale(value) + "%)";
+				return "hsl(240, 70%, " + pharmacyScale(value) + "%)";
 		}
 	}
 	return getColor
