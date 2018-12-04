@@ -27,7 +27,7 @@ class TimeLine {
 	constructor(pat_id, prescriptions, dtype = "Patient", start_date_filter = null){
 		this.prescriptions = prescriptions;
 		this.dtype = dtype;
-		this.height = Math.max(350, .28*screen.availHeight);
+		this.height = Math.max(250, .28*screen.availHeight);
 		this.baseline = this.height - 40;
 		this.baseColor = 'DodgerBlue';
 		this.maxDays = 100000;
