@@ -200,20 +200,34 @@
 			}
 		});
 		d3.select("#DIRECTID").on('click',function(){
-
-			console.log(document.getElementById("myVal").value)
+			var valida=false;
 			var sele=document.getElementById("myVal").value;
-			console.log(sele.length)
 			backStack.push(currentSelection);
+			
 	if(sele.length<8){
+		console.log("dsndskfnsdn")
+		NODE_GRAPH.forEach(function(d){
+			if(d.pat_id==sele){
+				valida=true;
+			}		});
+			if (valida==true){
 				currentSelection = {id: sele, type: "Patient"};
 				timeline.setID(currentSelection.id, currentSelection.type, null);
 				paths = pathMap(PHARMACY_LOC, PRESCRIPTION_LOC,'paths', (currentSelection.type == 'Patient'), currentSelection.id);
 				CallingNodeGraph(currentSelection.id, NODE_GRAPH, currentSelection.type);
 				swapImage();
 				initGraphOnClick();
+			}
+			else{
+				document.getElementById("myVal").value="WRONG TEXT";
+			}
 	}
 	else{
+		NODE_GRAPH.forEach(function(d){
+			if(d.physiciannpi==sele){
+				valida=true;
+			}		});
+			if (valida==true){
 		currentSelection = {id: sele, type: "Doctor"};
 				timeline.setID(currentSelection.id, currentSelection.type, null);
 				paths = pathMap(PHARMACY_LOC, PRESCRIPTION_LOC,'paths', (currentSelection.type == 'Patient'), currentSelection.id);
@@ -221,6 +235,10 @@
 				swapImage();
 				initGraphOnClick();
 	}
+	else{
+				document.getElementById("myVal").value="WRONG TEXT";
+			}
+}
 		
 		});
     }
@@ -231,7 +249,6 @@
 </body>
 </html>
 
-    <!-- <script src='scripts/mapapp.js'></script> -->
 
     
 
