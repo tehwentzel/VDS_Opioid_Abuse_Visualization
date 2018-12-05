@@ -30,18 +30,10 @@
 <body>
 
     <div class="container-fluid">
-			<div class="row mt-0 p-0">
-			<div class='col-md-2'>
-					<form name="DirectIDS" action="handleC()"></form>
-                    <button id="DIRECTID">SUBMIT</button>
-                        
-                            <input type="text" id="myVal" placeholder="ENTER ID">
-                        </form>
-
-				<!-- <img id="imgsrc" src="patient.svg"><h4 id='timeline-title' class='id'>: 2098621</h4> -->
-			</div>
+		<div class="row mt-0 p-0">
+		<div class='col-md-2'>
+		</div>
 			<div class='col-md-8'>
-				
 				<center><h3 class="class="jumbotron" style="display:inline-block; color:lightgray;">
 					Identifying Opioid Abuse in Chicagoland Area
 				</h3></center>
@@ -49,7 +41,6 @@
 			<div class='col-md-2'>
 				<img id="imgsrc" src="images/patient.svg"><h4 id='timeline-title' class='id'>: 2098621</h4>
 			</div>
-			
 		</div>
 		
 		<div class="row" id="maps">
@@ -79,18 +70,25 @@
 			</div>
        </div>
 	   
+	<div id="selectionInputText">
+		<form name="DirectIDS" action="handleC()">
+			<input type="text" id="myVal" placeholder="ENTER ID" style="float:left">
+            <button id="DIRECTID">SUBMIT</button>
+    	</form>
+	</div>
+	   
 	<div id="radio">
         <input type="radio" name="people" id="patientRadioSwitch" value="1" checked>Patients<br>
 		<input type="radio" name="people" id="doctorRadioSwitch" value="0" >Doctors<br>
 	</div>
 	<div>
-				<h4 style="display:inline-block; color:gray" class="divnames2">
-					Patient Locations
-				</h4>
-			</div>
-			<div>
-				<h4 style="color:gray" class="divnames3">Pharmacy Paths</h4>
-			</div>
+		<h4 style="display:inline-block; color:gray" class="divnames2">
+			Patient Locations
+		</h4>
+	</div>
+	<div>
+		<h4 style="color:gray" class="divnames3">Pharmacy Paths</h4>
+	</div>
 		
 	<button type="button" class="back" id="backButton"><img id="imgsrc" src="images/back-arrow.svg"></button>
 	<div id="patientHeader">
