@@ -32,9 +32,16 @@
     <div class="container-fluid">
 			<div class="row mt-0 p-0">
 			<div class='col-md-2'>
+					<form name="DirectIDS" action="handleC()"></form>
+                    <button id="DIRECTID">SUBMIT</button>
+                        
+                            <input type="text" id="myVal" placeholder="ENTER ID">
+                        </form>
+
 				<!-- <img id="imgsrc" src="patient.svg"><h4 id='timeline-title' class='id'>: 2098621</h4> -->
 			</div>
 			<div class='col-md-8'>
+				
 				<center><h3 class="class="jumbotron" style="display:inline-block; color:lightgray;">
 					Identifying Opioid Abuse in Chicagoland Area
 				</h3></center>
@@ -46,6 +53,7 @@
 		</div>
 		
 		<div class="row" id="maps">
+				
             <div class="col-md-6" id="patient" style="border: 5px solid black; border-left: 10px solid black; border-right: 10px solid black">
                 <svg width=400px id="patsvg" height="400px"></svg>
                
@@ -90,6 +98,8 @@
 
     </div>
     <script>
+	var backStack = new Array();
+
     $('leaflet-bottom.leaflet-right').remove();
 	d3.queue()
     .defer(d3.csv,"https://gist.githubusercontent.com/tehwentzel/24bf8357ad86a3db70510480b020d7d3/raw/4468783d3445b83b4350ac1c1327a0b592c8cfdf/455_pharmacies.csv")
@@ -105,7 +115,7 @@
 		valueSlider.draw(PATIENT_LOC,"patient");
 		console.log("running");
 		colorPicker = colorSelector(PATIENT_LOC, DOCTOR_LOC, PHARMACY_LOC);
-		var backStack = new Array();
+		
 		var patientMap = getMap('patient', colorPicker);
 		var pathMap = getMap('paths', colorPicker);
 		var is_patient = true;
@@ -116,6 +126,8 @@
 				((currentSelection.type == "Patient")? "images/patient.svg": "images/doctor.svg")
 			);
 		};
+		
+		
 		var initGraphOnClick = function(){
 			d3.select('.nodes').selectAll('circle').on('dblclick',function(d){
 				if(d.group == 'Patient' || d.group == 'Doctor'  || d.group == "Hospital"){
@@ -187,7 +199,33 @@
 				initGraphOnClick();
 			}
 		});
+		d3.select("#DIRECTID").on('click',function(){
+
+			console.log(document.getElementById("myVal").value)
+			var sele=document.getElementById("myVal").value;
+			console.log(sele.length)
+			backStack.push(currentSelection);
+	if(sele.length<8){
+				currentSelection = {id: sele, type: "Patient"};
+				timeline.setID(currentSelection.id, currentSelection.type, null);
+				paths = pathMap(PHARMACY_LOC, PRESCRIPTION_LOC,'paths', (currentSelection.type == 'Patient'), currentSelection.id);
+				CallingNodeGraph(currentSelection.id, NODE_GRAPH, currentSelection.type);
+				swapImage();
+				initGraphOnClick();
+	}
+	else{
+		currentSelection = {id: sele, type: "Doctor"};
+				timeline.setID(currentSelection.id, currentSelection.type, null);
+				paths = pathMap(PHARMACY_LOC, PRESCRIPTION_LOC,'paths', (currentSelection.type == 'Patient'), currentSelection.id);
+				CallingNodeGraph(currentSelection.id, NODE_GRAPH, currentSelection.type);
+				swapImage();
+				initGraphOnClick();
+	}
+		
+		});
     }
+
+ 
     </script>
     
 </body>
