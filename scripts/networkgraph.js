@@ -204,9 +204,9 @@ function tryS(struct)
             })
             .style("fill", function(d){
                 if(d.group=="Patient") 
-                    return "hsl(0, 100%, 60%)";
+                    return "hsl(0, 90%, 60%)";
                 if(d.group=="Pharmacy")
-                    return "hsl(242, 100%, 50%)";
+                    return "hsl(242, 90%, 50%)";
                 if(d.group=="Doctor")
                     return "green"
                 else{
@@ -425,9 +425,9 @@ function tryS1(struct)
             })
             .style("fill", function(d){
                 if(d.group=="Patient") 
-                    return "hsl(0, 100%, 60%)";
+                    return "hsl(0, 90%, 60%)";
                 if(d.group=="Pharmacy")
-                    return "hsl(0, 100%, 50%)";
+                    return "hsl(0, 90%, 50%)";
                 if(d.group=="Doctor")
                     return "green"
                 else{

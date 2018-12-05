@@ -9,7 +9,7 @@ var colorSelector = function(patient_data, doctor_data, pharmacy_data){
 	
 	var patientScale = d3.scaleLinear()
 		.domain([patientMin, patientMean, patientMax])
-		.range([100, 50, 0]);
+		.range([100, 60, 25]);
 	var doctorScale = d3.scaleLog()
 		.domain([doctorMin, doctorMax])
 		.range([100,0]);
@@ -20,11 +20,11 @@ var colorSelector = function(patient_data, doctor_data, pharmacy_data){
 	var getColor = function (value, type){
 		switch(type.toLowerCase()){
 			case "patient":
-				return "hsl(0, 100%, " + patientScale(value) + "%)";
+				return "hsl(0, 90%, " + patientScale(value) + "%)";
 			case "doctor":
-				return "hsl(100, 100%, " + doctorScale(value) + "%)";
+				return "hsl(100, 90%, " + doctorScale(value) + "%)";
 			default: //pharmacy
-				return "hsl(240, 100%, " + pharmacyScale(value) + "%)";
+				return "hsl(240, 90%, " + pharmacyScale(value) + "%)";
 		}
 	}
 	return getColor
