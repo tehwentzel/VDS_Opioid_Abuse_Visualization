@@ -203,33 +203,28 @@
 
 			console.log(document.getElementById("myVal").value)
 			var sele=document.getElementById("myVal").value;
-
+			console.log(sele.length)
 			backStack.push(currentSelection);
+	if(sele.length<8){
 				currentSelection = {id: sele, type: "Patient"};
 				timeline.setID(currentSelection.id, currentSelection.type, null);
 				paths = pathMap(PHARMACY_LOC, PRESCRIPTION_LOC,'paths', (currentSelection.type == 'Patient'), currentSelection.id);
 				CallingNodeGraph(currentSelection.id, NODE_GRAPH, currentSelection.type);
 				swapImage();
 				initGraphOnClick();
-				console.log(backStack)
-			
+	}
+	else{
+		currentSelection = {id: sele, type: "Doctor"};
+				timeline.setID(currentSelection.id, currentSelection.type, null);
+				paths = pathMap(PHARMACY_LOC, PRESCRIPTION_LOC,'paths', (currentSelection.type == 'Patient'), currentSelection.id);
+				CallingNodeGraph(currentSelection.id, NODE_GRAPH, currentSelection.type);
+				swapImage();
+				initGraphOnClick();
+	}
+		
 		});
     }
-	function handleC(event){
-                console.log(document.getElementById("myVal").value)
-				var sele=document.getElementById("myVal").value;
-				backStack.push(currentSelection);
-				currentSelection = {id: sele, type: "Patient"};
-				timeline.setID(currentSelection.id, currentSelection.type, null);
-				paths = pathMap(PHARMACY_LOC, PRESCRIPTION_LOC,'paths', (currentSelection.type == 'Patient'), currentSelection.id);
-				CallingNodeGraph(currentSelection.id, NODE_GRAPH, currentSelection.type);
-				swapImage();
-				initGraphOnClick();
-				console.log(backStack)
 
-                //return false;
-            }
-	
  
     </script>
     
