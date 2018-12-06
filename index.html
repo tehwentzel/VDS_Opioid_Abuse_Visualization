@@ -32,11 +32,11 @@
     <div class="container-fluid">
 			<div class="row mt-0 p-0">
 			<div class='col-md-2'>
-					<form name="DirectIDS" action="handleC()"></form>
+					
                     <button id="DIRECTID">SUBMIT</button>
                         
-                            <input type="text" id="myVal" placeholder="ENTER ID">
-                        </form>
+                            <input type="text" id="myVal" value="2098621" required="required" placeholder="ENTER ID">
+                      
 
 				<!-- <img id="imgsrc" src="patient.svg"><h4 id='timeline-title' class='id'>: 2098621</h4> -->
 			</div>
@@ -202,10 +202,15 @@
 		d3.select("#DIRECTID").on('click',function(){
 			var valida=false;
 			var sele=document.getElementById("myVal").value;
-			backStack.push(currentSelection);
 			
+			backStack.push(currentSelection);
+			console.log(sele)
+	
+			if(sele==""){
+				
+			}
+			else{
 	if(sele.length<8){
-		console.log("dsndskfnsdn")
 		NODE_GRAPH.forEach(function(d){
 			if(d.pat_id==sele){
 				valida=true;
@@ -240,7 +245,7 @@
 			}
 }
 		
-		});
+		}});
     }
 
  
