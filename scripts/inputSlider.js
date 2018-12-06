@@ -44,8 +44,8 @@ var valueSlider = (function(height = 40, width = 500){
 	var sliderRect;
 	var overlayRects;
 	var isSetup = false;
-	public.setScale = function(patient_data, doctor_data, pharmacy_data){
-		getColor = colorSelector(patient_data, doctor_data, pharmacy_data);
+	public.setScale = function(colorPicker){
+		getColor = colorPicker;
 	}
 	
 	function getValue(d, target){
