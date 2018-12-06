@@ -121,10 +121,16 @@
 		
 		var selectCurrentId = function(){
 		//sets the id in views 2-3 to currentSelection (the person who was just clicked, ideally)
+			d3.selectAll('.tooltippatient').remove();
 			timeline.setID(currentSelection.id, currentSelection.type, null);
 			paths = pathMap(PHARMACY_LOC, PRESCRIPTION_LOC,'paths', (currentSelection.type == 'Patient'), currentSelection.id);
 			CallingNodeGraph(currentSelection.id, NODE_GRAPH, currentSelection.type);
 			swapImage();
+			is_patient = (currentSelection.type == "Patient")
+			document.getElementById("patientRadioSwitch").checked = is_patient;
+			document.getElementById("doctorRadioSwitch").checked = !is_patient;
+			d3.selectAll("circle.dot").remove();
+			[addresses, paths] = change_indiLoc(PHARMACY_LOC, DOCTOR_LOC, PATIENT_LOC,PRESCRIPTION_LOC);
 			initGraphOnClick();
 		}
 		
@@ -134,7 +140,7 @@
 				if(d.group == 'Patient' || d.group == 'Doctor'  || d.group == "Hospital"){
 					backStack.push(currentSelection);
 					currentSelection = {id: d.id, type: d.group};
-					d3.selectAll('.tooltippatient').remove();
+					//d3.selectAll('.tooltippatient').remove();
 					selectCurrentId();
 				}
 			});
@@ -178,6 +184,11 @@
 				//$('#imgsrc').attr('src', (is_patient? "images/patient.svg": "images/doctor.svg"));
 				d3.selectAll("circle.dot").remove();
 				[addresses, paths] = change_indiLoc(PHARMACY_LOC, DOCTOR_LOC, PATIENT_LOC,PRESCRIPTION_LOC);
+				if(is_patient != (currentSelection.type == "Patient")){
+					d3.select("#gantt-items").selectAll("svg")
+						.attr('visibility','hidden');
+					d3.select("#paths").selectAll("circle,path").attr('visibility', 'hidden');
+				}
 			}
 		});
 		

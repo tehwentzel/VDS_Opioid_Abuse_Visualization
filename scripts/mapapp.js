@@ -186,7 +186,7 @@ var getMap = function(target, colorFunction){
 				.x(function(d) { return project(findlatlngpath(d.x,d.y)).x - topLeft.x; })
 				.y(function(d) { return project(findlatlngpath(d.x,d.y)).y - topLeft.y; });
 
-			if(target=="paths"||target=="paths2"){
+			if(target=="paths" && (document.getElementById("patientRadioSwitch").checked == indi_pat)){
 				d3.selectAll("path").remove();
 				 var path = svgPatient.append("path")
 					.attr("d",pathLine(filteredData))
