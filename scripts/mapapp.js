@@ -33,9 +33,11 @@ var getMap = function(target, colorFunction){
 		}
 
 		var filteredData;
+		//this remove doesnt seem to work because it keeps drawing a new svg in the overlay pane every time
+		//and I think it is causing a memory leak but it keeps breaking if I try to do something else
 		d3.selectAll(map.getPanes().overlayPane).remove();
 		var svgPatient = d3.select(map.getPanes().overlayPane).append("svg");
-		
+
 		var g = svgPatient.append("g").attr("class", "leaflet-zoom-hide");
 		
 		var hoverdiv = d3.select("body").append("div")   
@@ -176,18 +178,18 @@ var getMap = function(target, colorFunction){
 					.style("visibility", 'hidden');   
 					  });
 
-
+			d3.selectAll('div.path').remove();
 			var pathdiv = d3.select("body").append("div")   
 			.attr("class", "path")               
 			.style("opacity", 0);
-
-			var pathLine = d3.svg.line()
-				.interpolate("linear-open")
-				.x(function(d) { return project(findlatlngpath(d.x,d.y)).x - topLeft.x; })
-				.y(function(d) { return project(findlatlngpath(d.x,d.y)).y - topLeft.y; });
-
-			if(target=="paths" && (document.getElementById("patientRadioSwitch").checked == indi_pat)){
-				d3.selectAll("path").remove();
+			d3.selectAll("path").remove();
+			if(target=="paths" && indi_pat){//if loop for path when patient is selected
+				console.log('plotting');
+				var pathLine = d3.svg.line()
+					.interpolate("linear-open")
+					.x(function(d) { return project(findlatlngpath(d.x,d.y)).x - topLeft.x; })
+					.y(function(d) { return project(findlatlngpath(d.x,d.y)).y - topLeft.y; });
+				
 				 var path = svgPatient.append("path")
 					.attr("d",pathLine(filteredData))
 					.attr("class", "path")

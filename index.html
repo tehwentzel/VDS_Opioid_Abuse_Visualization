@@ -115,22 +115,23 @@
 		var swapImage = function(){
 		//switches the image in the top left corner
 			$('#imgsrc').attr('src', 
-				((currentSelection.type == "Patient")? "images/patient.svg": "images/doctor.svg")
+				(is_patient? "images/patient.svg": "images/doctor.svg")
 			);
 		};
 		
 		var selectCurrentId = function(){
 		//sets the id in views 2-3 to currentSelection (the person who was just clicked, ideally)
 			d3.selectAll('.tooltippatient').remove();
-			timeline.setID(currentSelection.id, currentSelection.type, null);
-			paths = pathMap(PHARMACY_LOC, PRESCRIPTION_LOC,'paths', (currentSelection.type == 'Patient'), currentSelection.id);
-			CallingNodeGraph(currentSelection.id, NODE_GRAPH, currentSelection.type);
-			swapImage();
-			is_patient = (currentSelection.type == "Patient")
+			d3.selectAll("circle.dot").remove();
+			//these need to before paths = pathMap... for the backbutton to draw the path always
+			is_patient = (currentSelection.type == "Patient");
 			document.getElementById("patientRadioSwitch").checked = is_patient;
 			document.getElementById("doctorRadioSwitch").checked = !is_patient;
-			d3.selectAll("circle.dot").remove();
-			[addresses, paths] = change_indiLoc(PHARMACY_LOC, DOCTOR_LOC, PATIENT_LOC,PRESCRIPTION_LOC);
+			timeline.setID(currentSelection.id, currentSelection.type, null);
+			paths = pathMap(PHARMACY_LOC, PRESCRIPTION_LOC,'paths', is_patient, currentSelection.id);
+			CallingNodeGraph(currentSelection.id, NODE_GRAPH, currentSelection.type);
+			swapImage();
+			change_indiLoc(PHARMACY_LOC, DOCTOR_LOC, PATIENT_LOC,PRESCRIPTION_LOC);
 			initGraphOnClick();
 		}
 		
@@ -149,7 +150,6 @@
 		var change_indiLoc = function(PHARMACY, DOCTOR, PATIENT,PRESCRIPTION, selected_id){
 		//redraws the map (view 1) when we use some kind of selection filter/button
 			var addresses; //get the dots so we can set a listener up 
-			var paths;
 			if(is_patient == true){
 				addresses = patientMap(PATIENT, PRESCRIPTION, 'patient', is_patient);
 				valueSlider.draw(PATIENT_LOC, 'patient', selected_id);
@@ -160,7 +160,6 @@
 			}
 			valueSlider.setOnClick(change_indiLoc,PHARMACY_LOC, DOCTOR_LOC, PATIENT_LOC,PRESCRIPTION_LOC);
 			addresses.call(setDotOnClick);
-			return [addresses, paths];
 		}
 		
 		var setDotOnClick = g => g.on('click', function(d){
@@ -183,7 +182,7 @@
 				d3.select(".divnames2").text( (is_patient? "Patient": "Doctor") + " Locations");
 				//$('#imgsrc').attr('src', (is_patient? "images/patient.svg": "images/doctor.svg"));
 				d3.selectAll("circle.dot").remove();
-				[addresses, paths] = change_indiLoc(PHARMACY_LOC, DOCTOR_LOC, PATIENT_LOC,PRESCRIPTION_LOC);
+				change_indiLoc(PHARMACY_LOC, DOCTOR_LOC, PATIENT_LOC,PRESCRIPTION_LOC);
 				if(is_patient != (currentSelection.type == "Patient")){
 					d3.select("#gantt-items").selectAll("svg")
 						.attr('visibility','hidden');
@@ -224,12 +223,12 @@
 		valueSlider.setScale(colorPicker);
 		valueSlider.draw(PATIENT_LOC,"patient");
 		//function that draws map for top left map
+		var is_patient = true;
+		var selected_id = 2098621;
 		var patientMap = getMap('patient', colorPicker);
 		//function that draws map for top right
 		var pathMap = getMap('paths', colorPicker);
 		//preload someone?
-		var is_patient = true;
-		var selected_id = 2098621;
 		//for the stack
 		var currentSelection = {id: selected_id, type: "Patient"};
 		//seting up a new timeline - call setId after
@@ -237,9 +236,9 @@
 		//darw node graph
 		CallingNodeGraph(selected_id, NODE_GRAPH, "Patient");
 		//draw paths
-		paths = pathMap(PHARMACY_LOC, PRESCRIPTION_LOC, 'paths', is_patient, selected_id);
 		//I'm not sure if we actually need this anymore but I'm afraid to break things.
-		var [addresses, paths] = change_indiLoc(PHARMACY_LOC, DOCTOR_LOC, PATIENT_LOC,PRESCRIPTION_LOC);
+		change_indiLoc(PHARMACY_LOC, DOCTOR_LOC, PATIENT_LOC,PRESCRIPTION_LOC);
+		paths = pathMap(PHARMACY_LOC, PRESCRIPTION_LOC, 'paths', is_patient, selected_id);
 		initGraphOnClick();
     }
 
