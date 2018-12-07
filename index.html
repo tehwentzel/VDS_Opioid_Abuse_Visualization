@@ -122,8 +122,8 @@
 		var selectCurrentId = function(){
 		//sets the id in views 2-3 to currentSelection (the person who was just clicked, ideally)
 			d3.selectAll('.tooltippatient').remove();
-			d3.selectAll("circle.dot").remove();
 			//these need to before paths = pathMap... for the backbutton to draw the path always
+			let was_patient = is_patient;
 			is_patient = (currentSelection.type == "Patient");
 			document.getElementById("patientRadioSwitch").checked = is_patient;
 			document.getElementById("doctorRadioSwitch").checked = !is_patient;
@@ -131,7 +131,9 @@
 			paths = pathMap(PHARMACY_LOC, PRESCRIPTION_LOC,'paths', is_patient, currentSelection.id);
 			CallingNodeGraph(currentSelection.id, NODE_GRAPH, currentSelection.type);
 			swapImage();
-			change_indiLoc(PHARMACY_LOC, DOCTOR_LOC, PATIENT_LOC,PRESCRIPTION_LOC);
+			if(was_patient != is_patient){
+				change_indiLoc(PHARMACY_LOC, DOCTOR_LOC, PATIENT_LOC,PRESCRIPTION_LOC);
+			}
 			initGraphOnClick();
 		}
 		
@@ -150,6 +152,7 @@
 		var change_indiLoc = function(PHARMACY, DOCTOR, PATIENT,PRESCRIPTION, selected_id){
 		//redraws the map (view 1) when we use some kind of selection filter/button
 			var addresses; //get the dots so we can set a listener up 
+			d3.selectAll("circle.dot").remove();
 			if(is_patient == true){
 				addresses = patientMap(PATIENT, PRESCRIPTION, 'patient', is_patient);
 				valueSlider.draw(PATIENT_LOC, 'patient', selected_id);

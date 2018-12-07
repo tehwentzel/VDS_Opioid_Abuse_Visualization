@@ -53,6 +53,7 @@ class TimeLine {
 	}
 	
 	setID(iD, dtype= "Patient", start_date = null) {
+		this.svg.attr('visibility','visible');
 		if(dtype == "Hospital"){
 			dtype = "Doctor";
 		}
@@ -70,7 +71,7 @@ class TimeLine {
 		this.dtype = dtype;
 		d3.select('#timeline-title')
 			.html(': ' + iD);
-		this.id = iD;	
+		this.id = iD;
 		switch(this.dtype){
 			case 'Doctor':
 				this.allData = this.prescriptions.filter( script => script.physiciannpi == this.id );
@@ -83,7 +84,7 @@ class TimeLine {
 		}
 		this.allData.forEach(function(d){
 				d.filldate = new Date(d.filldate);
-				d.final_date = new Date(d.final_date).addDays(1);
+				d.finalDate = new Date(d.final_date).addDays(1);
 				d.rxcount = +d.rxcount;
 				d.days_supply = +d.days_supply;
 			});
@@ -93,6 +94,7 @@ class TimeLine {
 		this.runFilters();
 		this.setupDrugFilter();
 		this.setupTimeFilter();
+		this.allData = null;
 		
 	}
 	
@@ -109,15 +111,15 @@ class TimeLine {
 			this.start_date = this.start_date_filter;
 		}
 		this.end_date = d3.max(this.data, 
-			function(d){return d.final_date;});	
+			function(d){return d.finalDate;});	
 		if( d3.timeDay.count( this.start_date, this.end_date ) > this.maxDays ){
 			this.end_date = new Date(this.start_date).addDays( this.maxDays );
 		}
 		this.data = this.data.filter(d => d.filldate <= this.end_date)
-			.filter(d => d.final_date > this.start_date);
+			.filter(d => d.finalDate > this.start_date);
 		this.data.forEach(function(d){
-			d.cutoff_date = d.final_date;
-			if(d.final_date > this.end_date){
+			d.cutoff_date = d.finalDate;
+			if(d.finalDate > this.end_date){
 				d.cutoff_date = this.end_date;
 			}
 			d.begin_date = d.filldate;
@@ -145,7 +147,7 @@ class TimeLine {
 			given_day.fillCount = 0;
 			given_day.xPos = this.xAxis(given_day) + this.xOffset;
 			this.data.forEach(function(rx){
-				if(rx.filldate <= given_day && rx.final_date > given_day){
+				if(rx.filldate <= given_day && rx.finalDate > given_day){
 					given_day.activeCount += 1;
 					if( given_day.activeCount > maxCount){
 						maxCount = given_day.activeCount;
@@ -183,11 +185,11 @@ class TimeLine {
 	
 	drawRects(maxCount){
 		var self = this;
-		var nodes = this.svg.selectAll(".timeRectangle")
-			.data(this.time, function(d) {return d;});
 		var barWidth =  .9*this.width/this.time.length;
-		nodes.exit().remove();
-		nodes.enter().append('rect').merge(nodes)
+		this.svg.selectAll('.timeRectangle').remove();
+		var nodes = this.svg.selectAll(".timeRectangle")
+			.data(this.time)
+			.enter().append('rect')
 			.attr('class','timeRectangle')
 			.attr('x', function(d){return d.xPos;})
 			.attr('y', function(d){ return self.baseline - self.stepSize*d.activeCount; } )
@@ -371,7 +373,7 @@ class TimeLine {
 		var minDate = d3.min(tempData, 
 			function(d){return d.filldate;});
 		var maxDate = d3.max(tempData,
-			function(d){return d.final_date;});
+			function(d){return d.finalDate;});
 			d3.selectAll(target).selectAll('.slider').remove()
 		var box = d3.selectAll(target);
 		var width = .9*box.node().clientWidth;

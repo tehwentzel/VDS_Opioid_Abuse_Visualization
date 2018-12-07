@@ -8,42 +8,45 @@ var getMap = function(target, colorFunction){
 		var map = L.mapbox.map(target, 'mapbox.dark', {maxZoom: 14, minZoom: 9}, {attributionControl: false})
 			.setView([41.77, -87.62], 10);
 	}
+	
+	d3.selectAll(map.getPanes().overlayPane).remove();
+	var svgPatient = d3.select(map.getPanes().overlayPane).append("svg");
+	var g = svgPatient.append("g").attr("class", "leaflet-zoom-hide");
+	
+	var hoverdiv = d3.select("body").append("div")   
+			.attr("class", "tooltippatient")               
+			.style("opacity", .8)
+			.style('visibility', 'hidden');
+			
+	function project(latlng){
+		var point = map.latLngToLayerPoint(L.latLng(latlng));
+		return point;
+	}
+	
+	function findlatlng(lat,lng){
+			// console.log(lat);
+			let coord = {};
+			coord["lat"] = lat;
+			coord["lng"] = lng;
+			return coord;
+	}
+
+	function findlatlngpath(lat,lng){
+			// console.log(lat);
+			let coord = {};
+			coord["lat"] = lat;
+			coord["lng"] = lng;
+			return coord;
+	}
     
 	var drawMap = function(data, presdata, target, indi_pat, selectedId){
-
-		function project(latlng){
-			var point = map.latLngToLayerPoint(L.latLng(latlng));
-			return point;
-		}
-		
-		function findlatlng(lat,lng){
-				// console.log(lat);
-				let coord = {};
-				coord["lat"] = lat;
-				coord["lng"] = lng;
-				return coord;
-		}
-
-		function findlatlngpath(lat,lng){
-				// console.log(lat);
-				let coord = {};
-				coord["lat"] = lat;
-				coord["lng"] = lng;
-				return coord;
-		}
 
 		var filteredData;
 		//this remove doesnt seem to work because it keeps drawing a new svg in the overlay pane every time
 		//and I think it is causing a memory leak but it keeps breaking if I try to do something else
-		d3.selectAll(map.getPanes().overlayPane).remove();
-		var svgPatient = d3.select(map.getPanes().overlayPane).append("svg");
+		//d3.select(map.getPanes().overlayPane).remove();
+		//var svgPatient = d3.select(map.getPanes().overlayPane).append('svg');
 
-		var g = svgPatient.append("g").attr("class", "leaflet-zoom-hide");
-		
-		var hoverdiv = d3.select("body").append("div")   
-			.attr("class", "tooltippatient")               
-			.style("opacity", .8)
-			.style('visibility', 'hidden');
 
 		var aggrepharmacy_pat = d3.nest()
 		  .key(function(d) { return d.pat_id;})
@@ -98,7 +101,6 @@ var getMap = function(target, colorFunction){
 				.append('circle')
 				.attr('class','pathDot');
 			map.fitBounds(bounds);
-			dots.exit().remove();
 		}
 		else{
 			var dots = g.selectAll("circle.dot")
@@ -107,7 +109,7 @@ var getMap = function(target, colorFunction){
 				.append('circle')
 				.attr('class','dot');
 		}
-
+		dots.exit().remove();
 	
 		var formatDots = g => 
 			g.attr('cx', function(d){ return project(findlatlng(d.x,d.y)).x;})
@@ -184,7 +186,6 @@ var getMap = function(target, colorFunction){
 			.style("opacity", 0);
 			d3.selectAll("path").remove();
 			if(target=="paths" && indi_pat){//if loop for path when patient is selected
-				console.log('plotting');
 				var pathLine = d3.svg.line()
 					.interpolate("linear-open")
 					.x(function(d) { return project(findlatlngpath(d.x,d.y)).x - topLeft.x; })
