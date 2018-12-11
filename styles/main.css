@@ -70,7 +70,23 @@ svg .path {
   fill: none;
   stroke-opacity: .75;
   /*stroke-dasharray: 1,2;*/
-  stroke: orange;
+  stroke: steelblue;
+  stroke-width:2px;
+}
+
+svg .path_doc {
+  fill: none;
+  stroke-opacity: .75;
+  /*stroke-dasharray: 1,2;*/
+  stroke: lightgreen;
+  stroke-width:2px;
+}
+
+svg .path_pharm_only {
+  fill: none;
+  stroke-opacity: 1;
+  stroke-dasharray: 3,5;
+  stroke: steelblue;
   stroke-width:2px;
 }
 
@@ -339,9 +355,7 @@ circle {
   fill: brown;
 }
 
-.female{
-  color: pink;
-}
+
 
 .table{
   /*position:absolute;*/
