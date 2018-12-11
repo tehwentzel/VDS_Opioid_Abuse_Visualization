@@ -125,22 +125,21 @@ var getMap = function(target, colorFunction, docdata){
 				.enter()
 				.append('circle')
 				.attr('class','pathDot');
-			map.fitBounds(bounds);
-
-			if(indi_pat){
+			
 			d3.selectAll(".pathDot_doc").remove();
-			filteredData_Doc = docdata.filter(function(d) { return findAllDocIds(selectedId).includes(d.physiciannpi);});
-			// var bounds = [];
-			filteredData.forEach(function(d){
-				bounds.push([d.x,d.y]);
-			});
-			var dots2 = g.selectAll("circle.pathDotdoc")
-				.data(filteredData_Doc)//, function(d) {return d.x/d.y;})
-				.enter()
-				.append('circle')
-				.attr('class','pathDot_doc');
-			map.fitBounds(bounds);
+			if(indi_pat){
+				filteredData_Doc = docdata.filter(function(d) { return findAllDocIds(selectedId).includes(d.physiciannpi);});
+				// var bounds = [];
+				filteredData.forEach(function(d){
+					bounds.push([d.x,d.y]);
+				});
+				var dots2 = g.selectAll("circle.pathDotdoc")
+					.data(filteredData_Doc)//, function(d) {return d.x/d.y;})
+					.enter()
+					.append('circle')
+					.attr('class','pathDot_doc');
 			}
+			map.fitBounds(bounds);
 		}
 		else{
 			var dots = g.selectAll("circle.dot")
@@ -167,7 +166,6 @@ var getMap = function(target, colorFunction, docdata){
 			.attr("fill", "green")
 			.attr('opacity', 0.8);
 		if(target=="paths" && indi_pat){
-			
 			dots2.call(formatDots2);
 		}
 	

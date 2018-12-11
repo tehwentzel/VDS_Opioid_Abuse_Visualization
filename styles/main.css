@@ -235,7 +235,7 @@ div.tooltip {
   /*cursor:crosshair;*/
 }
 
-div.tooltippatient { 
+div.tooltippatient, div.tooltipgraph { 
     position: absolute;     
     text-align: center;     
     width: 150px;          

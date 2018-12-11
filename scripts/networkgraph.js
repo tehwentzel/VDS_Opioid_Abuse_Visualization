@@ -112,9 +112,9 @@ function tryS(struct)
     graph=struct;
 
     function run(graph) {
-
+		d3.selectAll(".tooltipgraph").remove();
         var div = d3.select("body").append("div")	
-            .attr("class", "tooltippatient")
+            .attr("class", "tooltipgraph")
 			.style('visibility', 'hidden')
             .style("opacity", .9);
 
@@ -339,9 +339,9 @@ function tryS1(struct)
         //     d.source = d.source_id;    
         //     d.target = d.target_id;
         });           
-
+		d3.selectAll(".tooltipgraph").remove();
         var div = d3.select("body").append("div")	
-            .attr("class", "tooltippatient")				
+            .attr("class", "tooltipgraph")				
             .style("visibility", 'hidden')
 			.style('opacity', .9);
 
