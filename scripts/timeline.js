@@ -93,9 +93,7 @@ class TimeLine {
 		this.start_date_filter = null;
 		this.runFilters();
 		this.setupDrugFilter();
-		this.setupTimeFilter();
-		this.allData = null;
-		
+		this.setupTimeFilter();		
 	}
 	
 	runFilters(){
@@ -104,7 +102,7 @@ class TimeLine {
 				this.drugName == d.nonproprietaryname.split(" ")[0]
 				);
 		} else { this.data = this.allData; }
-		
+		console.log(this.allData);
 		this.start_date = d3.min(this.data, 
 			function(d){return d.filldate;});
 		if( (this.start_date_filter != null) & (this.start_date < this.start_date_filter) ){
@@ -498,6 +496,7 @@ class TimeLine {
 	
 	setStartDate(start_date){
 		this.start_date_filter = new Date(start_date);
+		console.log(this.start_date_filter);
 		this.maxDays += d3.timeDay.count( this.start_date_filter, this.start_date );
 		this.runFilters();
 	}

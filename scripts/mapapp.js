@@ -38,8 +38,32 @@ var getMap = function(target, colorFunction, docdata){
 			coord["lng"] = lng;
 			return coord;
 	}
+	
+	function radiusFunction(d, count){
+		if(d.physiciannpi!="undefined"){
+			var radiusFunction = d3.scaleLinear()
+					.domain([4, 1761])
+					.range([3, 15]);
+		return radiusFunction(count);
+		}
+		else{
+		var radiusFunction = d3.scaleLinear()
+					.domain([2, 1628])
+					.range([3, 15]);
+		return radiusFunction(count);
+		}
+	}
+
+	function getradius(d){
+		if(target == "patient"){
+			return 4;
+		} else{
+			return radiusFunction(d, d.patient_count);
+			// return 6;
+		}
+	}
     
-	var drawMap = function(data, presdata, target, indi_pat, selectedId){
+	var drawMap = function(data, presdata, indi_pat, selectedId){
 
 		var filteredData;
 		//this remove doesnt seem to work because it keeps drawing a new svg in the overlay pane every time
@@ -194,32 +218,6 @@ var getMap = function(target, colorFunction, docdata){
 				return stringvalue;
 			
 		}
-
-		function radiusFunction(d, count){
-			if(d.physiciannpi!="undefined"){
-				var radiusFunction = d3.scaleLinear()
-  						.domain([4, 1761])
-  						.range([3, 15]);
-  			return radiusFunction(count);
-			}
-			else{
-			var radiusFunction = d3.scaleLinear()
-  						.domain([2, 1628])
-  						.range([3, 15]);
-  			return radiusFunction(count);
-  			}
-		}
-	
-		function getradius(d){
-			if(target == "patient"){
-				return 4;
-			} else{
-				return radiusFunction(d, d.patient_count);
-				// return 6;
-			}
-		}
-
-
 
 		function getcolor(d){
 			if(target == "patient"){

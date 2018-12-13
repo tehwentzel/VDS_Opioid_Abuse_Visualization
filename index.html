@@ -128,7 +128,7 @@
 			document.getElementById("patientRadioSwitch").checked = is_patient;
 			document.getElementById("doctorRadioSwitch").checked = !is_patient;
 			timeline.setID(currentSelection.id, currentSelection.type, null);
-			paths = pathMap(PHARMACY_LOC, PRESCRIPTION_LOC,'paths', is_patient, currentSelection.id);
+			paths = pathMap(PHARMACY_LOC, PRESCRIPTION_LOC, is_patient, currentSelection.id);
 			CallingNodeGraph(currentSelection.id, NODE_GRAPH, currentSelection.type);
 			swapImage();
 			if(was_patient != is_patient){
@@ -154,11 +154,11 @@
 			var addresses; //get the dots so we can set a listener up 
 			d3.selectAll("circle.dot").remove();
 			if(is_patient == true){
-				addresses = patientMap(PATIENT, PRESCRIPTION, 'patient', is_patient);
+				addresses = patientMap(PATIENT, PRESCRIPTION, is_patient, null);
 				valueSlider.draw(PATIENT_LOC, 'patient', selected_id);
 			}
 			else{
-				addresses = patientMap(DOCTOR, PRESCRIPTION, 'patient', is_patient);
+				addresses = patientMap(DOCTOR, PRESCRIPTION, is_patient, null);
 				valueSlider.draw(DOCTOR_LOC, 'doctor', selected_id);
 			}
 			valueSlider.setOnClick(change_indiLoc,PHARMACY_LOC, DOCTOR_LOC, PATIENT_LOC,PRESCRIPTION_LOC);
@@ -241,7 +241,7 @@
 		//draw paths
 		//I'm not sure if we actually need this anymore but I'm afraid to break things.
 		change_indiLoc(PHARMACY_LOC, DOCTOR_LOC, PATIENT_LOC,PRESCRIPTION_LOC);
-		paths = pathMap(PHARMACY_LOC, PRESCRIPTION_LOC, 'paths', is_patient, selected_id);
+		paths = pathMap(PHARMACY_LOC, PRESCRIPTION_LOC, is_patient, selected_id);
 		initGraphOnClick();
     }
 
